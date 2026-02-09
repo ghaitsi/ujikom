@@ -26,11 +26,11 @@ class LogAktivitasController extends Controller
         $errorLogs = LogAktivitas::where('aktivitas', 'like', '%error%')->count();
 
         $totalUsers = User::count();
-        $activeUsers = User::where('is_active', true)->count();
+        $activeUsers = User::count();
 
         $users = User::orderBy('name')->get();
 
-        return view('admin.logs.index', compact(
+        return view('Admin.Log_aktivitas.index', compact(
             'logs',
             'totalLogs',
             'todayLogs',

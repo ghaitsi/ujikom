@@ -441,6 +441,7 @@
                     <div class="nav-text">Users</div>
                     <span class="badge badge-success">12</span>
                 </a>
+
                   <a href="{{ route('admin.log.index') }}" class="nav-item {{ request()->routeIs('admin.log.*') ? 'active' : '' }}">
                     <div class="nav-icon">
                         <i class="fas fa-clipboard-list"></i>
@@ -448,12 +449,20 @@
                     <div class="nav-text">Log Aktivitas</div>
                 </a>
 
+                    <a href="{{ route('admin.kategori.index') }}" class="nav-item {{ request()->routeIs('admin.kategori.*') ? 'active' : '' }}">
+                        <div class="nav-icon">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        <div class="nav-text">Kategori</div>
+                    </a>
+
                 <a href="{{ url('/laporan') }}" class="nav-item {{ request()->is('laporan*') ? 'active' : '' }}">
                     <div class="nav-icon">
                         <i class="fas fa-chart-bar"></i>
                     </div>
                     <div class="nav-text">Laporan</div>
                 </a>
+
                 <a href="{{ url('/pengaturan') }}" class="nav-item {{ request()->is('pengaturan*') ? 'active' : '' }}">
                     <div class="nav-icon">
                         <i class="fas fa-cog"></i>

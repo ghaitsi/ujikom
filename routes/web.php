@@ -4,11 +4,13 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\AlatController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\LogAktivitasController;
+use App\Http\Controllers\Admin\KategoriController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Alat;
 use App\Models\User;
 use App\Models\LogAktivitas;
+use App\Models\Kategori;
 
 
 /*
@@ -57,6 +59,7 @@ Route::middleware(['auth', 'role:admin'])
     Route::resource('users', UserController::class);
     Route::resource('alat', AlatController::class);
     Route::resource('log', LogAktivitasController::class);
+    Route::resource('kategori', KategoriController::class);
 
 
 });

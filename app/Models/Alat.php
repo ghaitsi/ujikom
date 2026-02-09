@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+
 use Illuminate\Database\Eloquent\Model;
 
 class Alat extends Model
@@ -19,6 +20,7 @@ class Alat extends Model
     // Field yang boleh diisi mass assignment
     protected $fillable = [
         'nama_alat',
+        'id_kategori',
         'stok',
         'deskripsi',
         'gambar',

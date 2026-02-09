@@ -355,6 +355,18 @@
             border-bottom: none;
         }
 
+        /* ID Styling */
+        .id-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 12px;
+            border: 1px solid rgba(67, 97, 238, 0.2);
+        }
+
         /* Status Badges */
         .status-badge {
             padding: 6px 14px;
@@ -739,8 +751,9 @@
                         <table class="premium-table">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>ID Alat</th>
                                     <th>Nama Alat</th>
+                                    <th>ID Kategori</th> <!-- Kolom Baru -->
                                     <th>Kategori</th>
                                     <th>Stok</th>
                                     <th>Status</th>
@@ -752,8 +765,27 @@
                             <tbody>
                                 @foreach($alat as $a)
                                     <tr>
-                                        <td><strong>#{{ $a->id_alat }}</strong></td>
+                                        <td>
+                                            <span class="id-badge">#{{ $a->id_alat }}</span>
+                                        </td>
                                         <td>{{ $a->nama_alat }}</td>
+                                        <td>
+                                            <!-- Menampilkan ID Kategori -->
+                                            @if($a->kategori)
+                                                <span class="id-badge" style="background: rgba(114, 9, 183, 0.1); color: var(--secondary); border-color: rgba(114, 9, 183, 0.2);">
+                                                    #{{ $a->kategori->id_kategori }}
+                                                </span>
+                                            @else
+                                                <span style="color: var(--gray); font-size: 12px;">-</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($a->kategori)
+                                                <span style="font-weight: 500;">{{ $a->kategori->nama_kategori }}</span>
+                                            @else
+                                                <span style="color: var(--gray); font-size: 12px;">Tidak ada kategori</span>
+                                            @endif
+                                        </td>
                                         <td>
                                             <span style="font-weight: 700; color: var(--primary);">
                                                 {{ $a->stok }}
@@ -916,6 +948,22 @@
                     successAlert.style.display = 'none';
                 }, 500);
             }, 5000);
+        }
+
+        // Filter by category ID (optional enhancement)
+        function filterByCategory(categoryId) {
+            const rows = document.querySelectorAll('.premium-table tbody tr');
+            rows.forEach(row => {
+                const idBadge = row.querySelector('.id-badge[style*="background: rgba(114, 9, 183, 0.1)"]');
+                if (idBadge) {
+                    const idText = idBadge.textContent.replace('#', '');
+                    if (categoryId === 'all' || idText === categoryId.toString()) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
         }
     </script>
 </body>

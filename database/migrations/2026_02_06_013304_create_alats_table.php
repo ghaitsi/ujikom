@@ -6,29 +6,26 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up(): void
-    {
-        Schema::create('alat', function (Blueprint $table) {
+public function up(): void
+{
+    Schema::create('alat', function (Blueprint $table) {
+        $table->increments('id_alat');
+        $table->string('nama_alat');
+        $table->integer('stok');
+        $table->text('deskripsi')->nullable();
+        $table->string('gambar')->nullable();
+        $table->string('kondisi')->nullable();
+        $table->enum('status', ['tersedia','dipinjam','perbaikan'])->default('tersedia');
 
-            $table->increments('id_alat');
+        // Tambahkan kolom id_kategori
+        $table->unsignedInteger('id_kategori')->nullable();
 
-            $table->string('nama_alat');
+        // Jika mau pakai foreign key
+        $table->foreign('id_kategori')->references('id_kategori')->on('kategori')->onDelete('set null');
 
-            $table->integer('stok');
-
-            $table->text('deskripsi')->nullable();
-
-            $table->string('gambar')->nullable();
-
-            $table->string('kondisi')->nullable();
-
-            $table->enum('status', ['tersedia','dipinjam','perbaikan'])->default('tersedia');
-
-            $table->timestamp('created_at')->nullable();
-            $table->timestamp('updated_at')->nullable();
-
-        });
-    }
+        $table->timestamps();
+    });
+}
 
     public function down(): void
     {
