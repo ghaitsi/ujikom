@@ -11,8 +11,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+
+        // Alias middleware (route middleware)
+        $middleware->alias([
+            'role' => App\Http\Middleware\RoleMiddleware::class,
+        ]);
+
+        // contoh kalau mau nambah global middleware:
+        // $middleware->append(App\Http\Middleware\SomeMiddleware::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
-    })->create();
+    })
+    ->create();
