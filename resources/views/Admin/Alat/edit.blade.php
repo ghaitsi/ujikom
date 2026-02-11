@@ -926,6 +926,34 @@
                                 </div>
                             </div>
 
+                            <!-- Kategori -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-tags"></i>
+                                    Kategori
+                                </label>
+                                <select name="id_kategori" 
+                                        class="form-control @error('id_kategori') error @enderror"
+                                        required>
+                                    <option value="">Pilih Kategori</option>
+                                    @foreach($kategori as $k)
+                                        <option value="{{ $k->id_kategori }}" 
+                                                {{ old('id_kategori', $alat->id_kategori) == $k->id_kategori ? 'selected' : '' }}>
+                                            {{ $k->nama_kategori }} (ID: #{{ $k->id_kategori }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('id_kategori')
+                                    <div class="error-message">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                                <div class="form-text">
+                                    <i class="fas fa-lightbulb"></i>
+                                    Pilih kategori untuk alat ini
+                                </div>
+                            </div>
 
                             <!-- Stok -->
                             <div class="form-group">
@@ -1280,6 +1308,14 @@
 
         // Show current image URL in console for debugging
         console.log('Current Image URL:', '{{ $alat->gambar ? asset('storage/'.$alat->gambar) : 'No image' }}');
+        
+        // Show selected kategori info
+        const kategoriSelect = document.querySelector('select[name="id_kategori"]');
+        if (kategoriSelect) {
+            kategoriSelect.addEventListener('change', function() {
+                console.log('Selected Category ID:', this.value);
+            });
+        }
     </script>
 </body>
 </html>

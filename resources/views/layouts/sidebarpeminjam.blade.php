@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sidebar Laravel</title>
+    <title>Sidebar Peminjam</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -40,17 +40,12 @@
         }
 
         /* Animations */
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
         @keyframes shine {
             0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
             100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
 
-        /* Premium Sidebar */
+        /* Minimal Sidebar */
         .sidebar {
             width: 280px;
             background: var(--sidebar-bg);
@@ -145,20 +140,6 @@
             border-radius: 3px;
         }
 
-        .nav-section {
-            margin-bottom: 32px;
-        }
-
-        .nav-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.5);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 0 24px;
-            margin-bottom: 16px;
-        }
-
         .nav-item {
             display: flex;
             align-items: center;
@@ -217,23 +198,6 @@
             font-size: 15px;
             font-weight: 500;
             flex: 1;
-        }
-
-        .badge {
-            margin-left: 12px;
-            background: linear-gradient(135deg, var(--accent), var(--danger));
-            color: white;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            box-shadow: 0 2px 8px rgba(247, 37, 133, 0.4);
-            animation: pulse 2s infinite;
-        }
-
-        .badge-success {
-            background: linear-gradient(135deg, var(--success), #38b2ac);
-            box-shadow: 0 2px 8px rgba(76, 201, 240, 0.4);
         }
 
         .sidebar-footer {
@@ -306,7 +270,7 @@
             font-weight: 500;
         }
 
-        /* Premium Logout Button */
+        /* Logout Button */
         .logout-btn {
             display: flex;
             align-items: center;
@@ -374,91 +338,46 @@
                 font-size: 24px;
             }
         }
-
-        /* Untuk halaman Laravel yang tidak menggunakan Auth */
-        .user-placeholder {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            font-weight: 700;
-            font-size: 18px;
-        }
     </style>
 </head>
 <body>
-    <!-- Premium Sidebar -->
+    <!-- Minimal Sidebar untuk Peminjam -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <a href="{{ url('/dashboard') }}" class="logo">
+            <a href="{{ route('peminjam.dashboard') }}" class="logo">
                 <div class="logo-icon">
-                    <i class="fas fa-tools"></i>
+                    <i class="fas fa-user-tie"></i>
                 </div>
                 <div class="logo-text">Fore<span>nt</span></div>
             </a>
         </div>
 
         <nav class="sidebar-nav">
-            <div class="nav-section">
-                <div class="nav-label">Menu Utama</div>
-                <a href="{{ url('/dashboard') }}" class="nav-item {{ request()->is('dashboard') ? 'active' : '' }}">
-                    <div class="nav-icon">
-                        <i class="fas fa-home"></i>
-                    </div>
-                    <div class="nav-text">Dashboard</div>
-                </a>
-                <a href="{{ route('admin.alat.index') }}" class="nav-item {{ request()->routeIs('alat.*') ? 'active' : '' }}">
-                    <div class="nav-icon">
-                        <i class="fas fa-tools"></i>
-                    </div>
-                    <div class="nav-text">Daftar Alat</div>
-                </a>
-                
-                <a href="{{ route('admin.peminjaman.index') }}" class="nav-item {{ request()->routeIs('admin.peminjaman.*') ? 'active' : '' }}">
-                    <div class="nav-icon">
-                        <i class="fas fa-handshake"></i>
-                    </div>
-                    <div class="nav-text">Peminjaman</div>
-                    <span class="badge">3</span>
-                </a>
+            <!-- Dashboard -->
+            <a href="{{ route('peminjam.dashboard') }}" class="nav-item {{ request()->routeIs('peminjam.dashboard') ? 'active' : '' }}">
+                <div class="nav-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div class="nav-text">Dashboard</div>
+            </a>
 
-                <a href="{{ url('/pengembalian') }}" class="nav-item {{ request()->is('pengembalian*') ? 'active' : '' }}">
-                    <div class="nav-icon">
-                        <i class="fas fa-undo"></i>
-                    </div>
-                    <div class="nav-text">Pengembalian</div>
-                </a>
-            </div>
-
-            <div class="nav-section">
-                <div class="nav-label">Manajemen</div>
-                <a href="{{ route('admin.users.index') }}" class="nav-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-                    <div class="nav-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="nav-text">Users</div>
-                    <span class="badge badge-success">12</span>
-                </a>
-
-                  <a href="{{ route('admin.log.index') }}" class="nav-item {{ request()->routeIs('admin.log.*') ? 'active' : '' }}">
-                    <div class="nav-icon">
-                        <i class="fas fa-clipboard-list"></i>
-                    </div>
-                    <div class="nav-text">Log Aktivitas</div>
-                </a>
-
-                    <a href="{{ route('admin.kategori.index') }}" class="nav-item {{ request()->routeIs('admin.kategori.*') ? 'active' : '' }}">
-                        <div class="nav-icon">
-                            <i class="fas fa-tags"></i>
-                        </div>
-                        <div class="nav-text">Kategori</div>
-                    </a>
-            </div>
-
+            <!-- Pengembalian Alat -->
+        <a href="{{ route('peminjam.pengembalian') }}" class="nav-item {{ request()->routeIs('peminjam.pengembalian.*') ? 'active' : '' }}">
+                <div class="nav-icon">
+                    <i class="fas fa-undo"></i>
+                </div>
+                <div class="nav-text">Pengembalian Alat</div>
+                @php
+                    $peminjamanAktifCount = auth()->check() ? 
+                        auth()->user()->peminjaman()->where('status', 'dipinjam')->count() : 0;
+                @endphp
+                @if($peminjamanAktifCount > 0)
+                    <span style="margin-left: 12px; background: var(--warning); color: white; padding: 4px 8px; border-radius: 10px; font-size: 12px; font-weight: 600;">
+                        {{ $peminjamanAktifCount }}
+                    </span>
+                @endif
+            </a>
+        </nav>
 
         <div class="sidebar-footer">
             <div class="user-profile" id="userProfile">
@@ -466,7 +385,7 @@
                     @auth
                         {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
                     @else
-                        GU
+                        PE
                     @endauth
                 </div>
                 <div class="user-info">
@@ -474,20 +393,17 @@
                         @auth
                             {{ Auth::user()->name }}
                         @else
-                            Guest User
+                            Peminjam
                         @endauth
                     </div>
                     <div class="user-role">
-                        @auth
-                            Administrator
-                        @else
-                            Guest
-                        @endauth
+                        Peminjam
                     </div>
                 </div>
                 <i class="fas fa-chevron-up" style="color: var(--primary-light); font-size: 14px;"></i>
             </div>
             
+            <!-- Logout Button -->
             <form method="POST" action="{{ route('logout') }}" id="logoutForm">
                 @csrf
                 <button type="submit" class="logout-btn" id="logoutBtn">
@@ -528,13 +444,6 @@
                 });
             }
             
-            // User profile click
-            const userProfile = document.getElementById('userProfile');
-            if (userProfile) {
-                userProfile.addEventListener('click', function() {
-                    alert('Fitur profile user akan ditampilkan di sini');
-                });
-            }
         });
     </script>
 </body>

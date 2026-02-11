@@ -818,6 +818,35 @@
                                 </div>
                             </div>
 
+                            <!-- Kategori -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-tags"></i>
+                                    Kategori
+                                </label>
+                                <select name="id_kategori" 
+                                        class="form-control @error('id_kategori') error @enderror"
+                                        required>
+                                    <option value="">Pilih Kategori</option>
+                                    @foreach($kategori as $k)
+                                        <option value="{{ $k->id_kategori }}" 
+                                                {{ old('id_kategori') == $k->id_kategori ? 'selected' : '' }}>
+                                            {{ $k->nama_kategori }} (ID: #{{ $k->id_kategori }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('id_kategori')
+                                    <div class="error-message">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                                <div class="form-text">
+                                    <i class="fas fa-lightbulb"></i>
+                                    Pilih kategori untuk alat ini
+                                </div>
+                            </div>
+
                             <!-- Stok -->
                             <div class="form-group">
                                 <label class="form-label">
@@ -948,6 +977,13 @@
                                 
                                 <div class="file-preview" id="filePreview">
                                     <img id="previewImage" src="" alt="Preview">
+                                    <button type="button" 
+                                            class="remove-image-btn"
+                                            onclick="removePreview()"
+                                            style="margin-top: 10px; background: var(--danger); color: white; border: none; padding: 8px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                                        <i class="fas fa-times"></i>
+                                        Batalkan
+                                    </button>
                                 </div>
                                 
                                 @error('gambar')
@@ -1120,6 +1156,14 @@
                 firstField.focus();
             }
         });
+
+        // Show selected kategori info
+        const kategoriSelect = document.querySelector('select[name="id_kategori"]');
+        if (kategoriSelect) {
+            kategoriSelect.addEventListener('change', function() {
+                console.log('Selected Category ID:', this.value);
+            });
+        }
     </script>
 </body>
 </html>

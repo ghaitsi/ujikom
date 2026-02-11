@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Forent - Dashboard Peminjam</title>
+    <title>Forent - Pengembalian Alat</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -479,91 +479,7 @@
             border: 2px solid rgba(249, 65, 68, 0.2);
         }
 
-        /* Stock Indicator */
-        .stock-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .stock-low { color: var(--danger); font-weight: 600; }
-        .stock-medium { color: var(--warning); font-weight: 600; }
-        .stock-high { color: var(--success); font-weight: 600; }
-
-        /* Condition Badges */
-        .condition-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .condition-baik { 
-            background: rgba(76, 201, 240, 0.1); 
-            color: var(--success);
-            border: 1px solid rgba(76, 201, 240, 0.2);
-        }
-
-        .condition-rusak { 
-            background: rgba(249, 65, 68, 0.1); 
-            color: var(--danger);
-            border: 1px solid rgba(249, 65, 68, 0.2);
-        }
-
-        .condition-perbaikan { 
-            background: rgba(248, 150, 30, 0.1); 
-            color: var(--warning);
-            border: 1px solid rgba(248, 150, 30, 0.2);
-        }
-
-        /* Pinjam Form */
-        .pinjam-form {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .date-input {
-            padding: 10px 14px;
-            border: 2px solid var(--gray-light);
-            border-radius: var(--radius-sm);
-            font-size: 14px;
-            transition: var(--transition);
-            background: white;
-        }
-
-        .date-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
-        }
-
         /* Action Buttons */
-        .btn-pinjam {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            padding: 10px 20px;
-            border-radius: var(--radius-sm);
-            font-weight: 600;
-            font-size: 12px;
-            border: none;
-            cursor: pointer;
-            transition: var(--transition);
-            white-space: nowrap;
-        }
-
-        .btn-pinjam:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-sm);
-        }
-
         .btn-kembalikan {
             display: inline-flex;
             align-items: center;
@@ -773,20 +689,6 @@
                 align-items: flex-start;
             }
             
-            .pinjam-form {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .date-input {
-                width: 100%;
-            }
-            
-            .btn-pinjam, .btn-kembalikan {
-                width: 100%;
-                justify-content: center;
-            }
-            
             .peminjaman-table {
                 font-size: 12px;
             }
@@ -828,11 +730,11 @@
         <main class="main-content" id="mainContent">
             <!-- Glass Header -->
             <header class="header">
-                <h1 class="header-title animate__animated animate__fadeIn">Dashboard Peminjam</h1>
+                <h1 class="header-title animate__animated animate__fadeIn">Pengembalian Alat</h1>
                 <div class="header-actions">
                     <div class="search-bar" id="globalSearchBar">
                         <i class="fas fa-search search-icon"></i>
-                        <input type="text" class="search-input" placeholder="Cari alat atau riwayat...">
+                        <input type="text" class="search-input" placeholder="Cari alat yang dipinjam...">
                     </div>
                     <button class="notification-btn" id="notificationBtn">
                         <i class="fas fa-bell"></i>
@@ -859,46 +761,24 @@
                 <!-- Welcome Section -->
                 <div class="welcome-section animate__animated animate__fadeIn">
                     <div class="welcome-text">
-                        <h2>Selamat Datang, {{ Auth::user()->name ?? 'Peminjam' }}!</h2>
-                        <p>Lihat daftar alat, pinjam langsung, dan kelola peminjaman Anda di satu tempat</p>
+                        <h2>Pengembalian Alat, {{ Auth::user()->name ?? 'Peminjam' }}!</h2>
+                        <p>Kembalikan alat yang sedang Anda pinjam di sini. Pastikan alat dalam kondisi baik</p>
                     </div>
                 </div>
 
                 <!-- Stats Cards -->
                 <div class="stats-container">
                     @php
-                        $totalAlatTersedia = App\Models\Alat::where('stok', '>', 0)->count();
-                        $totalPeminjaman = auth()->check() ? auth()->user()->peminjaman()->count() : 0;
                         $totalDipinjam = auth()->check() ? auth()->user()->peminjaman()->where('status', 'dipinjam')->count() : 0;
                         $totalTerlambat = auth()->check() ? auth()->user()->peminjaman()
                             ->where('status', 'dipinjam')
                             ->whereDate('tanggal_rencana_kembali', '<', now())
                             ->count() : 0;
+                        $totalDikembalikan = auth()->check() ? auth()->user()->peminjaman()->where('status', 'dikembalikan')->count() : 0;
+                        $totalPeminjaman = auth()->check() ? auth()->user()->peminjaman()->count() : 0;
                     @endphp
                     
                     <div class="stat-card animate__animated animate__fadeInUp">
-                        <div class="stat-icon icon-primary">
-                            <i class="fas fa-toolbox"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3>Alat Tersedia</h3>
-                            <div class="number">{{ $totalAlatTersedia }}</div>
-                            <div class="desc">Alat siap dipinjam</div>
-                        </div>
-                    </div>
-
-                    <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s">
-                        <div class="stat-icon icon-success">
-                            <i class="fas fa-history"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3>Total Peminjaman</h3>
-                            <div class="number">{{ $totalPeminjaman }}</div>
-                            <div class="desc">Semua riwayat</div>
-                        </div>
-                    </div>
-
-                    <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
                         <div class="stat-icon icon-warning">
                             <i class="fas fa-clock"></i>
                         </div>
@@ -909,14 +789,36 @@
                         </div>
                     </div>
 
-                    <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s">
+                    <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s">
                         <div class="stat-icon icon-danger">
                             <i class="fas fa-exclamation-triangle"></i>
                         </div>
                         <div class="stat-info">
                             <h3>Terlambat</h3>
                             <div class="number">{{ $totalTerlambat }}</div>
-                            <div class="desc">Belum dikembalikan</div>
+                            <div class="desc">Perlu segera dikembalikan</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
+                        <div class="stat-icon icon-success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Sudah Dikembalikan</h3>
+                            <div class="number">{{ $totalDikembalikan }}</div>
+                            <div class="desc">Riwayat pengembalian</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s">
+                        <div class="stat-icon icon-primary">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Peminjaman</h3>
+                            <div class="number">{{ $totalPeminjaman }}</div>
+                            <div class="desc">Semua riwayat</div>
                         </div>
                     </div>
                 </div>
@@ -944,99 +846,114 @@
                     </div>
                 @endif
 
-                <!-- DAftar Alat Tersedia untuk Dipinjam -->
+                <!-- Peminjaman Aktif untuk Dikembalikan -->
                 <div class="dashboard-card animate__animated animate__fadeInUp">
                     <div class="card-header">
                         <h3 class="card-title">
                             <i class="fas fa-tools"></i>
-                            Daftar Alat Tersedia
+                            Alat yang Sedang Dipinjam
                         </h3>
                         <div class="action-buttons">
                             <span class="text-sm text-gray-600">
-                                {{ $totalAlatTersedia }} alat siap dipinjam
+                                {{ $totalDipinjam }} alat perlu dikembalikan
                             </span>
                         </div>
                     </div>
 
                     <div class="table-container">
                         @php
-                            $alatTersedia = App\Models\Alat::where('stok', '>', 0)->latest()->get();
+                            $peminjamanAktif = auth()->check() ? 
+                                auth()->user()->peminjaman()
+                                    ->with('alat')
+                                    ->where('status', 'dipinjam')
+                                    ->latest()
+                                    ->get() : 
+                                collect();
                         @endphp
                         
-                        @if($alatTersedia->count() > 0)
-                            <table class="peminjaman-table" aria-label="Daftar Alat Tersedia">
+                        @if($peminjamanAktif->count() > 0)
+                            <table class="peminjaman-table" aria-label="Alat yang Sedang Dipinjam">
                                 <thead>
                                     <tr>
                                         <th scope="col">Nama Alat</th>
-                                        <th scope="col">Gambar</th>
-                                        <th scope="col">Stok</th>
-                                        <th scope="col">Kondisi</th>
-                                        <th scope="col" style="width: 300px;">Pinjam Sekarang</th>
+                                        <th scope="col">Tanggal Pinjam</th>
+                                        <th scope="col">Rencana Kembali</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col" style="width: 150px;">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($alatTersedia as $a)
+                                    @foreach($peminjamanAktif as $r)
+                                    @php
+                                        // Hitung hari tersisa atau terlambat
+                                        $today = now();
+                                        $rencanaKembali = \Carbon\Carbon::parse($r->tanggal_rencana_kembali);
+                                        $daysLeft = $today->diffInDays($rencanaKembali, false);
+                                        
+                                        // Tentukan status dan warna
+                                        $isLate = $daysLeft < 0;
+                                        $statusClass = $isLate ? 'status-terlambat' : 'status-dipinjam';
+                                    @endphp
                                     <tr class="animate__animated animate__fadeIn" style="animation-delay: {{ $loop->index * 0.05 }}s">
                                         <td>
-                                            <div style="font-weight: 600; color: var(--dark);">{{ $a->nama_alat }}</div>
-                                            @if($a->kategori)
+                                            <div style="font-weight: 600; color: var(--dark);">
+                                                {{ $r->alat->nama_alat ?? '-' }}
+                                            </div>
+                                            @if($r->alat && $r->alat->kategori)
                                                 <div style="font-size: 12px; color: var(--gray); margin-top: 4px;">
-                                                    {{ $a->kategori->nama_kategori }}
+                                                    {{ $r->alat->kategori->nama_kategori }}
                                                 </div>
                                             @endif
                                         </td>
-
-                                        <
-
+                                        
                                         <td>
-                                            <div class="stock-indicator {{ 
-                                                $a->stok <= 2 ? 'stock-low' : 
-                                                ($a->stok <= 5 ? 'stock-medium' : 'stock-high') 
-                                            }}">
-                                                <i class="fas fa-box"></i>
-                                                {{ $a->stok }} unit
+                                            <div style="font-weight: 600; color: var(--dark);">
+                                                {{ \Carbon\Carbon::parse($r->tanggal_pinjam)->format('d M Y') }}
                                             </div>
                                         </td>
                                         
                                         <td>
-                                            @php
-                                                $conditionClass = 'condition-baik';
-                                                if(strpos(strtolower($a->kondisi), 'rusak') !== false) {
-                                                    $conditionClass = 'condition-rusak';
-                                                } elseif(strpos(strtolower($a->kondisi), 'perbaikan') !== false) {
-                                                    $conditionClass = 'condition-perbaikan';
-                                                }
-                                            @endphp
-                                            <span class="condition-badge {{ $conditionClass }}">
-                                                @if($conditionClass == 'condition-baik')
-                                                    <i class="fas fa-check-circle"></i>
-                                                @elseif($conditionClass == 'condition-rusak')
-                                                    <i class="fas fa-times-circle"></i>
+                                            <div style="font-weight: 600; color: var(--dark);">
+                                                {{ \Carbon\Carbon::parse($r->tanggal_rencana_kembali)->format('d M Y') }}
+                                            </div>
+                                            @if($daysLeft > 0)
+                                                <div style="font-size: 12px; color: var(--success);">
+                                                    <i class="fas fa-clock"></i>
+                                                    {{ $daysLeft }} hari lagi
+                                                </div>
+                                            @elseif($daysLeft == 0)
+                                                <div style="font-size: 12px; color: var(--warning);">
+                                                    <i class="fas fa-exclamation-circle"></i>
+                                                    Hari ini
+                                                </div>
+                                            @else
+                                                <div style="font-size: 12px; color: var(--danger);">
+                                                    <i class="fas fa-exclamation-triangle"></i>
+                                                    {{ abs($daysLeft) }} hari terlambat
+                                                </div>
+                                            @endif
+                                        </td>
+                                        
+                                        <td>
+                                            <span class="status-badge {{ $statusClass }}">
+                                                @if($statusClass == 'status-dipinjam')
+                                                    <i class="fas fa-clock"></i>
+                                                    Dipinjam
                                                 @else
-                                                    <i class="fas fa-tools"></i>
+                                                    <i class="fas fa-exclamation-triangle"></i>
+                                                    Terlambat
                                                 @endif
-                                                {{ $a->kondisi }}
                                             </span>
                                         </td>
                                         
                                         <td>
                                             <form method="POST" 
-                                                  action="{{ route('peminjam.pinjam') }}" 
-                                                  class="pinjam-form">
+                                                action="{{ route('peminjam.pengembalian.kembalikan', $r->id_peminjaman) }}"
+                                                onsubmit="return confirm('Apakah Anda yakin ingin mengembalikan alat ini?\n\nAlat: {{ addslashes($r->alat->nama_alat ?? '-') }}\nPastikan alat dalam kondisi baik sebelum dikembalikan.')">
                                                 @csrf
-                                                <input type="hidden" name="id_alat" value="{{ $a->id_alat }}">
-                                                
-                                                <input type="date" 
-                                                       name="tanggal_rencana_kembali" 
-                                                       class="date-input" 
-                                                       required
-                                                       min="{{ date('Y-m-d', strtotime('+1 day')) }}"
-                                                       value="{{ date('Y-m-d', strtotime('+7 days')) }}"
-                                                       title="Pilih tanggal rencana pengembalian">
-                                                
-                                                <button type="submit" class="btn-pinjam">
-                                                    <i class="fas fa-hand-paper"></i>
-                                                    Pinjam Alat
+                                                <button type="submit" class="btn-kembalikan">
+                                                    <i class="fas fa-undo"></i>
+                                                    Kembalikan
                                                 </button>
                                             </form>
                                         </td>
@@ -1047,66 +964,57 @@
                         @else
                             <div class="empty-state">
                                 <div class="empty-icon">
-                                    <i class="fas fa-tools"></i>
+                                    <i class="fas fa-check-circle"></i>
                                 </div>
-                                <h3>Tidak ada alat tersedia</h3>
-                                <p>Semua alat sedang dipinjam atau dalam perbaikan. Silakan coba lagi nanti.</p>
+                                <h3>Tidak ada alat yang dipinjam</h3>
+                                <p>Anda tidak memiliki alat yang sedang dipinjam saat ini.</p>
                             </div>
                         @endif
                     </div>
                 </div>
 
-                <!-- Peminjaman Aktif & Riwayat -->
+                <!-- Riwayat Pengembalian -->
                 <div class="dashboard-card animate__animated animate__fadeInUp">
                     <div class="card-header">
                         <h3 class="card-title">
                             <i class="fas fa-history"></i>
-                            Peminjaman Saya
+                            Riwayat Pengembalian
                         </h3>
                         <div class="action-buttons">
                             <span class="text-sm text-gray-600">
-                                {{ $totalDipinjam }} sedang dipinjam, {{ $totalTerlambat }} terlambat
+                                {{ $totalDikembalikan }} alat sudah dikembalikan
                             </span>
                         </div>
                     </div>
 
                     <div class="table-container">
                         @php
-                            $semuaPeminjaman = auth()->check() ? 
+                            $riwayatPengembalian = auth()->check() ? 
                                 auth()->user()->peminjaman()
                                     ->with('alat')
+                                    ->where('status', 'dikembalikan')
                                     ->latest()
                                     ->get() : 
                                 collect();
                         @endphp
                         
-                        @if($semuaPeminjaman->count() > 0)
-                            <table class="peminjaman-table" aria-label="Peminjaman Saya">
+                        @if($riwayatPengembalian->count() > 0)
+                            <table class="peminjaman-table" aria-label="Riwayat Pengembalian">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Alat</th>
-                                        <th scope="col">Gambar</th>
+                                        <th scope="col">Nama Alat</th>
                                         <th scope="col">Tanggal Pinjam</th>
+                                        <th scope="col">Tanggal Kembali</th>
                                         <th scope="col">Rencana Kembali</th>
                                         <th scope="col">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($semuaPeminjaman as $r)
+                                    @foreach($riwayatPengembalian as $r)
                                     @php
-                                        $statusClass = 'status-menunggu';
-                                        if($r->status == 'dipinjam') {
-                                            $statusClass = 'status-dipinjam';
-                                        } elseif($r->status == 'dikembalikan') {
-                                            $statusClass = 'status-dikembalikan';
-                                        } elseif($r->status == 'terlambat') {
-                                            $statusClass = 'status-terlambat';
-                                        }
-                                        
-                                        // Hitung hari tersisa atau terlambat
-                                        $today = now();
-                                        $rencanaKembali = \Carbon\Carbon::parse($r->tanggal_rencana_kembali);
-                                        $daysLeft = $today->diffInDays($rencanaKembali, false);
+                                        $tanggalKembali = $r->tanggal_kembali ?? '-';
+                                        $isOnTime = $tanggalKembali != '-' && 
+                                                   \Carbon\Carbon::parse($tanggalKembali) <= \Carbon\Carbon::parse($r->tanggal_rencana_kembali);
                                     @endphp
                                     <tr class="animate__animated animate__fadeIn" style="animation-delay: {{ $loop->index * 0.05 }}s">
                                         <td>
@@ -1115,58 +1023,37 @@
                                             </div>
                                         </td>
                                         
-                                           <td>
-                                            <div >
-                                                <img src="{{ asset('storage/' . $r->gambar) }}" alt="" style="width:fit-content" class="">  
-                                            </div>
-                                        </td>
-
                                         <td>
                                             <div style="font-weight: 600; color: var(--dark);">
-                                                {{ $r->tanggal_pinjam }}
+                                                {{ \Carbon\Carbon::parse($r->tanggal_pinjam)->format('d M Y') }}
                                             </div>
                                         </td>
                                         
                                         <td>
                                             <div style="font-weight: 600; color: var(--dark);">
-                                                {{ $r->tanggal_rencana_kembali }}
-                                            </div>
-                                            @if($r->status == 'dipinjam')
-                                                @if($daysLeft > 0)
-                                                    <div style="font-size: 12px; color: var(--success);">
-                                                        <i class="fas fa-clock"></i>
-                                                        {{ $daysLeft }} hari lagi
-                                                    </div>
-                                                @elseif($daysLeft == 0)
-                                                    <div style="font-size: 12px; color: var(--warning);">
-                                                        <i class="fas fa-exclamation-circle"></i>
-                                                        Hari ini
-                                                    </div>
+                                                @if($tanggalKembali != '-')
+                                                    {{ \Carbon\Carbon::parse($tanggalKembali)->format('d M Y') }}
                                                 @else
-                                                    <div style="font-size: 12px; color: var(--danger);">
-                                                        <i class="fas fa-exclamation-triangle"></i>
-                                                        {{ abs($daysLeft) }} hari terlambat
-                                                    </div>
+                                                    -
                                                 @endif
-                                            @endif
+                                            </div>
                                         </td>
                                         
                                         <td>
-                                            <span class="status-badge {{ $statusClass }}">
-                                                @if($statusClass == 'status-dipinjam')
-                                                    <i class="fas fa-clock"></i>
-                                                @elseif($statusClass == 'status-dikembalikan')
-                                                    <i class="fas fa-check-circle"></i>
-                                                @elseif($statusClass == 'status-terlambat')
-                                                    <i class="fas fa-exclamation-triangle"></i>
-                                                @else
-                                                    <i class="fas fa-hourglass-half"></i>
+                                            <div style="font-weight: 600; color: var(--dark);">
+                                                {{ \Carbon\Carbon::parse($r->tanggal_rencana_kembali)->format('d M Y') }}
+                                            </div>
+                                        </td>
+                                        
+                                        <td>
+                                            <span class="status-badge status-dikembalikan">
+                                                <i class="fas fa-check-circle"></i>
+                                                Dikembalikan
+                                                @if($isOnTime)
+                                                    <span style="margin-left: 4px; font-size: 10px;">(Tepat waktu)</span>
                                                 @endif
-                                                {{ $r->status }}
                                             </span>
                                         </td>
-                                        
-                                        
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -1176,12 +1063,18 @@
                                 <div class="empty-icon">
                                     <i class="fas fa-history"></i>
                                 </div>
-                                <h3>Belum ada peminjaman</h3>
-                                <p>Mulai dengan meminjam alat dari daftar alat tersedia di atas.</p>
+                                <h3>Belum ada riwayat pengembalian</h3>
+                                <p>Riwayat pengembalian alat akan muncul di sini setelah Anda mengembalikan alat.</p>
                             </div>
                         @endif
                     </div>
 
+                    @if($riwayatPengembalian->count() > 10)
+                        <div class="pagination-container">
+                            <!-- Jika menggunakan pagination, tambahkan di sini -->
+                            <!-- {{ $riwayatPengembalian->links() }} -->
+                        </div>
+                    @endif
                 </div>
             </div>
         </main>
@@ -1269,72 +1162,19 @@
             searchBtn.addEventListener('click', () => performSearch(searchInput.value.trim()));
         }
 
-        // Pinjam form validation
-        const pinjamForms = document.querySelectorAll('.pinjam-form');
-        
-        pinjamForms.forEach(form => {
-            const dateInput = form.querySelector('.date-input');
-            
-            // Set minimum date to tomorrow
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            const tomorrowStr = tomorrow.toISOString().split('T')[0];
-            
-            if (dateInput && !dateInput.value) {
-                // Set default to 7 days from now
-                const defaultDate = new Date();
-                defaultDate.setDate(defaultDate.getDate() + 7);
-                dateInput.value = defaultDate.toISOString().split('T')[0];
-            }
-            
-            if (dateInput) {
-                dateInput.min = tomorrowStr;
-                
-                dateInput.addEventListener('change', function() {
-                    const selectedDate = new Date(this.value);
-                    const today = new Date();
-                    
-                    if (selectedDate <= today) {
-                        showToast('Tanggal kembali harus setelah hari ini', 'error');
-                        this.value = tomorrowStr;
-                    }
-                });
-            }
-            
-            form.addEventListener('submit', function(e) {
-                const alatName = this.closest('tr').querySelector('td:first-child div').textContent;
-                const returnDate = this.querySelector('.date-input').value;
-                const returnDateFormatted = new Date(returnDate).toLocaleDateString('id-ID');
-                
-                if (!confirm(`Konfirmasi peminjaman:\n\nAlat: ${alatName}\nTanggal Kembali: ${returnDateFormatted}\n\nApakah data sudah benar?`)) {
-                    e.preventDefault();
-                    return false;
-                }
-                
-                // Show loading
-                const submitBtn = this.querySelector('button[type="submit"]');
-                if (submitBtn) {
-                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
-                    submitBtn.disabled = true;
-                }
-                
-                return true;
-            });
-        });
-
         // Notification button click
         const notificationBtn = document.getElementById('notificationBtn');
         if (notificationBtn) {
             notificationBtn.addEventListener('click', function() {
                 // Scroll to peminjaman aktif
-                const peminjamanSection = document.querySelectorAll('.dashboard-card')[1];
+                const peminjamanSection = document.querySelectorAll('.dashboard-card')[0];
                 if (peminjamanSection) {
                     peminjamanSection.scrollIntoView({ 
                         behavior: 'smooth', 
                         block: 'start' 
                     });
                     
-                    showToast('Dialihkan ke peminjaman Anda', 'info');
+                    showToast('Dialihkan ke alat yang perlu dikembalikan', 'info');
                 }
             });
         }
