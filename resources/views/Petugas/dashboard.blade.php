@@ -1131,8 +1131,7 @@
 
             <!-- Footer -->
             <footer class="footer">
-                <p>Aplikasi Peminjaman Alat &copy; {{ date('Y') }} - Pra Uji Kompetensi Keahlian Rekayasa Perangkat Lunak</p>
-                <p>SMK Negeri 1 Jakarta | Versi 1.0.0</p>
+                <p>Forent &copy; {{ date('Y') }}</p>
             </footer>
         </div>
     </div>
