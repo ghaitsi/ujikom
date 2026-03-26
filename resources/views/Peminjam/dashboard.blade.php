@@ -960,6 +960,9 @@
 
                     <div class="table-container">
                         @php
+                            $kategoriAlat = App\Models\Kategori::withCount(['alat' => function($query) {
+                                $query->where('stok', '>', 0);
+                            }])->get();
                             $alatTersedia = App\Models\Alat::where('stok', '>', 0)->latest()->get();
                         @endphp
                         
@@ -986,7 +989,11 @@
                                             @endif
                                         </td>
 
-                                        <
+                                        <td>
+                                            <img src="{{ asset('storage/' . $a->gambar) }}"
+                                                 alt="Gambar {{ $a->nama_alat }}"
+                                                 style="width: 60px; height: 60px; object-fit: cover; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm);">  
+                                        </td>
 
                                         <td>
                                             <div class="stock-indicator {{ 
@@ -1085,6 +1092,7 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">Alat</th>
+                                        <th scope="col">Kategori</th>
                                         <th scope="col">Gambar</th>
                                         <th scope="col">Tanggal Pinjam</th>
                                         <th scope="col">Rencana Kembali</th>
@@ -1115,12 +1123,24 @@
                                             </div>
                                         </td>
                                         
-                                           <td>
-                                            <div >
-                                                <img src="{{ asset('storage/' . $r->gambar) }}" alt="" style="width:fit-content" class="">  
-                                            </div>
-                                        </td>
 
+                                
+                                <td> 
+                                    <div style="font-weight: 600; color: var(--dark);">
+                                        {{ $a->kategori->id_kategori ?? '-' }}
+                                    </div>
+                                
+                                    </td>
+                                        <td>
+                                            @if($r->alat && $r->alat->gambar)
+                                                <img src="{{ asset('storage/' . $r->alat->gambar) }}"
+                                                     alt="Gambar {{ $r->alat->nama_alat }}"
+                                                     style="width: 60px; height: 60px; object-fit: cover; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm);">  
+                                            @else
+                                                <div style="width: 60px; height: 60px; background: var(--gray-light); display: flex; align-items: center; justify-content: center; border-radius: var(--radius-sm);">
+                                                    <i class="fas fa-image" style="color: var(--gray);"></i>
+                                                </div>
+                                            @endif
                                         <td>
                                             <div style="font-weight: 600; color: var(--dark);">
                                                 {{ $r->tanggal_pinjam }}

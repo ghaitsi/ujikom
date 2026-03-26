@@ -1012,25 +1012,30 @@
                                             @endif
                                         @endif
                                     </td>
-                                    <td>
-                                        @if ($item->status == 'menunggu')
-                                            <span class="status-badge status-menunggu">
-                                                <i class="fas fa-clock mr-1"></i>Menunggu
-                                            </span>
-                                        @elseif ($item->status == 'dipinjam')
-                                            <span class="status-badge status-dipinjam">
-                                                <i class="fas fa-sync-alt mr-1"></i>Dipinjam
-                                            </span>
-                                        @elseif ($item->status == 'dikembalikan')
-                                            <span class="status-badge status-selesai">
-                                                <i class="fas fa-check-circle mr-1"></i>Selesai
-                                            </span>
-                                        @elseif ($item->status == 'terlambat')
-                                            <span class="status-badge status-terlambat">
-                                                <i class="fas fa-exclamation-triangle mr-1"></i>Terlambat
-                                            </span>
-                                        @endif
-                                    </td>
+                                        <td>
+                                            @if ($item->status == 'menunggu')
+                                                <span class="status-badge status-menunggu">
+                                                    <i class="fas fa-clock mr-1"></i>Menunggu
+                                                </span>
+
+                                            @elseif ($item->status == 'dipinjam')
+                                                <span class="status-badge status-dipinjam">
+                                                    <i class="fas fa-sync-alt mr-1"></i>Dipinjam
+                                                </span>
+
+                                            @elseif ($item->status == 'selesai')
+                                                <span class="status-badge status-selesai">
+                                                    <i class="fas fa-check-circle mr-1"></i>Selesai
+                                                </span>
+
+                                            @elseif ($item->status == 'ditolak')
+                                                <span class="status-badge status-ditolak">
+                                                    <i class="fas fa-times-circle mr-1"></i>Ditolak
+                                                </span>
+
+                                            @endif
+                                        </td>
+
                                     <td>
                                         @if ($item->status == 'menunggu')
                                             <div style="display: flex; gap: 8px;">

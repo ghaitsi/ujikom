@@ -5,19 +5,23 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\ProfileController;
 
-// ADMIN
+// ================= ADMIN =================
 use App\Http\Controllers\Admin\AlatController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\LogAktivitasController;
 use App\Http\Controllers\Admin\KategoriController;
 use App\Http\Controllers\Admin\CekPeminjamanController;
+use App\Http\Controllers\Admin\PengembalianController; // ✅ TAMBAHAN
 
-// PEMINJAM
+// ================= PEMINJAM =================
 use App\Http\Controllers\Peminjam\PeminjamanController;
-use App\Http\Controllers\Peminjam\PengembalianController;
+use App\Http\Controllers\Peminjam\PengembalianController as PeminjamPengembalianController;
 
-// PETUGAS
+// ================= PETUGAS =================
 use App\Http\Controllers\Petugas\PeminjamanPetugasController;
+use App\Http\Controllers\Petugas\LaporanController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +31,7 @@ use App\Http\Controllers\Petugas\PeminjamanPetugasController;
 Route::get('/', function () {
     return view('welcome');
 });
+
 
 /*
 |--------------------------------------------------------------------------
@@ -46,6 +51,7 @@ Route::get('/dashboard', function () {
 
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+
 /*
 |--------------------------------------------------------------------------
 | PROFILE
@@ -62,6 +68,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
 });
+
 
 /*
 |--------------------------------------------------------------------------
@@ -82,11 +89,17 @@ Route::middleware(['auth','role:admin'])
         Route::resource('kategori', KategoriController::class);
         Route::resource('peminjaman', CekPeminjamanController::class);
         Route::resource('log', LogAktivitasController::class);
+
+        // ✅ HALAMAN DATA PENGEMBALIAN ADMIN
+        Route::get('/pengembalian',
+            [PengembalianController::class,'index']
+        )->name('pengembalian.index');
     });
+
 
 /*
 |--------------------------------------------------------------------------
-| PETUGAS (SESUAI PDF)
+| PETUGAS
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth','role:petugas'])
@@ -94,36 +107,34 @@ Route::middleware(['auth','role:petugas'])
     ->name('petugas.')
     ->group(function () {
 
-        // Dashboard
         Route::get('/dashboard',
             [PeminjamanPetugasController::class,'index']
         )->name('dashboard');
 
-        // Halaman daftar peminjaman
         Route::get('/peminjaman',
             [PeminjamanPetugasController::class,'peminjaman']
         )->name('peminjaman.index');
 
-        // Setujui peminjaman
         Route::post('/peminjaman/{id}/setujui',
             [PeminjamanPetugasController::class,'setujui']
         )->name('peminjaman.setujui');
 
-        // Tolak peminjaman (INI YANG ERROR KEMARIN)
         Route::post('/peminjaman/{id}/tolak',
             [PeminjamanPetugasController::class,'tolak']
         )->name('peminjaman.tolak');
 
-        // Konfirmasi pengembalian
         Route::post('/pengembalian/{id}',
             [PeminjamanPetugasController::class,'kembalikan']
         )->name('pengembalian.konfirmasi');
 
-        // Laporan
         Route::get('/laporan',
             [PeminjamanPetugasController::class,'laporan']
         )->name('laporan');
     });
+    
+Route::get('/petugas/laporan', [LaporanController::class,'index'])
+    ->name('petugas.laporan');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -135,25 +146,22 @@ Route::middleware(['auth','role:peminjam'])
     ->name('peminjam.')
     ->group(function () {
 
-        // Dashboard
         Route::get('/dashboard',
             [PeminjamanController::class,'index']
         )->name('dashboard');
 
-        // Ajukan peminjaman
         Route::post('/pinjam',
             [PeminjamanController::class,'pinjam']
         )->name('pinjam');
 
-        // Halaman pengembalian
         Route::get('/pengembalian',
-            [PengembalianController::class,'index']
+            [PeminjamPengembalianController::class,'index']
         )->name('pengembalian');
 
-        // Proses pengembalian
         Route::post('/pengembalian/{id}',
-            [PengembalianController::class,'kembalikan']
+            [PeminjamPengembalianController::class,'kembalikan']
         )->name('pengembalian.kembalikan');
     });
+
 
 require __DIR__.'/auth.php';

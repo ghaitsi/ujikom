@@ -23,26 +23,6 @@
             <span class="nav-badge">12</span>
         </a>
 
-        <!-- Menyetujui Peminjaman -->
-        <a href="{{ route('petugas.dashboard') }}"
-           class="nav-item">
-            <div class="nav-icon">
-                <i class="fas fa-check-circle"></i>
-            </div>
-            <div class="nav-text">Menyetujui Peminjaman</div>
-            <span class="nav-badge">5</span>
-        </a>
-
-        <!-- Memantau Pengembalian -->
-        <a href="{{ route('petugas.dashboard') }}"
-           class="nav-item">
-            <div class="nav-icon">
-                <i class="fas fa-eye"></i>
-            </div>
-            <div class="nav-text">Memantau Pengembalian</div>
-            <span class="nav-badge late">3</span>
-        </a>
-
         <!-- Laporan -->
         <a href="{{ route('petugas.laporan') }}"
            class="nav-item {{ request()->routeIs('petugas.laporan') ? 'active' : '' }}">

@@ -426,7 +426,7 @@
                     <span class="badge">3</span>
                 </a>
 
-                <a href="{{ url('/pengembalian') }}" class="nav-item {{ request()->is('pengembalian*') ? 'active' : '' }}">
+                <a href="{{ route('admin.pengembalian.index') }}" class="nav-item {{ request()->routeIs('admin.pengembalian.*') ? 'active' : '' }}">
                     <div class="nav-icon">
                         <i class="fas fa-undo"></i>
                     </div>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Peminjam;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\LogAktivitas;
 use App\Models\Peminjaman;
 use App\Models\Alat;
 
@@ -35,13 +36,15 @@ class PengembalianController extends Controller
 
         DB::transaction(function() use ($pinjam) {
 
+            // Ambil data alat
+            $alat = Alat::findOrFail($pinjam->id_alat);
+
             // Update status peminjaman
             $pinjam->update([
                 'status' => 'selesai'
             ]);
 
             // Tambah stok alat
-            $alat = Alat::findOrFail($pinjam->id_alat);
             $alat->increment('stok');
 
             // Update status tersedia lagi
@@ -49,6 +52,16 @@ class PengembalianController extends Controller
                 $alat->update(['status' => 'tersedia']);
             }
 
+            // ===============================
+            // SIMPAN LOG AKTIVITAS
+            // ===============================
+            LogAktivitas::create([
+                'id_user' => Auth::id(),
+                'aktivitas' => 'Mengembalikan alat: ' . $alat->nama_alat,
+                'waktu' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
         });
 
         return back()->with('success','Alat berhasil dikembalikan');

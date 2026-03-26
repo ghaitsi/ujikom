@@ -910,6 +910,7 @@
                                     <th>ID</th>
                                     <th>User</th>
                                     <th>Email</th>
+                                    <th>Status</th>
                                     <th>Role</th>
                                     <th>Aksi</th>
                                 </tr>

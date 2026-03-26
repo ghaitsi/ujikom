@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Alat;
 
 class Kategori extends Model
 {
@@ -22,4 +23,12 @@ class Kategori extends Model
     ];
 
     public $timestamps = true;
+
+    // ===============================
+    // RELASI KE ALAT
+    // ===============================
+    public function alat()
+    {
+        return $this->hasMany(Alat::class, 'id_kategori', 'id_kategori');
+    }
 }
