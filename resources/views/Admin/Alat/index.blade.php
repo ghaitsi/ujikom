@@ -12,6 +12,9 @@
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    
     <!-- Animate CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
@@ -55,6 +58,32 @@
             overflow-x: hidden;
         }
 
+        /* Animated Background Elements */
+        .bg-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-light), transparent);
+            opacity: 0.08;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(100px, 50px) rotate(90deg); }
+            50% { transform: translate(50px, 100px) rotate(180deg); }
+            75% { transform: translate(-50px, 50px) rotate(270deg); }
+        }
+
         /* Layout Container */
         .app-container {
             display: flex;
@@ -65,7 +94,7 @@
         /* Main Content dengan margin untuk sidebar */
         .main-content {
             flex: 1;
-            margin-left: 280px; /* Sama dengan lebar sidebar */
+            margin-left: 280px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -448,6 +477,7 @@
             border-radius: var(--radius-sm);
             border: 2px solid var(--gray-light);
             transition: var(--transition);
+            cursor: pointer;
         }
 
         .img-thumbnail:hover {
@@ -528,39 +558,6 @@
             transform: translateY(-4px);
             box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
             gap: 15px;
-        }
-
-        /* Alert Message */
-        .alert {
-            padding: 16px 24px;
-            border-radius: var(--radius-md);
-            margin-bottom: 24px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            animation: slideIn 0.5s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .alert-success {
-            background: linear-gradient(135deg, rgba(76, 201, 240, 0.15), rgba(76, 201, 240, 0.05));
-            color: var(--success);
-            border: 2px solid rgba(76, 201, 240, 0.2);
-        }
-
-        .alert-success i {
-            color: var(--success);
         }
 
         /* No Data Message */
@@ -678,7 +675,10 @@
         }
     </style>
 </head>
-<body class="font-sans antialiased">
+<body>
+    <!-- Animated Background -->
+    <div class="bg-elements" id="bgElements"></div>
+
     <!-- Sidebar Toggle Button -->
     <button class="sidebar-toggle" id="sidebarToggle">
         <i class="fas fa-bars"></i>
@@ -697,18 +697,18 @@
                 <div class="header-actions">
                     <div class="search-bar">
                         <i class="fas fa-search search-icon"></i>
-                        <input type="text" class="search-input" placeholder="Cari nama alat...">
+                        <input type="text" class="search-input" id="searchInput" placeholder="Cari nama alat...">
                     </div>
-                    <button class="notification-btn">
+                    <button class="notification-btn" id="notificationBtn">
                         <i class="fas fa-bell"></i>
                         <span class="notification-badge">3</span>
                     </button>
-                    <div class="user-menu">
+                    <div class="user-menu" id="userMenu">
                         <div class="user-menu-avatar">
                             @auth
                                 {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
                             @else
-                                GU
+                                AD
                             @endauth
                         </div>
                         <i class="fas fa-chevron-down"></i>
@@ -718,16 +718,8 @@
 
             <!-- Content -->
             <div class="content-wrapper">
-                <!-- Alert Message -->
-                @if(session('success'))
-                    <div class="alert alert-success animate__animated animate__fadeIn">
-                        <i class="fas fa-check-circle"></i>
-                        {{ session('success') }}
-                    </div>
-                @endif
-
                 <!-- Add Button -->
-                <a href="{{ route('admin.alat.create') }}" class="btn-add animate__animated animate__fadeIn">
+                <a href="{{ route('admin.alat.create') }}" class="btn-add animate__animated animate__fadeIn" id="addToolBtn">
                     <i class="fas fa-plus"></i>
                     Tambah Alat Baru
                 </a>
@@ -741,7 +733,7 @@
                         </h3>
                         <div class="card-info">
                             <span style="color: var(--gray); font-size: 14px;">
-                                Total: {{ $alat->total() }} alat
+                                <i class="fas fa-database"></i> Total: {{ $alat->total() }} alat
                             </span>
                         </div>
                     </div>
@@ -753,7 +745,7 @@
                                 <tr>
                                     <th>ID Alat</th>
                                     <th>Nama Alat</th>
-                                    <th>ID Kategori</th> <!-- Kolom Baru -->
+                                    <th>ID Kategori</th>
                                     <th>Kategori</th>
                                     <th>Stok</th>
                                     <th>Status</th>
@@ -770,7 +762,6 @@
                                         </td>
                                         <td>{{ $a->nama_alat }}</td>
                                         <td>
-                                            <!-- Menampilkan ID Kategori -->
                                             @if($a->kategori)
                                                 <span class="id-badge" style="background: rgba(114, 9, 183, 0.1); color: var(--secondary); border-color: rgba(114, 9, 183, 0.2);">
                                                     #{{ $a->kategori->id_kategori }}
@@ -794,6 +785,7 @@
                                         <td>
                                             @php
                                                 $statusClass = 'status-available';
+                                                $statusText = $a->status;
                                                 if($a->status == 'dipinjam') {
                                                     $statusClass = 'status-rented';
                                                 } elseif($a->status == 'perbaikan') {
@@ -801,15 +793,16 @@
                                                 }
                                             @endphp
                                             <span class="status-badge {{ $statusClass }}">
-                                                {{ $a->status }}
+                                                {{ ucfirst($a->status) }}
                                             </span>
                                         </td>
                                         <td>{{ $a->kondisi }}</td>
                                         <td>
                                             @if($a->gambar)
                                                 <img src="{{ asset('storage/'.$a->gambar) }}" 
-                                                     class="img-thumbnail" 
+                                                     class="img-thumbnail tool-image" 
                                                      alt="{{ $a->nama_alat }}"
+                                                     data-tool-name="{{ $a->nama_alat }}"
                                                      onerror="this.onerror=null; this.src='https://via.placeholder.com/60?text=No+Image';">
                                             @else
                                                 <img src="https://via.placeholder.com/60?text=No+Image" 
@@ -820,24 +813,20 @@
                                         <td>
                                             <div class="action-buttons">
                                                 <a href="{{ route('admin.alat.edit', $a->id_alat) }}" 
-                                                   class="btn-action btn-edit">
+                                                   class="btn-action btn-edit edit-tool"
+                                                   data-tool-name="{{ $a->nama_alat }}">
                                                     <i class="fas fa-edit"></i>
                                                     Edit
                                                 </a>
-                                                <form action="{{ route('admin.alat.destroy', $a->id_alat) }}" 
-                                                      method="POST" 
-                                                      style="display:inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" 
-                                                            class="btn-action btn-delete"
-                                                            onclick="return confirm('Apakah Anda yakin ingin menghapus alat ini?')">
-                                                        <i class="fas fa-trash"></i>
-                                                        Hapus
-                                                    </button>
-                                                </form>
+                                                <button type="button" 
+                                                        class="btn-action btn-delete delete-tool"
+                                                        data-tool-id="{{ $a->id_alat }}"
+                                                        data-tool-name="{{ $a->nama_alat }}">
+                                                    <i class="fas fa-trash"></i>
+                                                    Hapus
+                                                </button>
                                             </div>
-                                        </td>
+                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -861,7 +850,38 @@
         </main>
     </div>
 
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <script>
+        // Create animated background elements
+        function createBackgroundElements() {
+            const container = document.getElementById('bgElements');
+            if (!container) return;
+            
+            for (let i = 0; i < 12; i++) {
+                const circle = document.createElement('div');
+                circle.className = 'bg-circle';
+                
+                const size = Math.random() * 250 + 80;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                const duration = Math.random() * 20 + 15;
+                const delay = Math.random() * 5;
+                
+                circle.style.width = `${size}px`;
+                circle.style.height = `${size}px`;
+                circle.style.left = `${posX}%`;
+                circle.style.top = `${posY}%`;
+                circle.style.animationDuration = `${duration}s`;
+                circle.style.animationDelay = `${delay}s`;
+                
+                container.appendChild(circle);
+            }
+        }
+        
+        createBackgroundElements();
+
         // Toggle sidebar untuk mobile
         const sidebarToggle = document.getElementById('sidebarToggle');
         const appContainer = document.getElementById('appContainer');
@@ -870,7 +890,6 @@
             sidebarToggle.addEventListener('click', function() {
                 appContainer.classList.toggle('sidebar-collapsed');
                 
-                // Update icon toggle
                 const icon = this.querySelector('i');
                 if (appContainer.classList.contains('sidebar-collapsed')) {
                     icon.className = 'fas fa-bars';
@@ -880,8 +899,8 @@
             });
         }
 
-        // Search functionality
-        const searchInput = document.querySelector('.search-input');
+        // Search functionality with SweetAlert
+        const searchInput = document.getElementById('searchInput');
         if (searchInput) {
             searchInput.addEventListener('focus', function() {
                 this.parentElement.style.transform = 'scale(1.02)';
@@ -891,43 +910,289 @@
                 this.parentElement.style.transform = 'scale(1)';
             });
             
-            // Implement live search
+            // Live search
             searchInput.addEventListener('input', function() {
                 const searchTerm = this.value.toLowerCase();
                 const rows = document.querySelectorAll('.premium-table tbody tr');
+                let visibleCount = 0;
                 
                 rows.forEach(row => {
-                    const text = row.textContent.toLowerCase();
-                    if (text.includes(searchTerm)) {
+                    const toolName = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
+                    if (toolName.includes(searchTerm)) {
                         row.style.display = '';
+                        visibleCount++;
                     } else {
                         row.style.display = 'none';
+                    }
+                });
+                
+                // Show result count if needed
+                if (searchTerm.length > 0 && visibleCount === 0) {
+                    // Optional: show no results message
+                    console.log('No tools found');
+                }
+            });
+        }
+
+        // SweetAlert for Add Tool button
+        const addToolBtn = document.getElementById('addToolBtn');
+        if (addToolBtn) {
+            addToolBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: '<i class="fas fa-plus-circle"></i> Tambah Alat Baru',
+                    html: `
+                        <div style="text-align: center; padding: 10px;">
+                            <div style="background: linear-gradient(135deg, #4361ee, #7209b7); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+                                <i class="fas fa-tools" style="font-size: 28px; color: white;"></i>
+                            </div>
+                            <p style="color: #6c757d;">Anda akan menambahkan alat baru ke dalam sistem.</p>
+                            <p style="color: #6c757d; margin-top: 10px;">Lengkapi informasi alat pada halaman berikutnya.</p>
+                        </div>
+                    `,
+                    icon: 'info',
+                    confirmButtonText: '<i class="fas fa-arrow-right"></i> Lanjutkan',
+                    confirmButtonColor: '#4361ee',
+                    showCancelButton: true,
+                    cancelButtonText: '<i class="fas fa-times"></i> Batal',
+                    cancelButtonColor: '#6c757d',
+                    showClass: {
+                        popup: 'animate__animated animate__zoomIn'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = addToolBtn.getAttribute('href');
                     }
                 });
             });
         }
 
-        // Confirmation for delete
-        const deleteButtons = document.querySelectorAll('.btn-delete');
+        // SweetAlert for Delete Tool
+        const deleteButtons = document.querySelectorAll('.delete-tool');
         deleteButtons.forEach(button => {
             button.addEventListener('click', function(e) {
-                if (!confirm('Apakah Anda yakin ingin menghapus alat ini?')) {
-                    e.preventDefault();
-                }
+                e.preventDefault();
+                const toolId = this.dataset.toolId;
+                const toolName = this.dataset.toolName;
+                
+                Swal.fire({
+                    title: '<i class="fas fa-exclamation-triangle" style="color: #f94144;"></i> Hapus Alat',
+                    html: `
+                        <div style="text-align: center;">
+                            <div style="background: rgba(249, 65, 68, 0.1); width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+                                <i class="fas fa-trash-alt" style="font-size: 32px; color: #f94144;"></i>
+                            </div>
+                            <p style="font-size: 16px; margin-bottom: 10px;">Apakah Anda yakin ingin menghapus alat</p>
+                            <p style="font-weight: 700; font-size: 18px; color: #f94144;">"${toolName}"?</p>
+                            <p style="color: #6c757d; margin-top: 15px; font-size: 13px;">Tindakan ini tidak dapat dibatalkan!</p>
+                        </div>
+                    `,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="fas fa-trash"></i> Ya, Hapus!',
+                    cancelButtonText: '<i class="fas fa-times"></i> Batal',
+                    confirmButtonColor: '#f94144',
+                    cancelButtonColor: '#6c757d',
+                    reverseButtons: true,
+                    showClass: {
+                        popup: 'animate__animated animate__shakeX'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Create form and submit
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = `{{ url('admin/alat') }}/${toolId}`;
+                        form.innerHTML = `
+                            @csrf
+                            @method('DELETE')
+                        `;
+                        document.body.appendChild(form);
+                        
+                        // Show loading
+                        Swal.fire({
+                            title: 'Menghapus...',
+                            text: 'Mohon tunggu sebentar',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                                form.submit();
+                            }
+                        });
+                    }
+                });
             });
         });
 
-        // Image hover effect
-        const images = document.querySelectorAll('.img-thumbnail');
-        images.forEach(img => {
-            img.addEventListener('mouseenter', function() {
-                this.style.transform = 'scale(1.1)';
-            });
-            
-            img.addEventListener('mouseleave', function() {
-                this.style.transform = 'scale(1)';
+        // SweetAlert for Edit Tool
+        const editButtons = document.querySelectorAll('.edit-tool');
+        editButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const toolName = this.dataset.toolName;
+                const editUrl = this.getAttribute('href');
+                
+                Swal.fire({
+                    title: '<i class="fas fa-edit"></i> Edit Alat',
+                    html: `
+                        <div style="text-align: center;">
+                            <div style="background: linear-gradient(135deg, #4361ee, #7209b7); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+                                <i class="fas fa-pen" style="font-size: 24px; color: white;"></i>
+                            </div>
+                            <p>Anda akan mengedit alat</p>
+                            <p style="font-weight: 700; font-size: 16px; margin-top: 5px;">"${toolName}"</p>
+                        </div>
+                    `,
+                    icon: 'info',
+                    confirmButtonText: '<i class="fas fa-arrow-right"></i> Lanjutkan Edit',
+                    confirmButtonColor: '#4361ee',
+                    showCancelButton: true,
+                    cancelButtonText: '<i class="fas fa-times"></i> Batal',
+                    cancelButtonColor: '#6c757d',
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInUp'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = editUrl;
+                    }
+                });
             });
         });
+
+        // SweetAlert for Image Preview
+        const toolImages = document.querySelectorAll('.tool-image');
+        toolImages.forEach(img => {
+            img.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const imgSrc = this.src;
+                const toolName = this.dataset.toolName || 'Alat';
+                
+                Swal.fire({
+                    title: `<i class="fas fa-image"></i> ${toolName}`,
+                    html: `
+                        <div style="text-align: center;">
+                            <img src="${imgSrc}" style="max-width: 100%; max-height: 300px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+                        </div>
+                    `,
+                    showConfirmButton: true,
+                    confirmButtonText: '<i class="fas fa-check"></i> Tutup',
+                    confirmButtonColor: '#4361ee',
+                    showClass: {
+                        popup: 'animate__animated animate__zoomIn'
+                    }
+                });
+            });
+        });
+
+        // Notification button with SweetAlert
+        const notificationBtn = document.getElementById('notificationBtn');
+        if (notificationBtn) {
+            notificationBtn.addEventListener('click', function() {
+                Swal.fire({
+                    title: '<i class="fas fa-bell"></i> Notifikasi',
+                    html: `
+                        <div style="text-align: left; max-height: 300px; overflow-y: auto;">
+                            <div style="padding: 12px; border-bottom: 1px solid #e9ecef;">
+                                <i class="fas fa-plus-circle" style="color: #4cc9f0;"></i>
+                                <strong style="margin-left: 10px;">Alat Baru</strong>
+                                <p style="font-size: 12px; color: #6c757d; margin-top: 5px; margin-left: 28px;">Bor Listrik ditambahkan - 2 jam lalu</p>
+                            </div>
+                            <div style="padding: 12px; border-bottom: 1px solid #e9ecef;">
+                                <i class="fas fa-edit" style="color: #4361ee;"></i>
+                                <strong style="margin-left: 10px;">Alat Diperbarui</strong>
+                                <p style="font-size: 12px; color: #6c757d; margin-top: 5px; margin-left: 28px;">Gerinda Tangan - stok diperbarui</p>
+                            </div>
+                            <div style="padding: 12px;">
+                                <i class="fas fa-exclamation-triangle" style="color: #f8961e;"></i>
+                                <strong style="margin-left: 10px;">Stok Menipis</strong>
+                                <p style="font-size: 12px; color: #6c757d; margin-top: 5px; margin-left: 28px;">Mesin Bor tersisa 2 unit</p>
+                            </div>
+                        </div>
+                    `,
+                    icon: 'info',
+                    confirmButtonText: 'Tutup',
+                    confirmButtonColor: '#4361ee',
+                    showCancelButton: true,
+                    cancelButtonText: 'Tandai Dibaca',
+                    cancelButtonColor: '#6c757d'
+                }).then((result) => {
+                    if (result.dismiss === Swal.DismissReason.cancel) {
+                        const badge = document.querySelector('.notification-badge');
+                        if (badge) {
+                            badge.style.display = 'none';
+                        }
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Semua notifikasi telah ditandai dibaca',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    }
+                });
+            });
+        }
+
+        // User menu with SweetAlert
+        const userMenu = document.getElementById('userMenu');
+        if (userMenu) {
+            userMenu.addEventListener('click', function() {
+                @auth
+                const userName = "{{ Auth::user()->name }}";
+                const userEmail = "{{ Auth::user()->email }}";
+                @else
+                const userName = "User";
+                const userEmail = "user@forent.com";
+                @endauth
+                
+                Swal.fire({
+                    title: '<i class="fas fa-user-circle"></i> Akun Saya',
+                    html: `
+                        <div style="text-align: center;">
+                            <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #4361ee, #7209b7); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+                                <i class="fas fa-user" style="font-size: 32px; color: white;"></i>
+                            </div>
+                            <h3 style="font-weight: 700;">${userName}</h3>
+                            <p style="color: #6c757d; margin-top: 5px;">${userEmail}</p>
+                            <p style="color: #6c757d; font-size: 12px; margin-top: 5px;">Administrator</p>
+                        </div>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="fas fa-cog"></i> Pengaturan',
+                    cancelButtonText: '<i class="fas fa-sign-out-alt"></i> Logout',
+                    confirmButtonColor: '#4361ee',
+                    cancelButtonColor: '#f94144',
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInUp'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Pengaturan Profil',
+                            text: 'Fitur ini sedang dalam pengembangan',
+                            icon: 'info',
+                            confirmButtonColor: '#4361ee'
+                        });
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        Swal.fire({
+                            title: 'Konfirmasi Logout',
+                            text: 'Apakah Anda yakin ingin keluar?',
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonText: 'Ya, Keluar',
+                            cancelButtonText: 'Batal',
+                            confirmButtonColor: '#f94144',
+                            cancelButtonColor: '#4361ee'
+                        }).then((logoutResult) => {
+                            if (logoutResult.isConfirmed) {
+                                window.location.href = '{{ route("logout") }}';
+                            }
+                        });
+                    }
+                });
+            });
+        }
 
         // Handle window resize
         window.addEventListener('resize', function() {
@@ -939,32 +1204,52 @@
             }
         });
 
-        // Auto-hide success message after 5 seconds
-        const successAlert = document.querySelector('.alert-success');
-        if (successAlert) {
-            setTimeout(() => {
-                successAlert.style.animation = 'slideIn 0.5s ease reverse';
-                setTimeout(() => {
-                    successAlert.style.display = 'none';
-                }, 500);
-            }, 5000);
-        }
+        // Show success message from session with SweetAlert
+        @if(session('success'))
+        Swal.fire({
+            title: '<i class="fas fa-check-circle"></i> Berhasil!',
+            text: '{{ session('success') }}',
+            icon: 'success',
+            confirmButtonColor: '#4361ee',
+            timer: 3000,
+            timerProgressBar: true,
+            showClass: {
+                popup: 'animate__animated animate__fadeInDown'
+            }
+        });
+        @endif
 
-        // Filter by category ID (optional enhancement)
-        function filterByCategory(categoryId) {
-            const rows = document.querySelectorAll('.premium-table tbody tr');
-            rows.forEach(row => {
-                const idBadge = row.querySelector('.id-badge[style*="background: rgba(114, 9, 183, 0.1)"]');
-                if (idBadge) {
-                    const idText = idBadge.textContent.replace('#', '');
-                    if (categoryId === 'all' || idText === categoryId.toString()) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
+        // Show error message if any
+        @if(session('error'))
+        Swal.fire({
+            title: '<i class="fas fa-exclamation-circle"></i> Gagal!',
+            text: '{{ session('error') }}',
+            icon: 'error',
+            confirmButtonColor: '#f94144',
+            showClass: {
+                popup: 'animate__animated animate__shakeX'
+            }
+        });
+        @endif
+
+        // Keyboard shortcut: Ctrl+K to focus search
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                if (searchInput) {
+                    searchInput.focus();
+                    Swal.fire({
+                        title: 'Pencarian Aktif',
+                        text: 'Ketik nama alat yang ingin dicari',
+                        icon: 'info',
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
                 }
-            });
-        }
+            }
+        });
     </script>
 </body>
 </html>
