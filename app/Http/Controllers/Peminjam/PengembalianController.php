@@ -41,7 +41,8 @@ class PengembalianController extends Controller
 
             // Update status peminjaman
             $pinjam->update([
-                'status' => 'selesai'
+                'status' => 'selesai',
+                'tanggal_rencana_kembali' => now()
             ]);
 
             // Tambah stok alat

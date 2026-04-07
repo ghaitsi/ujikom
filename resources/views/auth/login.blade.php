@@ -1,132 +1,701 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Forent - Login | Smart Tool Rental Management</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --primary-light: #4895ef;
+            --secondary: #7209b7;
+            --accent: #f72585;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #f94144;
+            --dark: #1a1a2e;
+            --darker: #16213e;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --card-bg: rgba(255, 255, 255, 0.98);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.12);
+            --radius-sm: 12px;
+            --radius-md: 20px;
+            --radius-lg: 28px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-    <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
-        <div class="w-full max-w-md">
-            <!-- Login Card -->
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 hover:shadow-xl">
-                <!-- Header dengan gradien -->
-                <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-center">
-                    <h1 class="text-2xl font-bold text-white">Welcome Back</h1>
-                    <p class="text-indigo-100 mt-2">Sign in to your account</p>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Elements */
+        .bg-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-light), transparent);
+            opacity: 0.08;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(100px, 50px) rotate(90deg); }
+            50% { transform: translate(50px, 100px) rotate(180deg); }
+            75% { transform: translate(-50px, 50px) rotate(270deg); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Login Container */
+        .login-container {
+            width: 100%;
+            max-width: 460px;
+            position: relative;
+            z-index: 10;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Login Card */
+        .login-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .login-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Header */
+        .login-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 32px 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        .logo-wrapper {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            backdrop-filter: blur(8px);
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .logo-wrapper:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .logo-wrapper i {
+            font-size: 36px;
+            color: white;
+        }
+
+        .login-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .login-header p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Form Area */
+        .login-form {
+            padding: 32px;
+        }
+
+        /* Session Status */
+        .session-status {
+            background: linear-gradient(135deg, rgba(76, 201, 240, 0.1), rgba(76, 201, 240, 0.05));
+            border-left: 3px solid var(--success);
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: var(--success);
+            font-weight: 500;
+            animation: fadeInUp 0.4s ease;
+        }
+
+        /* Form Group */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .form-label i {
+            color: var(--primary);
+            margin-right: 8px;
+            font-size: 14px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            font-size: 16px;
+            transition: var(--transition);
+            pointer-events: none;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border: 2px solid var(--gray-light);
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            color: var(--dark);
+            background: white;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+        }
+
+        .form-input:focus + .input-icon {
+            color: var(--primary);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--gray);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .password-toggle:hover {
+            color: var(--primary);
+        }
+
+        .error-message {
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--danger);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .error-message i {
+            font-size: 12px;
+        }
+
+        /* Remember Me & Forgot Password */
+        .form-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper input {
+            display: none;
+        }
+
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gray-light);
+            border-radius: 6px;
+            margin-right: 10px;
+            position: relative;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .checkbox-wrapper input:checked + .custom-checkbox {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .checkbox-wrapper input:checked + .custom-checkbox::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 11px;
+            color: white;
+        }
+
+        .checkbox-text {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .forgot-link {
+            font-size: 14px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .forgot-link:hover {
+            color: var(--secondary);
+            text-decoration: underline;
+        }
+
+        /* Login Button */
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Demo Credentials */
+        .demo-credentials {
+            margin-top: 24px;
+            padding: 16px;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.05), rgba(114, 9, 183, 0.05));
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(67, 97, 238, 0.1);
+        }
+
+        .demo-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .demo-content {
+            font-size: 12px;
+            color: var(--gray);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .demo-content p {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .demo-content i {
+            width: 20px;
+            color: var(--primary);
+        }
+
+        /* Register Link */
+        .register-link {
+            margin-top: 28px;
+            padding-top: 24px;
+            border-top: 1px solid var(--gray-light);
+            text-align: center;
+        }
+
+        .register-link p {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .register-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .register-link a:hover {
+            color: var(--secondary);
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        .login-footer {
+            margin-top: 24px;
+            text-align: center;
+        }
+
+        .login-footer p {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+            }
+            
+            :root {
+                --card-bg: rgba(31, 41, 55, 0.98);
+                --gray-light: #374151;
+                --gray: #9ca3af;
+                --dark: #f3f4f6;
+            }
+            
+            .form-input {
+                background: #1f2937;
+                border-color: #374151;
+                color: #f3f4f6;
+            }
+            
+            .form-input:focus {
+                border-color: var(--primary);
+            }
+            
+            .custom-checkbox {
+                background: #1f2937;
+                border-color: #374151;
+            }
+            
+            .demo-credentials {
+                background: rgba(67, 97, 238, 0.1);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-form {
+                padding: 24px;
+            }
+            
+            .login-header {
+                padding: 24px;
+            }
+            
+            .login-header h1 {
+                font-size: 24px;
+            }
+            
+            .logo-wrapper {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .logo-wrapper i {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-elements" id="bgElements"></div>
+
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Header -->
+            <div class="login-header">
+                <div class="logo-wrapper">
+                    <i class="fas fa-tools"></i>
                 </div>
+                <h1>Forent</h1>
+                <p>Smart Tool Rental Management</p>
+            </div>
 
-                <!-- Form Area -->
-                <div class="p-8">
-                    <form method="POST" action="{{ route('login') }}" class="space-y-6">
-                        @csrf
+            <!-- Form Area -->
+            <div class="login-form">
+                <!-- Session Status -->
+                @if(session('status'))
+                <div class="session-status">
+                    <i class="fas fa-check-circle"></i> {{ session('status') }}
+                </div>
+                @endif
 
-                        <!-- Email Address -->
-                        <div class="space-y-2">
-                            <div class="flex items-center">
-                                <svg class="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                                </svg>
-                                <x-input-label for="email" :value="__('Email Address')" class="text-gray-700 dark:text-gray-300" />
-                            </div>
-                            <x-text-input 
-                                id="email" 
-                                class="block w-full pl-10 py-3 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-lg transition duration-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent" 
-                                type="email" 
-                                name="email" 
-                                :value="old('email')" 
-                                required 
-                                autofocus 
-                                autocomplete="username"
-                                placeholder="you@example.com" />
-                            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                <form method="POST" action="{{ route('login') }}" id="loginForm">
+                    @csrf
+
+                    <!-- Email Field -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-envelope"></i> Email Address
+                        </label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-envelope input-icon"></i>
+                            <input type="email" name="email" class="form-input" value="{{ old('email') }}" required autofocus placeholder="admin@forent.com">
                         </div>
-
-                        <!-- Password -->
-                        <div class="space-y-2">
-                            <div class="flex items-center">
-                                <svg class="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                </svg>
-                                <x-input-label for="password" :value="__('Password')" class="text-gray-700 dark:text-gray-300" />
-                            </div>
-                            <x-text-input 
-                                id="password" 
-                                class="block w-full pl-10 py-3 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-lg transition duration-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                type="password"
-                                name="password"
-                                required 
-                                autocomplete="current-password"
-                                placeholder="••••••••" />
-                            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                        @error('email')
+                        <div class="error-message">
+                            <i class="fas fa-exclamation-circle"></i> {{ $message }}
                         </div>
+                        @enderror
+                    </div>
 
-                        <!-- Remember Me & Forgot Password -->
-                        <div class="flex items-center justify-between">
-                            <label for="remember_me" class="flex items-center cursor-pointer">
-                                <div class="relative">
-                                    <input id="remember_me" type="checkbox" class="sr-only" name="remember">
-                                    <div class="w-10 h-6 bg-gray-300 dark:bg-gray-700 rounded-full shadow-inner transition duration-300 ease-in-out"></div>
-                                    <div class="dot absolute w-4 h-4 bg-white rounded-full shadow left-1 top-1 transition duration-300 ease-in-out"></div>
-                                </div>
-                                <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">{{ __('Remember me') }}</span>
-                            </label>
-
-                            @if (Route::has('password.request'))
-                                <a class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition duration-200" href="{{ route('password.request') }}">
-                                    {{ __('Forgot password?') }}
-                                </a>
-                            @endif
+                    <!-- Password Field -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-lock"></i> Password
+                        </label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" name="password" id="password" class="form-input" required placeholder="••••••••">
+                            <button type="button" class="password-toggle" id="togglePassword">
+                                <i class="far fa-eye"></i>
+                            </button>
                         </div>
-
-                        <!-- Login Button -->
-                        <div class="pt-4">
-                            <x-primary-button class="w-full flex justify-center items-center py-3 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition duration-300 transform hover:-translate-y-0.5">
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                                </svg>
-                                {{ __('Log in') }}
-                            </x-primary-button>
+                        @error('password')
+                        <div class="error-message">
+                            <i class="fas fa-exclamation-circle"></i> {{ $message }}
                         </div>
-                    </form>
+                        @enderror
+                    </div>
 
-                    <!-- Additional Info -->
-                    <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
-                        <p class="text-sm text-gray-600 dark:text-gray-400">
-                            Don't have an account?
-                            @if (Route::has('register'))
-                                <a href="{{ route('register') }}" class="font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition duration-200 ml-1">
-                                    Sign up
-                                </a>
-                            @endif
-                        </p>
+                    <!-- Remember Me & Forgot Password -->
+                    <div class="form-options">
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox" name="remember" id="remember">
+                            <span class="custom-checkbox"></span>
+                            <span class="checkbox-text">Remember me</span>
+                        </label>
+                        @if (Route::has('password.request'))
+                        <a href="{{ route('password.request') }}" class="forgot-link">
+                            Forgot password?
+                        </a>
+                        @endif
+                    </div>
+
+                    <!-- Login Button -->
+                    <button type="submit" class="login-btn">
+                        <i class="fas fa-arrow-right-to-bracket"></i>
+                        Sign In
+                    </button>
+                </form>
+
+                <!-- Demo Credentials -->
+                <div class="demo-credentials">
+                    <div class="demo-title">
+                        <i class="fas fa-flask"></i> Demo Credentials
+                    </div>
+                    <div class="demo-content">
+                        <p><i class="fas fa-envelope"></i> Email: admin@forent.com</p>
+                        <p><i class="fas fa-lock"></i> Password: password</p>
                     </div>
                 </div>
-            </div>
 
-            <!-- Footer Note -->
-            <div class="mt-6 text-center">
-                <p class="text-xs text-gray-500 dark:text-gray-400">
-                    © {{ date('Y') }} Your Company. All rights reserved.
-                </p>
+                <!-- Register Link -->
+                <div class="register-link">
+                    <p>Don't have an account? 
+                        @if (Route::has('register'))
+                        <a href="{{ route('register') }}">Create Account <i class="fas fa-arrow-right"></i></a>
+                        @endif
+                    </p>
+                </div>
             </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="login-footer">
+            <p><i class="fas fa-shield-alt"></i> Secure login powered by Forent</p>
+            <p style="margin-top: 8px;">© {{ date('Y') }} Forent. All rights reserved.</p>
         </div>
     </div>
 
-    <style>
-        /* Custom checkbox toggle */
-        #remember_me:checked ~ .dot {
-            transform: translateX(100%);
-            background-color: #4f46e5;
-        }
-        #remember_me:checked ~ div {
-            background-color: #4f46e5;
+    <script>
+        // Create animated background elements
+        function createBackgroundElements() {
+            const container = document.getElementById('bgElements');
+            if (!container) return;
+            
+            for (let i = 0; i < 12; i++) {
+                const circle = document.createElement('div');
+                circle.className = 'bg-circle';
+                
+                const size = Math.random() * 250 + 80;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                const duration = Math.random() * 20 + 15;
+                const delay = Math.random() * 5;
+                
+                circle.style.width = `${size}px`;
+                circle.style.height = `${size}px`;
+                circle.style.left = `${posX}%`;
+                circle.style.top = `${posY}%`;
+                circle.style.animationDuration = `${duration}s`;
+                circle.style.animationDelay = `${delay}s`;
+                
+                container.appendChild(circle);
+            }
         }
         
-        /* Smooth transitions */
-        * {
-            transition: background-color 0.3s ease, border-color 0.3s ease;
-        }
+        createBackgroundElements();
+
+        // Toggle password visibility
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
         
-        /* Input focus effects */
-        input:focus {
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        if (togglePassword && passwordInput) {
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                const icon = this.querySelector('i');
+                if (type === 'text') {
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
         }
-    </style>
-</x-guest-layout>
+
+        // Auto-focus on email input
+        const emailInput = document.querySelector('input[name="email"]');
+        if (emailInput) {
+            setTimeout(() => {
+                emailInput.focus();
+            }, 100);
+        }
+
+        // Form validation
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', function(e) {
+                const email = document.querySelector('input[name="email"]').value.trim();
+                const password = document.querySelector('input[name="password"]').value;
+                
+                if (!email || !password) {
+                    e.preventDefault();
+                    alert('Please fill in both email and password fields.');
+                }
+            });
+        }
+
+        // Add floating effect to card
+        const card = document.querySelector('.login-card');
+        if (card) {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-4px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        }
+    </script>
+</body>
+</html>

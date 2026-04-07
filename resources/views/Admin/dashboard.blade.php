@@ -864,7 +864,7 @@
                     <div class="welcome-content">
                         <h1 class="animate__animated animate__fadeInDown">
                             @auth
-                                Selamat Datang, {{ Auth::user()->name }}! 👋
+                                Selamat Datang, {{ Auth::user()->name }}
                             @else
                                 Selamat Datang di Forent! 👋
                             @endauth
@@ -990,63 +990,53 @@
                     </div>
                 </div>
 
-                <!-- Alat Tersedia -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h3 class="card-title">Alat Tersedia</h3>
-                        <a href="{{ url('/alat') }}" class="card-action">
-                            Lihat semua
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                    <div class="tools-grid">
-                        <div class="tool-card">
-                            <div class="tool-icon">
-                                <i class="fas fa-hammer"></i>
-                            </div>
-                            <div class="tool-name">Jack Hammer</div>
-                            <div class="tool-status status-available">Tersedia</div>
-                        </div>
-                        <div class="tool-card">
-                            <div class="tool-icon">
-                                <i class="fas fa-screwdriver"></i>
-                            </div>
-                            <div class="tool-name">Bor Listrik</div>
-                            <div class="tool-status status-available">Tersedia</div>
-                        </div>
-                        <div class="tool-card">
-                            <div class="tool-icon">
-                                <i class="fas fa-tachometer-alt"></i>
-                            </div>
-                            <div class="tool-name">Gerinda Tangan</div>
-                            <div class="tool-status status-rented">Dipinjam</div>
-                        </div>
-                        <div class="tool-card">
-                            <div class="tool-icon">
-                                <i class="fas fa-compress-arrows-alt"></i>
-                            </div>
-                            <div class="tool-name">Kompresor</div>
-                            <div class="tool-status status-maintenance">Perbaikan</div>
-                        </div>
-                        <div class="tool-card">
-                            <div class="tool-icon">
-                                <i class="fas fa-ruler-combined"></i>
-                            </div>
-                            <div class="tool-name">Laser Level</div>
-                            <div class="tool-status status-available">Tersedia</div>
-                        </div>
-                        <div class="tool-card">
-                            <div class="tool-icon">
-                                <i class="fas fa-fan"></i>
-                            </div>
-                            <div class="tool-name">Blower</div>
-                            <div class="tool-status status-available">Tersedia</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
+<!-- Alat Tersedia -->
+<div class="dashboard-card">
+    <div class="card-header">
+        <h3 class="card-title">Alat Tersedia</h3>
+        <a href="{{ url('/alat') }}" class="card-action">
+            Lihat semua
+            <i class="fas fa-arrow-right"></i>
+        </a>
     </div>
+
+    @php
+        // AMAN: kalau controller belum kirim $alat, tetap jalan
+        $alatList = $alat ?? \App\Models\Alat::latest()->take(6)->get();
+    @endphp
+
+    <div class="tools-grid">
+        @forelse($alatList as $a)
+        <div class="tool-card">
+            
+            <div class="tool-icon">
+                <i class="fas fa-tools"></i>
+            </div>
+
+            <div class="tool-name">
+                {{ $a->nama_alat }}
+            </div>
+
+            @php
+                $statusClass = 'status-available';
+
+                if($a->status == 'dipinjam'){
+                    $statusClass = 'status-rented';
+                } elseif($a->status == 'perbaikan'){
+                    $statusClass = 'status-maintenance';
+                }
+            @endphp
+
+            <div class="tool-status {{ $statusClass }}">
+                {{ ucfirst($a->status) }}
+            </div>
+
+        </div>
+        @empty
+            <p style="padding: 20px;">Tidak ada data alat</p>
+        @endforelse
+    </div>
+</div>
 
     <script>
         // Create animated background elements

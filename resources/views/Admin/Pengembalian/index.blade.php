@@ -1747,340 +1747,168 @@
         </div>
     </div>
 
-    <script>
-        (function() {
-            'use strict';
-            
-            // ===== SIDEBAR TOGGLE =====
-            const sidebarToggle = document.getElementById('sidebarToggle');
-            const appContainer = document.getElementById('appContainer');
+<script>
+(function() {
+    'use strict';
+    
+    // ===== SIDEBAR TOGGLE =====
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const appContainer = document.getElementById('appContainer');
 
-            if (sidebarToggle) {
-                sidebarToggle.addEventListener('click', function() {
-                    appContainer.classList.toggle('sidebar-collapsed');
-                    
-                    const icon = this.querySelector('i');
-                    if (appContainer.classList.contains('sidebar-collapsed')) {
-                        icon.className = 'fas fa-bars';
-                    } else {
-                        icon.className = 'fas fa-times';
-                    }
-                });
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', function() {
+            appContainer.classList.toggle('sidebar-collapsed');
+            
+            const icon = this.querySelector('i');
+            icon.className = appContainer.classList.contains('sidebar-collapsed') 
+                ? 'fas fa-bars' 
+                : 'fas fa-times';
+        });
+    }
+
+    // ===== DOM =====
+    const searchInput = document.getElementById('searchInput');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const filterDate = document.getElementById('filterDate');
+
+    // ===== 🔥 CORE FIX: HITUNG DENDA =====
+    function hitungDenda(row) {
+        const now = new Date();
+        const tglRencana = row.tanggal_rencana_kembali ? new Date(row.tanggal_rencana_kembali) : null;
+        const tglKembali = row.tanggal_kembali ? new Date(row.tanggal_kembali) : null;
+
+        let terlambat = false;
+        let hari = 0;
+        let denda = 0;
+        const DENDA_PER_HARI = 5000;
+
+        if (!tglRencana) return { terlambat, hari, denda };
+
+        if (row.status === 'dikembalikan') {
+            if (tglKembali && tglKembali > tglRencana) {
+                terlambat = true;
+                hari = Math.ceil((tglKembali - tglRencana) / (1000 * 60 * 60 * 24));
+                denda = hari * DENDA_PER_HARI;
+            }
+        } else {
+            if (now > tglRencana) {
+                terlambat = true;
+                hari = Math.ceil((now - tglRencana) / (1000 * 60 * 60 * 24));
+                denda = hari * DENDA_PER_HARI;
+            }
+        }
+
+        return { terlambat, hari, denda };
+    }
+
+    // ===== SEARCH =====
+    function performSearch(searchTerm) {
+        const rows = document.querySelectorAll('.pengembalian-table tbody tr');
+
+        if (!searchTerm || searchTerm.length < 2) {
+            rows.forEach(row => row.style.display = '');
+            return;
+        }
+
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(searchTerm.toLowerCase()) ? '' : 'none';
+        });
+    }
+
+    if (searchInput) {
+        let timeout;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => performSearch(this.value.trim()), 300);
+        });
+    }
+
+    // ===== FILTER =====
+    function applyFilter(filter, date) {
+        const rows = document.querySelectorAll('.pengembalian-table tbody tr');
+
+        rows.forEach(row => {
+            let show = true;
+
+            // 🔥 hitung ulang denda (bukan dari dataset!)
+            const rowData = JSON.parse(row.dataset.row);
+            const extra = hitungDenda(rowData);
+
+            if (filter !== 'semua') {
+                if (filter === 'tepat-waktu' && extra.terlambat) show = false;
+                if (filter === 'terlambat' && !extra.terlambat) show = false;
             }
 
-            // ===== DOM ELEMENTS =====
-            const searchInput = document.getElementById('searchInput');
-            const notificationBtn = document.getElementById('notificationBtn');
-            const userMenu = document.getElementById('userMenu');
-            const filterBtns = document.querySelectorAll('.filter-btn');
-            const filterDate = document.getElementById('filterDate');
-            
-            // ===== SEARCH FUNCTIONALITY =====
-            function performSearch(searchTerm) {
-                if (!searchTerm || searchTerm.length < 2) {
-                    document.querySelectorAll('.pengembalian-table tbody tr').forEach(row => {
-                        row.style.display = '';
-                    });
-                    return;
-                }
-                
-                const rows = document.querySelectorAll('.pengembalian-table tbody tr');
-                let foundCount = 0;
-                
-                rows.forEach(row => {
-                    const text = row.textContent.toLowerCase();
-                    const isMatch = text.includes(searchTerm.toLowerCase());
-                    row.style.display = isMatch ? '' : 'none';
-                    if (isMatch) foundCount++;
-                });
-                
-                showNotification(
-                    foundCount > 0 
-                        ? `✅ Ditemukan ${foundCount} hasil pencarian` 
-                        : `❌ Tidak ditemukan data dengan kata kunci "${searchTerm}"`,
-                    foundCount > 0 ? 'success' : 'warning'
-                );
+            if (date) {
+                if (row.dataset.tanggal !== date) show = false;
             }
-            
-            // Search with debounce
-            let searchTimeout;
-            if (searchInput) {
-                searchInput.addEventListener('input', function(e) {
-                    clearTimeout(searchTimeout);
-                    searchTimeout = setTimeout(() => {
-                        performSearch(this.value.trim());
-                    }, 300);
-                });
-                
-                // Search on enter key
-                searchInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        performSearch(this.value.trim());
-                    }
-                });
-            }
-            
-            // ===== FILTER FUNCTIONALITY =====
-            function applyFilter(filter, date) {
-                const rows = document.querySelectorAll('.pengembalian-table tbody tr');
-                
-                rows.forEach(row => {
-                    let show = true;
-                    
-                    // Filter by status
-                    if (filter !== 'semua') {
-                        const isTerlambat = row.dataset.terlambat === 'true';
-                        
-                        if (filter === 'tepat-waktu' && isTerlambat) show = false;
-                        if (filter === 'terlambat' && !isTerlambat) show = false;
-                    }
-                    
-                    // Filter by date (if selected)
-                    if (date) {
-                        const rowDate = row.dataset.tanggal;
-                        if (rowDate !== date) show = false;
-                    }
-                    
-                    row.style.display = show ? '' : 'none';
-                });
-                
-                showNotification('✅ Filter diterapkan', 'success');
-            }
-            
-            // Filter buttons
-            if (filterBtns.length) {
-                filterBtns.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        filterBtns.forEach(b => b.classList.remove('active'));
-                        this.classList.add('active');
-                        
-                        const filter = this.dataset.filter;
-                        const date = filterDate ? filterDate.value : null;
-                        applyFilter(filter, date);
-                    });
-                });
-            }
-            
-            // Date filter
-            if (filterDate) {
-                filterDate.addEventListener('change', function() {
-                    const activeFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'semua';
-                    applyFilter(activeFilter, this.value);
-                });
-            }
-            
-            // ===== PER PAGE SELECTOR =====
-            window.changePerPage = function(value) {
-                const url = new URL(window.location.href);
-                url.searchParams.set('per_page', value);
-                url.searchParams.set('page', 1); // Reset ke halaman pertama
-                window.location.href = url.toString();
-            };
-            
-            // ===== DETAIL MODAL =====
-            window.showDetailModal = function(row, extra) {
-                const modal = document.getElementById('detailModal');
-                
-                // Set data
-                document.getElementById('detailId').innerHTML = `#${row.id_peminjaman}`;
-                
-                // Status
-                let statusText = row.status || '-';
-                let statusColor = 'var(--gray)';
-                if (row.status === 'dikembalikan') statusColor = 'var(--success)';
-                else if (extra.terlambat) statusColor = 'var(--danger)';
-                else statusColor = 'var(--warning)';
-                
-                document.getElementById('detailStatus').innerHTML = `<span style="color: ${statusColor}; font-weight: 700;">${statusText}</span>`;
-                
-                // User
-                document.getElementById('detailUser').innerHTML = row.user?.name || '-';
-                document.getElementById('detailEmail').innerHTML = row.user?.email || '-';
-                
-                // Alat
-                document.getElementById('detailAlat').innerHTML = row.alat?.nama_alat || '-';
-                document.getElementById('detailAlatId').innerHTML = row.alat?.id_alat || '-';
-                
-                // Tanggal - HAPUS TANGGAL KEMBALI
-                const tglPinjam = row.tanggal_pinjam ? new Date(row.tanggal_pinjam) : null;
-                const tglRencana = row.tanggal_rencana_kembali ? new Date(row.tanggal_rencana_kembali) : null;
-                
-                document.getElementById('detailTglPinjam').innerHTML = tglPinjam ? tglPinjam.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + tglPinjam.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB' : '-';
-                
-                document.getElementById('detailRencanaKembali').innerHTML = tglRencana ? tglRencana.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '-';
-                
-                // Keterlambatan & Denda
-                document.getElementById('detailTerlambat').innerHTML = extra.terlambat 
-                    ? `<span style="color: var(--danger);">${extra.hari} hari</span>` 
-                    : `<span style="color: var(--success);">Tepat waktu</span>`;
-                
-                document.getElementById('detailDenda').innerHTML = extra.denda > 0 
-                    ? `<span style="color: var(--danger); font-weight: 700;">Rp ${extra.denda.toLocaleString('id-ID')}</span>`
-                    : `<span style="color: var(--success);">Rp 0</span>`;
-                
-                // Show modal
-                modal.classList.add('show');
-                document.body.style.overflow = 'hidden';
-            };
-            
-            window.closeDetailModal = function() {
-                const modal = document.getElementById('detailModal');
-                modal.classList.remove('show');
-                document.body.style.overflow = '';
-            };
-            
-            // Close modal with ESC key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closeDetailModal();
-                }
-            });
-            
-            // ===== NOTIFICATION BUTTON =====
-            if (notificationBtn) {
-                notificationBtn.addEventListener('click', function() {
-                    showNotification('📬 Tidak ada notifikasi baru', 'info');
-                    
-                    const badge = this.querySelector('.notification-badge');
-                    if (badge) {
-                        badge.style.transform = 'scale(0)';
-                        setTimeout(() => {
-                            badge.style.transform = 'scale(1)';
-                            badge.textContent = '0';
-                        }, 300);
-                    }
-                });
-            }
-            
-            // ===== USER MENU =====
-            if (userMenu) {
-                userMenu.addEventListener('click', function() {
-                    showNotification('👤 Menu pengguna', 'info');
-                });
 
-                // Keyboard accessibility
-                userMenu.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        this.click();
-                    }
-                });
-            }
-            
-            // ===== TOAST NOTIFICATION =====
-            function showNotification(message, type = 'info') {
-                const existingToast = document.querySelector('.custom-toast');
-                if (existingToast) existingToast.remove();
-                
-                const toast = document.createElement('div');
-                toast.className = 'custom-toast';
-                toast.setAttribute('role', 'alert');
-                
-                const bgColor = type === 'success' ? 'var(--success)' : 
-                               type === 'warning' ? 'var(--warning)' : 
-                               type === 'danger' ? 'var(--danger)' : 'var(--primary)';
-                
-                toast.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    background: ${bgColor};
-                    color: white;
-                    padding: 16px 24px;
-                    border-radius: var(--radius-md);
-                    font-weight: 600;
-                    box-shadow: var(--shadow-lg);
-                    z-index: 9999;
-                    display: flex;
-                    align-items: center;
-                    gap: 12px;
-                    animation: slideInRight 0.3s ease;
-                    max-width: 400px;
-                `;
-                
-                const icon = type === 'success' ? 'fa-check-circle' : 
-                           type === 'warning' ? 'fa-exclamation-triangle' : 
-                           type === 'danger' ? 'fa-times-circle' : 'fa-info-circle';
-                
-                toast.innerHTML = `
-                    <i class="fas ${icon}" style="font-size: 18px;" aria-hidden="true"></i>
-                    <span style="flex: 1;">${message}</span>
-                    <button onclick="this.parentElement.remove()" style="background: none; border: none; color: white; cursor: pointer; font-size: 16px; opacity: 0.8;" aria-label="Tutup notifikasi">
-                        <i class="fas fa-times" aria-hidden="true"></i>
-                    </button>
-                `;
-                
-                document.body.appendChild(toast);
-                
-                setTimeout(() => {
-                    if (toast.parentNode) {
-                        toast.style.animation = 'slideOutRight 0.3s ease';
-                        setTimeout(() => toast.remove(), 300);
-                    }
-                }, 3000);
-            }
-            
-            // ===== KEYBOARD SHORTCUTS =====
-            document.addEventListener('keydown', function(e) {
-                // Ctrl/Cmd + K to focus search
-                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                    e.preventDefault();
-                    if (searchInput) {
-                        searchInput.focus();
-                        showNotification('🔍 Pencarian siap', 'info');
-                    }
-                }
-                
-                // ESC to clear search
-                if (e.key === 'Escape' && document.activeElement === searchInput) {
-                    searchInput.value = '';
-                    document.querySelectorAll('.pengembalian-table tbody tr').forEach(row => {
-                        row.style.display = '';
-                    });
-                    searchInput.blur();
-                    showNotification('🧹 Pencarian dibersihkan', 'info');
-                }
-            });
-            
-            // ===== ANIMATION STYLES =====
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes slideInRight {
-                    from { opacity: 0; transform: translateX(100%); }
-                    to { opacity: 1; transform: translateX(0); }
-                }
-                
-                @keyframes slideOutRight {
-                    from { opacity: 1; transform: translateX(0); }
-                    to { opacity: 0; transform: translateX(100%); }
-                }
-                
-                .custom-toast {
-                    will-change: transform;
-                }
-            `;
-            document.head.appendChild(style);
-            
-            // ===== RESIZE HANDLER =====
-            window.addEventListener('resize', function() {
-                if (window.innerWidth > 1200) {
-                    appContainer.classList.remove('sidebar-collapsed');
-                    if (sidebarToggle) {
-                        sidebarToggle.querySelector('i').className = 'fas fa-bars';
-                    }
-                }
-            });
-            
-            // ===== CLOSE MODAL ON CLICK OUTSIDE =====
-            document.getElementById('detailModal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeDetailModal();
-                }
-            });
-            
-            console.log('🚀 Forent Riwayat Pengembalian - View Only Mode dengan Premium Pagination');
-        })();
-    </script>
+            row.style.display = show ? '' : 'none';
+        });
+    }
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            applyFilter(
+                this.dataset.filter,
+                filterDate?.value || null
+            );
+        });
+    });
+
+    // ===== MODAL =====
+    window.showDetailModal = function(row) {
+        const modal = document.getElementById('detailModal');
+
+        // 🔥 HITUNG REAL TIME
+        const extra = hitungDenda(row);
+
+        document.getElementById('detailId').innerHTML = `#${row.id_peminjaman}`;
+
+        let statusColor = 'var(--gray)';
+        if (row.status === 'dikembalikan') statusColor = 'var(--success)';
+        else if (extra.terlambat) statusColor = 'var(--danger)';
+        else statusColor = 'var(--warning)';
+
+        document.getElementById('detailStatus').innerHTML =
+            `<span style="color:${statusColor};font-weight:700;">${row.status}</span>`;
+
+        document.getElementById('detailUser').innerHTML = row.user?.name || '-';
+        document.getElementById('detailEmail').innerHTML = row.user?.email || '-';
+        document.getElementById('detailAlat').innerHTML = row.alat?.nama_alat || '-';
+
+        const tglPinjam = new Date(row.tanggal_pinjam);
+        const tglRencana = new Date(row.tanggal_rencana_kembali);
+
+        document.getElementById('detailTglPinjam').innerHTML =
+            tglPinjam.toLocaleString('id-ID');
+
+        document.getElementById('detailRencanaKembali').innerHTML =
+            tglRencana.toLocaleDateString('id-ID');
+
+        // 🔥 FIX OUTPUT
+        document.getElementById('detailTerlambat').innerHTML = extra.terlambat
+            ? `<span style="color:red">${extra.hari} hari</span>`
+            : `<span style="color:green">Tepat waktu</span>`;
+
+        document.getElementById('detailDenda').innerHTML = extra.denda > 0
+            ? `<span style="color:red;font-weight:700">Rp ${extra.denda.toLocaleString('id-ID')}</span>`
+            : `<span style="color:green">Rp 0</span>`;
+
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    };
+
+    window.closeDetailModal = function() {
+        document.getElementById('detailModal').classList.remove('show');
+        document.body.style.overflow = '';
+    };
+
+})();
+</script>
 </body>
 </html>
