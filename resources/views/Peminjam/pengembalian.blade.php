@@ -772,7 +772,7 @@
                         $totalDipinjam = auth()->check() ? auth()->user()->peminjaman()->where('status', 'dipinjam')->count() : 0;
                         $totalTerlambat = auth()->check() ? auth()->user()->peminjaman()
                             ->where('status', 'dipinjam')
-                            ->whereDate('tanggal_rencana_kembali', '<', now())
+                            ->whereDate('tanggal_kembali', '<', now())
                             ->count() : 0;
                         $totalDikembalikan = auth()->check() ? auth()->user()->peminjaman()->where('status', 'dikembalikan')->count() : 0;
                         $totalPeminjaman = auth()->check() ? auth()->user()->peminjaman()->count() : 0;
@@ -887,7 +887,7 @@
                                     @php
                                         // Hitung hari tersisa atau terlambat
                                         $today = now();
-                                        $rencanaKembali = \Carbon\Carbon::parse($r->tanggal_rencana_kembali);
+                                        $rencanaKembali = \Carbon\Carbon::parse($r->tanggal_kembali);
                                         $daysLeft = $today->diffInDays($rencanaKembali, false);
                                         
                                         // Tentukan status dan warna
@@ -914,7 +914,7 @@
                                         
                                         <td>
                                             <div style="font-weight: 600; color: var(--dark);">
-                                                {{ \Carbon\Carbon::parse($r->tanggal_rencana_kembali)->format('d M Y') }}
+                                                {{ \Carbon\Carbon::parse($r->tanggal_kembali)->format('d M Y') }}
                                             </div>
                                             @if($daysLeft > 0)
                                                 <div style="font-size: 12px; color: var(--success);">

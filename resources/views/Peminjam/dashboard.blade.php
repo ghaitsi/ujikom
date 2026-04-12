@@ -872,7 +872,7 @@
                         $totalDipinjam = auth()->check() ? auth()->user()->peminjaman()->where('status', 'dipinjam')->count() : 0;
                         $totalTerlambat = auth()->check() ? auth()->user()->peminjaman()
                             ->where('status', 'dipinjam')
-                            ->whereDate('tanggal_rencana_kembali', '<', now())
+                            ->whereDate('tanggal_kembali', '<', now())
                             ->count() : 0;
                     @endphp
                     
@@ -1034,7 +1034,7 @@
                                                 <input type="hidden" name="id_alat" value="{{ $a->id_alat }}">
                                                 
                                                 <input type="date" 
-                                                       name="tanggal_rencana_kembali" 
+                                                       name="tanggal_kembali" 
                                                        class="date-input" 
                                                        required
                                                        min="{{ date('Y-m-d', strtotime('+1 day')) }}"
@@ -1097,6 +1097,8 @@
                                         <th scope="col">Tanggal Pinjam</th>
                                         <th scope="col">Rencana Kembali</th>
                                         <th scope="col">Status</th>
+                                        <th scope="col">Denda</th>
+                                        <th scope="col">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1113,7 +1115,7 @@
                                         
                                         // Hitung hari tersisa atau terlambat
                                         $today = now();
-                                        $rencanaKembali = \Carbon\Carbon::parse($r->tanggal_rencana_kembali);
+                                        $rencanaKembali = \Carbon\Carbon::parse($r->tanggal_kembali);
                                         $daysLeft = $today->diffInDays($rencanaKembali, false);
                                     @endphp
                                     <tr class="animate__animated animate__fadeIn" style="animation-delay: {{ $loop->index * 0.05 }}s">
@@ -1149,7 +1151,7 @@
                                         
                                         <td>
                                             <div style="font-weight: 600; color: var(--dark);">
-                                                {{ $r->tanggal_rencana_kembali }}
+                                                {{ $r->tanggal_kembali }}
                                             </div>
                                             @if($r->status == 'dipinjam')
                                                 @if($daysLeft > 0)
@@ -1186,6 +1188,47 @@
                                             </span>
                                         </td>
                                         
+                                        <td>
+    @php
+        $denda = 0;
+        if ($r->status == 'dipinjam' && $daysLeft < 0) {
+            $denda = abs($daysLeft) * 2000;
+        }
+    @endphp
+
+    @if($denda > 0)
+        <div style="color: var(--danger); font-weight: 700;">
+            Rp {{ number_format($denda, 0, ',', '.') }}
+        </div>
+        <div style="font-size: 12px; color: var(--danger);">
+            Terlambat {{ abs($daysLeft) }} hari
+        </div>
+    @else
+        <span style="color: var(--success); font-weight: 600;">Tidak ada</span>
+    @endif
+</td>
+
+<td>
+    @if($denda > 0)
+        <form method="POST" action="{{ route('peminjam.bayar.denda', $r->id) }}">
+            @csrf
+            <button type="submit" class="btn-pinjam" style="background: linear-gradient(135deg, var(--danger), #c1121f);">
+                <i class="fas fa-money-bill"></i>
+                Bayar
+            </button>
+        </form>
+    @elseif($r->status == 'dipinjam')
+        <form method="POST" action="{{ route('peminjam.kembalikan', $r->id) }}">
+            @csrf
+            <button type="submit" class="btn-kembalikan">
+                <i class="fas fa-undo"></i>
+                Kembalikan
+            </button>
+        </form>
+    @else
+        <span style="color: var(--gray);">-</span>
+    @endif
+</td>
                                         
                                     </tr>
                                     @endforeach

@@ -1475,7 +1475,7 @@
                                         @php
                                             // RESET KE AWAL HARI (00:00:00) UNTUK MENGHINDARI DESIMAL
                                             $today = now()->startOfDay();
-                                            $rencanaKembali = \Carbon\Carbon::parse($row->tanggal_rencana_kembali)->startOfDay();
+                                            $rencanaKembali = \Carbon\Carbon::parse($row->tanggal_kembali)->startOfDay();
                                             
                                             // HITUNG SELISIH HARI (INTEGER)
                                             $selisihHari = $today->diffInDays($rencanaKembali, false); // false = bisa negatif
@@ -1528,7 +1528,7 @@
                                             
                                             <td>
                                                 <div class="date-cell">
-                                                    <div class="date-primary">{{ \Carbon\Carbon::parse($row->tanggal_rencana_kembali)->format('d/m/Y') }}</div>
+                                                    <div class="date-primary">{{ \Carbon\Carbon::parse($row->tanggal_kembali)->format('d/m/Y') }}</div>
                                                 </div>
                                             </td>
                                             
@@ -1774,7 +1774,7 @@
     // ===== 🔥 CORE FIX: HITUNG DENDA =====
     function hitungDenda(row) {
         const now = new Date();
-        const tglRencana = row.tanggal_rencana_kembali ? new Date(row.tanggal_rencana_kembali) : null;
+        const tglRencana = row.tanggal_kembali ? new Date(row.tanggal_kembali) : null;
         const tglKembali = row.tanggal_kembali ? new Date(row.tanggal_kembali) : null;
 
         let terlambat = false;
@@ -1882,7 +1882,7 @@
         document.getElementById('detailAlat').innerHTML = row.alat?.nama_alat || '-';
 
         const tglPinjam = new Date(row.tanggal_pinjam);
-        const tglRencana = new Date(row.tanggal_rencana_kembali);
+        const tglRencana = new Date(row.tanggal_kembali);
 
         document.getElementById('detailTglPinjam').innerHTML =
             tglPinjam.toLocaleString('id-ID');

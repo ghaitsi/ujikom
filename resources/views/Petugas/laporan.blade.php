@@ -1,7 +1,10 @@
 @extends('layouts.sidebarpetugas')
 
+{{-- ============================================================ --}}
+{{-- STYLESHEET - DARK THEME PREMIUM --}}
+{{-- ============================================================ --}}
 <style>
-    /* ===== DARK THEME PREMIUM ===== */
+    /* ===== VARIABLES & RESET ===== */
     :root {
         --primary: #6366f1;
         --primary-dark: #4f46e5;
@@ -13,7 +16,7 @@
         --warning: #f59e0b;
         --danger: #ef4444;
         --danger-light: #f87171;
-        
+
         --bg-primary: #0f172a;
         --bg-secondary: #1e293b;
         --bg-card: #1e293b;
@@ -22,25 +25,25 @@
         --bg-table-row: #1e293b;
         --bg-table-row-hover: #2d3a4f;
         --bg-badge: rgba(99, 102, 241, 0.15);
-        
+
         --text-primary: #f8fafc;
         --text-secondary: #e2e8f0;
         --text-muted: #94a3b8;
         --text-dim: #64748b;
-        
+
         --border-color: #334155;
         --border-light: rgba(255, 255, 255, 0.05);
-        
+
         --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
         --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
         --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-        
+
         --radius-sm: 8px;
         --radius-md: 12px;
         --radius-lg: 16px;
         --radius-xl: 20px;
         --radius-full: 9999px;
-        
+
         --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
@@ -70,8 +73,14 @@
     }
 
     @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     /* ===== HEADER PREMIUM ===== */
@@ -189,7 +198,7 @@
         font-size: 18px;
     }
 
-    /* ===== DASHBOARD CARD PREMIUM ===== */
+    /* ===== DASHBOARD CARD ===== */
     .dashboard-card {
         background: var(--bg-card);
         border-radius: var(--radius-xl);
@@ -201,8 +210,14 @@
     }
 
     @keyframes slideUp {
-        from { opacity: 0; transform: translateY(30px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .card-header {
@@ -329,7 +344,7 @@
         color: var(--text-dim);
     }
 
-    /* ===== ID BADGE ===== */
+    /* ===== BADGES & COMPONENTS ===== */
     .id-badge {
         display: inline-block;
         padding: 4px 10px;
@@ -342,7 +357,6 @@
         font-family: 'Monaco', monospace;
     }
 
-    /* ===== STATUS BADGES ===== */
     .status-badge {
         display: inline-flex;
         align-items: center;
@@ -378,7 +392,12 @@
         border: 1px solid rgba(239, 68, 68, 0.3);
     }
 
-    /* ===== DATE BADGE ===== */
+    .status-ditolak {
+        background: linear-gradient(135deg, rgba(156, 163, 175, 0.15), rgba(156, 163, 175, 0.05));
+        color: #9ca3af;
+        border: 1px solid rgba(156, 163, 175, 0.3);
+    }
+
     .date-badge {
         display: flex;
         flex-direction: column;
@@ -396,7 +415,6 @@
         margin-top: 2px;
     }
 
-    /* ===== ALAT BADGE ===== */
     .alat-badge {
         display: flex;
         flex-direction: column;
@@ -471,8 +489,17 @@
     }
 
     @keyframes pulse {
-        0%, 100% { transform: scale(1); opacity: 1; }
-        50% { transform: scale(1.05); opacity: 0.8; }
+
+        0%,
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: scale(1.05);
+            opacity: 0.8;
+        }
     }
 
     .empty-state h3 {
@@ -489,47 +516,104 @@
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 1200px) {
-        .main-content { margin-left: 0; }
+        .main-content {
+            margin-left: 0;
+        }
     }
 
     @media (max-width: 768px) {
-        .header { padding: 0 20px; height: 70px; }
-        .header-title { font-size: 22px; }
-        .content-wrapper { padding: 20px; }
-        .dashboard-card { padding: 20px; }
-        .info-card { flex-direction: column; gap: 16px; align-items: flex-start; }
-        .btn-pdf { width: 100%; justify-content: center; }
-        .card-header { flex-direction: column; align-items: flex-start; gap: 12px; }
-        .summary-footer { flex-direction: column; align-items: flex-start; }
+        .header {
+            padding: 0 20px;
+            height: 70px;
+        }
+
+        .header-title {
+            font-size: 22px;
+        }
+
+        .content-wrapper {
+            padding: 20px;
+        }
+
+        .dashboard-card {
+            padding: 20px;
+        }
+
+        .info-card {
+            flex-direction: column;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .btn-pdf {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .card-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .summary-footer {
+            flex-direction: column;
+            align-items: flex-start;
+        }
     }
 
     @media (max-width: 480px) {
-        .content-wrapper { padding: 16px; }
-        .dashboard-card { padding: 16px; }
-        .header-title { font-size: 20px; }
-        .user-avatar { width: 32px; height: 32px; font-size: 12px; }
-        .data-table td, .data-table th { padding: 12px; }
-        .status-badge { padding: 4px 10px; font-size: 11px; }
-        .summary-stats { flex-direction: column; gap: 8px; }
+        .content-wrapper {
+            padding: 16px;
+        }
+
+        .dashboard-card {
+            padding: 16px;
+        }
+
+        .header-title {
+            font-size: 20px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            font-size: 12px;
+        }
+
+        .data-table td,
+        .data-table th {
+            padding: 12px;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            font-size: 11px;
+        }
+
+        .summary-stats {
+            flex-direction: column;
+            gap: 8px;
+        }
     }
 
-    /* ===== PRINT STYLES - KHUSUS PDF ===== */
+    /* ===== PRINT STYLES (KHUSUS PDF) ===== */
     @media print {
         @page {
             size: A4 landscape;
             margin: 1.5cm;
         }
-        
+
         body {
             background: white;
             color: black;
         }
-        
+
         .main-content {
             margin-left: 0;
             background: white;
         }
-        
+
         .header {
             background: white;
             color: black;
@@ -538,23 +622,23 @@
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
-        
+
         .header-title {
             color: #1e293b;
             background: none;
             -webkit-text-fill-color: #1e293b;
         }
-        
+
         .header-title::before {
             background: #6366f1;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
-        
+
         .content-wrapper {
             padding: 0;
         }
-        
+
         .info-card {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
@@ -562,11 +646,11 @@
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
-        
+
         .btn-pdf {
             display: none !important;
         }
-        
+
         .dashboard-card {
             background: white;
             border: 1px solid #e2e8f0;
@@ -575,11 +659,11 @@
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
-        
+
         .card-title {
             color: #1e293b;
         }
-        
+
         .card-badge {
             background: #f1f5f9;
             color: #475569;
@@ -587,52 +671,52 @@
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
-        
+
         .data-table thead {
             background: #1e293b;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
-        
+
         .data-table th {
             color: white;
             border-bottom: 2px solid #6366f1;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
-        
+
         .data-table td {
             color: #1e293b;
             border-bottom: 1px solid #e2e8f0;
         }
-        
+
         .user-avatar {
             background: #6366f1;
             color: white;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
-        
+
         .user-name {
             color: #0f172a;
         }
-        
+
         .user-email {
             color: #64748b;
         }
-        
+
         .alat-name {
             color: #0f172a;
         }
-        
+
         .alat-id {
             color: #64748b;
         }
-        
+
         .date-main {
             color: #0f172a;
         }
-        
+
         .id-badge {
             background: #eef2ff;
             color: #4f46e5;
@@ -640,7 +724,7 @@
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
-        
+
         .status-menunggu {
             background: #fef3c7;
             color: #b45309;
@@ -648,7 +732,7 @@
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
-        
+
         .status-dipinjam {
             background: #e0f2fe;
             color: #0369a1;
@@ -656,7 +740,7 @@
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
-        
+
         .status-selesai {
             background: #d1fae5;
             color: #065f46;
@@ -664,7 +748,7 @@
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
-        
+
         .status-terlambat {
             background: #fee2e2;
             color: #b91c1c;
@@ -672,22 +756,31 @@
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
-        
+
+        .status-ditolak {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
         .summary-footer {
             border-top: 1px solid #e2e8f0;
             color: #475569;
         }
-        
+
         .summary-value {
             color: #0f172a;
         }
-        
+
         .sidebar-toggle,
         .sidebar {
             display: none !important;
         }
-        
-        a, button {
+
+        a,
+        button {
             display: none !important;
         }
     }
@@ -708,11 +801,14 @@
     }
 </style>
 
+{{-- ============================================================ --}}
+{{-- MAIN CONTENT --}}
+{{-- ============================================================ --}}
 <div class="app-container">
     @include('layouts.sidebarpetugas')
 
     <div class="main-content">
-        <!-- Header Premium -->
+        {{-- HEADER --}}
         <header class="header">
             <div class="header-title">
                 <i class="fas fa-file-pdf"></i>
@@ -720,13 +816,13 @@
             </div>
         </header>
 
-        <!-- Content Wrapper -->
+        {{-- CONTENT WRAPPER --}}
         <div class="content-wrapper">
             @php
                 $laporan = App\Models\Peminjaman::with(['user', 'alat'])
                     ->orderBy('created_at', 'desc')
                     ->get();
-                
+
                 $totalPeminjaman = $laporan->count();
                 $totalDipinjam = $laporan->where('status', 'dipinjam')->count();
                 $totalSelesai = $laporan->where('status', 'dikembalikan')->count();
@@ -734,7 +830,7 @@
                 $tanggalCetak = now()->locale('id')->isoFormat('dddd, D MMMM Y');
             @endphp
 
-            <!-- Info Card dengan Tombol PDF -->
+            {{-- INFO CARD & PDF BUTTON --}}
             <div class="info-card">
                 <div class="info-date">
                     <i class="fas fa-calendar-alt"></i>
@@ -748,7 +844,7 @@
                 </button>
             </div>
 
-            <!-- Dashboard Card -->
+            {{-- DASHBOARD CARD --}}
             <section class="dashboard-card">
                 <div class="card-header">
                     <div class="card-title">
@@ -761,9 +857,9 @@
                     </div>
                 </div>
 
-                <!-- Table Container -->
+                {{-- TABLE CONTAINER --}}
                 <div class="table-container">
-                    @if($laporan->count() > 0)
+                    @if ($laporan->count() > 0)
                         <table class="data-table">
                             <thead>
                                 <tr>
@@ -773,103 +869,111 @@
                                     <th>Alat</th>
                                     <th>Tgl Pinjam</th>
                                     <th>Rencana Kembali</th>
-                                    <th>Tgl Dikembalikan</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($laporan as $index => $item)
-                                <tr>
-                                    <td>
-                                        <span class="id-badge">{{ $index + 1 }}</span>
-                                    </td>
-                                    <td>
-                                        <span class="id-badge">#{{ $item->id_peminjaman }}</span>
-                                    </td>
-                                    <td>
-                                        <div style="display: flex; align-items: center; gap: 12px;">
-                                            <div class="user-avatar">
-                                                {{ strtoupper(substr($item->user->name ?? 'U', 0, 1)) }}
+                                @foreach ($laporan as $index => $item)
+                                    <tr>
+                                        {{-- NO --}}
+                                        <td>
+                                            <span class="id-badge">{{ $index + 1 }}</span>
+                                        </td>
+
+                                        {{-- ID PEMINJAMAN --}}
+                                        <td>
+                                            <span class="id-badge">#{{ $item->id_peminjaman }}</span>
+                                        </td>
+
+                                        {{-- USER --}}
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 12px;">
+                                                <div class="user-avatar">
+                                                    {{ strtoupper(substr($item->user->name ?? 'U', 0, 1)) }}
+                                                </div>
+                                                <div class="user-info">
+                                                    <span class="user-name">{{ $item->user->name ?? '-' }}</span>
+                                                    <span class="user-email">{{ $item->user->email ?? '' }}</span>
+                                                </div>
                                             </div>
-                                            <div class="user-info">
-                                                <span class="user-name">{{ $item->user->name ?? '-' }}</span>
-                                                <span class="user-email">{{ $item->user->email ?? '' }}</span>
+                                        </td>
+
+                                        {{-- ALAT --}}
+                                        <td>
+                                            <div class="alat-badge">
+                                                <span class="alat-name">{{ $item->alat->nama_alat ?? '-' }}</span>
+                                                <span class="alat-id">ID: {{ $item->alat->id_alat ?? '' }}</span>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="alat-badge">
-                                            <span class="alat-name">{{ $item->alat->nama_alat ?? '-' }}</span>
-                                            <span class="alat-id">ID: {{ $item->alat->id_alat ?? '' }}</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="date-badge">
-                                            <span class="date-main">
-                                                {{ $item->tanggal_pinjam 
-                                                    ? \Carbon\Carbon::parse($item->tanggal_pinjam)->format('d/m/Y') 
-                                                    : '-' }}
-                                            </span>
-                                            <span class="date-sub">
-                                                {{ $item->created_at ? \Carbon\Carbon::parse($item->created_at)->format('H:i') : '' }}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="date-badge">
-                                            <span class="date-main">
-                                                {{ $item->tanggal_rencana_kembali 
-                                                    ? \Carbon\Carbon::parse($item->tanggal_rencana_kembali)->format('d/m/Y') 
-                                                    : '-' }}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="date-badge">
-                                            <span class="date-main">
-                                                {{ $item->tanggal_kembali 
-                                                    ? \Carbon\Carbon::parse($item->tanggal_kembali)->format('d/m/Y') 
-                                                    : '-' }}
-                                            </span>
-                                            <span class="date-sub">
-                                                {{ $item->tanggal_kembali 
-                                                    ? \Carbon\Carbon::parse($item->tanggal_kembali)->format('H:i') 
-                                                    : '' }}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        @if ($item->status == 'menunggu')
-                                            <span class="status-badge status-menunggu">
-                                                <i class="fas fa-hourglass-half"></i>
-                                                Menunggu
-                                            </span>
+                                        </td>
 
-                                        @elseif ($item->status == 'dipinjam')
-                                            <span class="status-badge status-dipinjam">
-                                                <i class="fas fa-clock"></i>
-                                                Dipinjam
-                                            </span>
+                                        {{-- TANGGAL PINJAM --}}
+                                        <td>
+                                            <div class="date-badge">
+                                                <span class="date-main">
+                                                    {{ $item->tanggal_pinjam
+                                                        ? \Carbon\Carbon::parse($item->tanggal_pinjam)->format('d/m/Y')
+                                                        : '-' }}
+                                                </span>
+                                                <span class="date-sub">
+                                                    {{ $item->created_at ? \Carbon\Carbon::parse($item->created_at)->format('H:i') : '' }}
+                                                </span>
+                                            </div>
+                                        </td>
 
-                                        @elseif ($item->status == 'selesai')
-                                            <span class="status-badge status-selesai">
-                                                <i class="fas fa-check-circle"></i>
-                                                Selesai
-                                            </span>
+                                        {{-- RENCANA KEMBALI --}}
+                                        <td>
+                                            <div class="date-badge">
+                                                <span class="date-main">
+                                                    {{ $item->tanggal_kembali
+                                                        ? \Carbon\Carbon::parse($item->tanggal_kembali)->format('d/m/Y')
+                                                        : '-' }}
+                                                </span>
+                                            </div>
+                                        </td>
 
-                                        @elseif ($item->status == 'ditolak')
-                                            <span class="status-badge status-ditolak">
-                                                <i class="fas fa-times-circle"></i>
-                                                Ditolak
-                                            </span>
 
-                                        @endif
-                                    </td>
-                                </tr>
+                                        {{-- STATUS --}}
+                                        <td>
+                                            @if ($item->status == 'menunggu')
+                                                <span class="status-badge status-menunggu">
+                                                    <i class="fas fa-hourglass-half"></i>
+                                                    Menunggu
+                                                </span>
+                                            @elseif ($item->status == 'dipinjam')
+                                                <span class="status-badge status-dipinjam">
+                                                    <i class="fas fa-clock"></i>
+                                                    Dipinjam
+                                                </span>
+
+                                                  @elseif ($item->status == 'selesai')
+                                                <span class="status-badge status-selesai">
+                                                    <i class="fas fa-check-circle"></i>
+                                                    Selesai
+                                                </span>
+
+                                            @elseif ($item->status == 'dikembalikan')
+                                                <span class="status-badge status-selesai">
+                                                    <i class="fas fa-check-circle"></i>
+                                                    Selesai
+                                                </span>
+                                            @elseif ($item->status == 'terlambat')
+                                                <span class="status-badge status-terlambat">
+                                                    <i class="fas fa-exclamation-triangle"></i>
+                                                    Terlambat
+                                                </span>
+                                            @elseif ($item->status == 'ditolak')
+                                                <span class="status-badge status-ditolak">
+                                                    <i class="fas fa-times-circle"></i>
+                                                    Ditolak
+                                                </span>
+                                            @endif
+                                        </td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     @else
+                        {{-- EMPTY STATE --}}
                         <div class="empty-state">
                             <div class="empty-icon">
                                 <i class="fas fa-file-pdf"></i>
@@ -880,8 +984,8 @@
                     @endif
                 </div>
 
-                <!-- Summary Footer -->
-                @if($laporan->count() > 0)
+                {{-- SUMMARY FOOTER --}}
+                @if ($laporan->count() > 0)
                     <div class="summary-footer">
                         <div class="summary-stats">
                             <div class="summary-item">
@@ -912,12 +1016,14 @@
     </div>
 </div>
 
-<!-- Script untuk Cetak PDF -->
+{{-- ============================================================ --}}
+{{-- SCRIPTS --}}
+{{-- ============================================================ --}}
 <script>
     (function() {
         'use strict';
 
-        // Tombol Cetak PDF - menggunakan window.print()
+        // Tombol Cetak PDF
         const printBtn = document.querySelector('.btn-pdf');
         if (printBtn) {
             printBtn.addEventListener('click', function(e) {
@@ -926,17 +1032,17 @@
             });
         }
 
-        // Tambahkan watermark untuk preview PDF
+        // Event sebelum cetak
         window.onbeforeprint = function() {
-            // Menambahkan footer otomatis saat print
-            console.log('Mencetak laporan...');
+            console.log('🖨️ Mencetak laporan...');
         };
 
-        console.log('🖨️ Laporan siap dicetak PDF');
+        console.log('✅ Laporan siap dicetak PDF');
     })();
 </script>
 
-<!-- Font Awesome 6 -->
+{{-- ============================================================ --}}
+{{-- EXTERNAL ASSETS --}}
+{{-- ============================================================ --}}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<!-- Google Fonts Inter -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">

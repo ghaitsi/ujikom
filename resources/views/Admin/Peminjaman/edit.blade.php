@@ -778,13 +778,13 @@
                                         Rencana Kembali <span class="required">*</span>
                                         <span class="current-value">
                                             <i class="fas fa-calendar-check"></i>
-                                            Current: {{ $data->tanggal_rencana_kembali }}
+                                            Current: {{ $data->tanggal_kembali }}
                                         </span>
                                     </label>
                                     <input type="date" 
-                                           name="tanggal_rencana_kembali" 
+                                           name="tanggal_kembali" 
                                            class="form-input" 
-                                           value="{{ $data->tanggal_rencana_kembali }}"
+                                           value="{{ $data->tanggal_kembali }}"
                                            required>
                                     <small style="display: block; margin-top: 8px; color: var(--gray); font-size: 12px;">
                                         <i class="fas fa-info-circle"></i> Pastikan tanggal kembali setelah tanggal pinjam
@@ -897,7 +897,7 @@
 
         // Date validation
         const tanggalPinjamInput = document.querySelector('input[name="tanggal_pinjam"]');
-        const tanggalKembaliInput = document.querySelector('input[name="tanggal_rencana_kembali"]');
+        const tanggalKembaliInput = document.querySelector('input[name="tanggal_kembali"]');
         const editForm = document.getElementById('editForm');
 
         if (editForm) {

@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Dashboard Petugas - Aplikasi Peminjaman Alat</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* ============================================================ */
+        /* ROOT VARIABLES - PREMIUM DARK THEME */
+        /* ============================================================ */
         :root {
             --primary: #6C63FF;
             --primary-dark: #524FD9;
@@ -50,14 +54,15 @@
             overflow-x: hidden;
         }
 
-        /* Layout Container */
+        /* ============================================================ */
+        /* LAYOUT CONTAINER */
+        /* ============================================================ */
         .app-container {
             display: flex;
             min-height: 100vh;
             position: relative;
         }
 
-        /* Main Content */
         .main-content {
             flex: 1;
             margin-left: 280px;
@@ -68,13 +73,14 @@
             width: calc(100% - 280px);
         }
 
-        /* Responsive: jika sidebar disembunyikan */
         .sidebar-collapsed .main-content {
             margin-left: 0;
             width: 100%;
         }
 
-        /* Glass Header */
+        /* ============================================================ */
+        /* HEADER PREMIUM */
+        /* ============================================================ */
         .header {
             background: var(--glass);
             backdrop-filter: blur(20px);
@@ -119,6 +125,9 @@
             gap: 24px;
         }
 
+        /* ============================================================ */
+        /* SEARCH BAR */
+        /* ============================================================ */
         .search-bar {
             position: relative;
             width: 320px;
@@ -161,6 +170,9 @@
             color: var(--primary);
         }
 
+        /* ============================================================ */
+        /* NOTIFICATION BUTTON */
+        /* ============================================================ */
         .notification-btn {
             position: relative;
             background: rgba(26, 26, 46, 0.6);
@@ -202,6 +214,9 @@
             box-shadow: 0 2px 8px rgba(255, 107, 107, 0.5);
         }
 
+        /* ============================================================ */
+        /* USER MENU */
+        /* ============================================================ */
         .user-menu {
             display: flex;
             align-items: center;
@@ -235,13 +250,40 @@
             box-shadow: 0 4px 8px rgba(108, 99, 255, 0.3);
         }
 
-        /* Content */
+        /* ============================================================ */
+        /* DATE TIME DISPLAY */
+        /* ============================================================ */
+        .datetime-display {
+            background: rgba(26, 26, 46, 0.6);
+            padding: 8px 16px;
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(108, 99, 255, 0.2);
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        .datetime-display .time {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-light);
+        }
+
+        .datetime-display .date {
+            font-size: 11px;
+            color: var(--gray);
+        }
+
+        /* ============================================================ */
+        /* CONTENT WRAPPER */
+        /* ============================================================ */
         .content-wrapper {
             flex: 1;
             padding: 40px;
         }
 
-        /* Welcome Section */
+        /* ============================================================ */
+        /* WELCOME SECTION */
+        /* ============================================================ */
         .welcome-section {
             background: linear-gradient(135deg, rgba(108, 99, 255, 0.2), rgba(0, 212, 170, 0.2));
             border-radius: var(--radius-lg);
@@ -277,6 +319,9 @@
             gap: 16px;
         }
 
+        /* ============================================================ */
+        /* BUTTONS */
+        /* ============================================================ */
         .btn {
             padding: 12px 24px;
             border-radius: var(--radius-md);
@@ -314,7 +359,30 @@
             box-shadow: var(--shadow-md);
         }
 
-        /* Stats Cards */
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 13px;
+            border-radius: var(--radius-sm);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--accent), #00B894);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #FF9E00);
+            color: var(--dark);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #FF4757);
+            color: white;
+        }
+
+        /* ============================================================ */
+        /* STATS CARDS */
+        /* ============================================================ */
         .stats-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -334,6 +402,23 @@
             align-items: center;
             gap: 20px;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transition: left 0.5s;
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
         }
 
         .stat-card:hover {
@@ -360,6 +445,8 @@
         .icon-success { background: linear-gradient(135deg, var(--accent), #00B894); }
         .icon-warning { background: linear-gradient(135deg, var(--warning), #FF9E00); }
         .icon-danger { background: linear-gradient(135deg, var(--danger), #FF4757); }
+        .icon-info { background: linear-gradient(135deg, #4CC9F0, #4361EE); }
+        .icon-purple { background: linear-gradient(135deg, #9B59B6, #8E44AD); }
 
         .stat-info h3 {
             font-size: 14px;
@@ -381,7 +468,79 @@
             margin-top: 4px;
         }
 
-        /* Premium Card Container */
+        /* ============================================================ */
+        /* CHART CONTAINER */
+        /* ============================================================ */
+        .chart-container {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(108, 99, 255, 0.2);
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-bars {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            height: 250px;
+            gap: 20px;
+        }
+
+        .chart-bar-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-bar {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            transition: height 0.5s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .chart-bar:hover {
+            opacity: 0.8;
+        }
+
+        .chart-bar-label {
+            font-size: 12px;
+            color: var(--gray);
+            text-align: center;
+        }
+
+        .chart-bar-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--light);
+        }
+
+        /* ============================================================ */
+        /* DASHBOARD CARD */
+        /* ============================================================ */
         .dashboard-card {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
@@ -445,23 +604,9 @@
             gap: 12px;
         }
 
-        .btn-sm {
-            padding: 8px 16px;
-            font-size: 13px;
-            border-radius: var(--radius-sm);
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, var(--accent), #00B894);
-            color: white;
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, var(--danger), #FF4757);
-            color: white;
-        }
-
-        /* Table Styling */
+        /* ============================================================ */
+        /* TABLE STYLING */
+        /* ============================================================ */
         .table-container {
             overflow-x: auto;
             border-radius: var(--radius-md);
@@ -517,10 +662,13 @@
             vertical-align: middle;
         }
 
-        /* Status Badges */
+        /* ============================================================ */
+        /* STATUS BADGES */
+        /* ============================================================ */
         .status-badge {
             display: inline-flex;
             align-items: center;
+            gap: 6px;
             padding: 6px 12px;
             border-radius: 20px;
             font-size: 12px;
@@ -554,7 +702,15 @@
             border: 1px solid rgba(255, 107, 107, 0.3);
         }
 
-        /* Action Buttons */
+        .status-ditolak {
+            background: rgba(142, 142, 160, 0.15);
+            color: #8E8EA0;
+            border: 1px solid rgba(142, 142, 160, 0.2);
+        }
+
+        /* ============================================================ */
+        /* ACTION BUTTONS */
+        /* ============================================================ */
         .btn-action {
             display: inline-flex;
             align-items: center;
@@ -589,7 +745,9 @@
             box-shadow: var(--shadow-sm);
         }
 
-        /* Alert Message */
+        /* ============================================================ */
+        /* ALERTS */
+        /* ============================================================ */
         .alert {
             padding: 16px 24px;
             border-radius: var(--radius-md);
@@ -624,11 +782,9 @@
             border: 1px solid rgba(255, 107, 107, 0.3);
         }
 
-        .alert-success i {
-            color: var(--accent);
-        }
-
-        /* User Avatar */
+        /* ============================================================ */
+        /* USER AVATAR */
+        /* ============================================================ */
         .user-avatar {
             width: 36px;
             height: 36px;
@@ -642,7 +798,9 @@
             font-size: 14px;
         }
 
-        /* Empty State */
+        /* ============================================================ */
+        /* EMPTY STATE */
+        /* ============================================================ */
         .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -667,7 +825,9 @@
             margin: 0 auto 20px;
         }
 
-        /* Footer */
+        /* ============================================================ */
+        /* FOOTER */
+        /* ============================================================ */
         .footer {
             text-align: center;
             padding: 25px;
@@ -677,7 +837,9 @@
             font-size: 14px;
         }
 
-        /* Sidebar Toggle Button untuk Mobile */
+        /* ============================================================ */
+        /* SIDEBAR TOGGLE */
+        /* ============================================================ */
         .sidebar-toggle {
             display: none;
             position: fixed;
@@ -700,7 +862,130 @@
             transform: scale(1.1);
         }
 
-        /* Responsive */
+        /* ============================================================ */
+        /* MODAL STYLES */
+        /* ============================================================ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--dark-card);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid rgba(108, 99, 255, 0.3);
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s ease;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* ============================================================ */
+        /* TOAST NOTIFICATION */
+        /* ============================================================ */
+        .toast-notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 16px 24px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            box-shadow: var(--shadow-lg);
+            z-index: 10000;
+            animation: slideInRight 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            max-width: 400px;
+            min-width: 300px;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+
+        /* ============================================================ */
+        /* TOOLTIP */
+        /* ============================================================ */
+        [data-tooltip] {
+            position: relative;
+            cursor: pointer;
+        }
+
+        [data-tooltip]:before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 5px 10px;
+            background: var(--dark-card);
+            color: var(--light);
+            font-size: 12px;
+            border-radius: var(--radius-sm);
+            white-space: nowrap;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            margin-bottom: 5px;
+            border: 1px solid var(--primary);
+        }
+
+        [data-tooltip]:hover:before {
+            opacity: 1;
+        }
+
+        /* ============================================================ */
+        /* RESPONSIVE */
+        /* ============================================================ */
         @media (max-width: 1200px) {
             .main-content {
                 margin-left: 0;
@@ -774,6 +1059,14 @@
                 height: 32px;
                 font-size: 14px;
             }
+            
+            .datetime-display {
+                display: none;
+            }
+            
+            .chart-bars {
+                height: 200px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -814,25 +1107,32 @@
             <!-- Header -->
             <header class="header">
                 <div class="header-title">
+                    <i class="fas fa-chalkboard-user"></i>
                     Dashboard Petugas
                 </div>
                 <div class="header-actions">
+                    <!-- Date Time Display -->
+                    <div class="datetime-display" id="datetimeDisplay">
+                        <div class="time" id="currentTime">--:--:--</div>
+                        <div class="date" id="currentDate">---, -- --- ----</div>
+                    </div>
                     <div class="search-bar">
-                        <input type="text" class="search-input" placeholder="Cari peminjaman, alat, atau peminjam...">
+                        <input type="text" class="search-input" id="globalSearch" placeholder="Cari peminjaman, alat, atau peminjam...">
                         <i class="search-icon fas fa-search"></i>
                     </div>
-                    <button class="notification-btn">
+                    <button class="notification-btn" id="notificationBtn" data-tooltip="Notifikasi">
                         <i class="fas fa-bell"></i>
-                        <span class="notification-badge">
+                        <span class="notification-badge" id="notificationBadge">
                             @php
                                 $peminjamanMenunggu = App\Models\Peminjaman::where('status', 'menunggu')->count();
                             @endphp
                             {{ $peminjamanMenunggu }}
                         </span>
                     </button>
-                    <div class="user-menu">
+                    <div class="user-menu" id="userMenuBtn" data-tooltip="Menu Pengguna">
                         <div class="user-menu-avatar">PT</div>
                         <span>Petugas Admin</span>
+                        <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
                     </div>
                 </div>
             </header>
@@ -841,7 +1141,7 @@
             <div class="content-wrapper">
                 <!-- Success Message -->
                 @if(session('success'))
-                    <div class="alert alert-success animate__animated animate__fadeIn" id="successAlert">
+                    <div class="alert alert-success" id="successAlert">
                         <i class="fas fa-check-circle"></i>
                         {{ session('success') }}
                     </div>
@@ -849,7 +1149,7 @@
 
                 <!-- Error Messages -->
                 @if($errors->any())
-                    <div class="alert alert-danger animate__animated animate__fadeIn">
+                    <div class="alert alert-danger" id="errorAlert">
                         <i class="fas fa-exclamation-triangle"></i>
                         <div>
                             <strong>Terjadi kesalahan:</strong>
@@ -865,7 +1165,7 @@
                 <!-- Welcome Section -->
                 <section class="welcome-section">
                     <div class="welcome-text">
-                        <h2>Selamat Datang, Petugas!</h2>
+                        <h2>Selamat Datang, Petugas! 👋</h2>
                         <p>Kelola peminjaman alat dengan mudah. Ada <strong>{{ $peminjamanMenunggu }} permintaan peminjaman</strong> yang menunggu persetujuan Anda.</p>
                     </div>
                     <div class="welcome-actions">
@@ -880,7 +1180,7 @@
                     </div>
                 </section>
 
-                <!-- Stats Cards -->
+                <!-- Stats Cards Row 1 -->
                 <div class="stats-container">
                     @php
                         // Statistik untuk dashboard
@@ -888,14 +1188,19 @@
                         $peminjamanMenunggu = App\Models\Peminjaman::where('status', 'menunggu')->count();
                         $peminjamanDipinjam = App\Models\Peminjaman::where('status', 'dipinjam')->count();
                         $peminjamanTerlambat = App\Models\Peminjaman::where('status', 'dipinjam')
-                            ->whereDate('tanggal_rencana_kembali', '<', now())
+                            ->whereDate('tanggal_kembali', '<', now())
                             ->count();
                         $peminjamanBulanIni = App\Models\Peminjaman::whereMonth('created_at', now()->month)
                             ->whereYear('created_at', now()->year)
                             ->count();
+                        // Menggunakan tanggal_kembali untuk jadwal pengembalian hari ini
+                        $pengembalianHariIni = App\Models\Peminjaman::whereDate('tanggal_kembali', now())
+                            ->where('status', 'dipinjam')
+                            ->count();
+                        $totalUsers = App\Models\User::where('role', 'user')->count();
                     @endphp
                     
-                    <div class="stat-card" onclick="showAllTools()">
+                    <div class="stat-card" onclick="showAllTools()" data-tooltip="Lihat semua alat">
                         <div class="stat-icon icon-primary">
                             <i class="fas fa-tools"></i>
                         </div>
@@ -906,7 +1211,7 @@
                         </div>
                     </div>
                     
-                    <div class="stat-card" onclick="window.location.href='{{ route('petugas.peminjaman.index') }}?status=menunggu'">
+                    <div class="stat-card" onclick="window.location.href='{{ route('petugas.peminjaman.index') }}?status=menunggu'" data-tooltip="Proses permintaan peminjaman">
                         <div class="stat-icon icon-warning">
                             <i class="fas fa-clock"></i>
                         </div>
@@ -917,7 +1222,7 @@
                         </div>
                     </div>
                     
-                    <div class="stat-card" onclick="window.location.href='{{ route('petugas.peminjaman.index') }}?status=dipinjam'">
+                    <div class="stat-card" onclick="window.location.href='{{ route('petugas.peminjaman.index') }}?status=dipinjam'" data-tooltip="Lihat peminjaman aktif">
                         <div class="stat-icon icon-success">
                             <i class="fas fa-sync-alt"></i>
                         </div>
@@ -928,15 +1233,102 @@
                         </div>
                     </div>
                     
-                    <div class="stat-card" onclick="showLateReturns()">
+                    <div class="stat-card" onclick="showLateReturns()" data-tooltip="Lihat peminjaman terlambat">
                         <div class="stat-icon icon-danger">
                             <i class="fas fa-exclamation-triangle"></i>
                         </div>
                         <div class="stat-info">
                             <h3>Terlambat</h3>
                             <div class="number">{{ $peminjamanTerlambat }}</div>
-                            <div class="desc">Perlu penagihan denda</div>
+                            <div class="desc">Perlu konfirmasi segera</div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Stats Cards Row 2 -->
+                <div class="stats-container">
+                    <div class="stat-card" onclick="showMonthlyReport()" data-tooltip="Statistik peminjaman bulan ini">
+                        <div class="stat-icon icon-info">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Peminjaman Bulan Ini</h3>
+                            <div class="number">{{ $peminjamanBulanIni }}</div>
+                            <div class="desc">Periode {{ now()->format('F Y') }}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card" onclick="showTodayReturns()" data-tooltip="Peminjaman yang harus dikembalikan hari ini">
+                        <div class="stat-icon icon-success">
+                            <i class="fas fa-calendar-day"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Jatuh Tempo Hari Ini</h3>
+                            <div class="number">{{ $pengembalianHariIni }}</div>
+                            <div class="desc">Harus dikembalikan hari ini</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card" onclick="showTotalUsers()" data-tooltip="Total pengguna terdaftar">
+                        <div class="stat-icon icon-purple">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Pengguna</h3>
+                            <div class="number">{{ $totalUsers }}</div>
+                            <div class="desc">Terdaftar di sistem</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card" onclick="refreshData()" data-tooltip="Refresh data dashboard">
+                        <div class="stat-icon icon-warning">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Refresh Data</h3>
+                            <div class="number">
+                                <i class="fas fa-arrow-rotate-right"></i>
+                            </div>
+                            <div class="desc">Perbarui tampilan</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart Section -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title">
+                            <i class="fas fa-chart-bar" style="color: var(--primary);"></i>
+                            Statistik Peminjaman 7 Hari Terakhir
+                        </div>
+                        <div>
+                            <span style="font-size: 12px; color: var(--gray);">
+                                <i class="fas fa-chart-simple"></i> Grafik peminjaman harian
+                            </span>
+                        </div>
+                    </div>
+                    <div class="chart-bars" id="chartBars">
+                        @php
+                            $chartData = [];
+                            for ($i = 6; $i >= 0; $i--) {
+                                $date = now()->subDays($i);
+                                $count = App\Models\Peminjaman::whereDate('created_at', $date)->count();
+                                $maxCount = max(5, $peminjamanBulanIni > 0 ? $peminjamanBulanIni : 1);
+                                $height = ($count / $maxCount) * 200;
+                                $chartData[] = [
+                                    'label' => $date->format('d/m'),
+                                    'count' => $count,
+                                    'height' => max(30, $height)
+                                ];
+                            }
+                        @endphp
+                        @foreach($chartData as $data)
+                        <div class="chart-bar-item" data-tooltip="{{ $data['count'] }} peminjaman">
+                            <div class="chart-bar" style="height: {{ $data['height'] }}px; width: 100%;"></div>
+                            <div class="chart-bar-value">{{ $data['count'] }}</div>
+                            <div class="chart-bar-label">{{ $data['label'] }}</div>
+                        </div>
+                        @endforeach
                     </div>
                 </div>
 
@@ -948,11 +1340,15 @@
                             Data Peminjaman Terbaru
                         </div>
                         <div class="card-actions">
-                            <button class="btn btn-sm btn-primary" onclick="filterTable()">
+                            <button class="btn btn-sm btn-primary" onclick="openFilterModal()" data-tooltip="Filter berdasarkan status">
                                 <i class="fas fa-filter"></i>
                                 Filter
                             </button>
-                            <button class="btn btn-sm btn-outline" onclick="window.location.href='{{ route('petugas.peminjaman.index') }}'">
+                            <button class="btn btn-sm btn-success" onclick="exportToExcel()" data-tooltip="Export ke Excel">
+                                <i class="fas fa-file-excel"></i>
+                                Export
+                            </button>
+                            <button class="btn btn-sm btn-outline" onclick="window.location.href='{{ route('petugas.peminjaman.index') }}'" data-tooltip="Lihat semua peminjaman">
                                 <i class="fas fa-list"></i>
                                 Lihat Semua
                             </button>
@@ -979,9 +1375,9 @@
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="tableBody">
                                 @foreach($peminjaman as $item)
-                                <tr>
+                                <tr data-status="{{ $item->status }}" data-id="{{ $item->id_peminjaman }}">
                                     <td>{{ $loop->iteration }}</td>
                                     <td>
                                         <div style="display: flex; align-items: center; gap: 12px;">
@@ -997,69 +1393,66 @@
                                     <td>{{ $item->alat->nama_alat ?? '-' }}</td>
                                     <td>{{ $item->tanggal_pinjam ? \Carbon\Carbon::parse($item->tanggal_pinjam)->format('d M Y') : '-' }}</td>
                                     <td>
-                                        {{ $item->tanggal_rencana_kembali ? \Carbon\Carbon::parse($item->tanggal_rencana_kembali)->format('d M Y') : '-' }}
-                                        @if($item->status == 'dipinjam' && $item->tanggal_rencana_kembali)
+                                        {{ $item->tanggal_kembali ? \Carbon\Carbon::parse($item->tanggal_kembali)->format('d M Y') : '-' }}
+                                        @if($item->status == 'dipinjam' && $item->tanggal_kembali)
                                             @php
                                                 $today = \Carbon\Carbon::now();
-                                                $rencanaKembali = \Carbon\Carbon::parse($item->tanggal_rencana_kembali);
+                                                $rencanaKembali = \Carbon\Carbon::parse($item->tanggal_kembali);
                                                 $daysLeft = $today->diffInDays($rencanaKembali, false);
                                             @endphp
                                             @if($daysLeft < 0)
                                                 <div style="font-size: 11px; color: var(--danger); margin-top: 4px;">
                                                     <i class="fas fa-exclamation-triangle"></i>
-                                                    {{ abs($daysLeft) }} hari terlambat
+                                                    Terlambat {{ abs($daysLeft) }} hari
+                                                </div>
+                                            @elseif($daysLeft <= 2 && $daysLeft >= 0)
+                                                <div style="font-size: 11px; color: var(--warning); margin-top: 4px;">
+                                                    <i class="fas fa-hourglass-half"></i>
+                                                    Tersisa {{ $daysLeft }} hari
                                                 </div>
                                             @endif
                                         @endif
                                     </td>
-                                        <td>
-                                            @if ($item->status == 'menunggu')
-                                                <span class="status-badge status-menunggu">
-                                                    <i class="fas fa-clock mr-1"></i>Menunggu
-                                                </span>
-
-                                            @elseif ($item->status == 'dipinjam')
-                                                <span class="status-badge status-dipinjam">
-                                                    <i class="fas fa-sync-alt mr-1"></i>Dipinjam
-                                                </span>
-
-                                            @elseif ($item->status == 'selesai')
-                                                <span class="status-badge status-selesai">
-                                                    <i class="fas fa-check-circle mr-1"></i>Selesai
-                                                </span>
-
-                                            @elseif ($item->status == 'ditolak')
-                                                <span class="status-badge status-ditolak">
-                                                    <i class="fas fa-times-circle mr-1"></i>Ditolak
-                                                </span>
-
-                                            @endif
-                                        </td>
-
                                     <td>
                                         @if ($item->status == 'menunggu')
-                                            <div style="display: flex; gap: 8px;">
-                                                <form method="POST" action="{{ route('petugas.peminjaman.setujui', $item->id_peminjaman) }}">
+                                            <span class="status-badge status-menunggu">
+                                                <i class="fas fa-hourglass-half"></i> Menunggu
+                                            </span>
+                                        @elseif ($item->status == 'dipinjam')
+                                            <span class="status-badge status-dipinjam">
+                                                <i class="fas fa-sync-alt"></i> Dipinjam
+                                            </span>
+                                        @elseif ($item->status == 'dikembalikan' || $item->status == 'selesai')
+                                            <span class="status-badge status-selesai">
+                                                <i class="fas fa-check-circle"></i> Selesai
+                                            </span>
+                                        @elseif ($item->status == 'ditolak')
+                                            <span class="status-badge status-ditolak">
+                                                <i class="fas fa-times-circle"></i> Ditolak
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($item->status == 'menunggu')
+                                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                                <form method="POST" action="{{ route('petugas.peminjaman.setujui', $item->id_peminjaman) }}" style="display: inline;">
                                                     @csrf
-                                                    <button type="submit" class="btn-action approve" onclick="return confirm('Setujui peminjaman ini?')">
-                                                        <i class="fas fa-check"></i>
-                                                        Setujui
+                                                    <button type="submit" class="btn-action approve" onclick="return confirm('Setujui peminjaman ini?')" data-tooltip="Setujui peminjaman">
+                                                        <i class="fas fa-check"></i> Setujui
                                                     </button>
                                                 </form>
-                                                <form method="POST" action="{{ route('petugas.peminjaman.tolak', $item->id_peminjaman) }}">
+                                                <form method="POST" action="{{ route('petugas.peminjaman.tolak', $item->id_peminjaman) }}" style="display: inline;">
                                                     @csrf
-                                                    <button type="submit" class="btn-action reject" onclick="return confirm('Tolak peminjaman ini?')">
-                                                        <i class="fas fa-times"></i>
-                                                        Tolak
+                                                    <button type="submit" class="btn-action reject" onclick="return confirm('Tolak peminjaman ini?')" data-tooltip="Tolak peminjaman">
+                                                        <i class="fas fa-times"></i> Tolak
                                                     </button>
                                                 </form>
                                             </div>
                                         @elseif ($item->status == 'dipinjam')
-                                            <form method="POST" action="{{ route('petugas.pengembalian.konfirmasi', $item->id_peminjaman) }}">
+                                            <form method="POST" action="{{ route('petugas.pengembalian.konfirmasi', $item->id_peminjaman) }}" style="display: inline;">
                                                 @csrf
-                                                <button type="submit" class="btn-action confirm" onclick="return confirm('Konfirmasi pengembalian alat ini?')">
-                                                    <i class="fas fa-check-circle"></i>
-                                                    Konfirmasi
+                                                <button type="submit" class="btn-action confirm" onclick="return confirm('Konfirmasi pengembalian alat ini?')" data-tooltip="Konfirmasi pengembalian">
+                                                    <i class="fas fa-check-circle"></i> Konfirmasi
                                                 </button>
                                             </form>
                                         @else
@@ -1084,11 +1477,14 @@
                         </div>
                         @endif
                     </div>
+                    <div style="margin-top: 20px; text-align: center; font-size: 12px; color: var(--gray);">
+                        <i class="fas fa-info-circle"></i> Menampilkan 10 data terbaru
+                    </div>
                 </section>
 
-                <!-- Quick Actions -->
+                <!-- Quick Actions Section -->
                 <div class="stats-container">
-                    <div class="stat-card" onclick="window.location.href='{{ route('petugas.peminjaman.index') }}?status=menunggu'">
+                    <div class="stat-card" onclick="showPendingApprovals()" data-tooltip="Proses permintaan peminjaman">
                         <div class="stat-icon icon-primary">
                             <i class="fas fa-tasks"></i>
                         </div>
@@ -1099,18 +1495,20 @@
                         </div>
                     </div>
                     
-                    <div class="stat-card" onclick="window.location.href='{{ route('petugas.laporan') }}'">
+                    <div class="stat-card" onclick="generateReport()" data-tooltip="Lihat laporan statistik">
                         <div class="stat-icon icon-success">
-                            <i class="fas fa-print"></i>
+                            <i class="fas fa-chart-pie"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>Cetak Laporan</h3>
-                            <div class="number">PDF/XLS</div>
-                            <div class="desc">Export laporan bulanan</div>
+                            <h3>Laporan Statistik</h3>
+                            <div class="number">
+                                <i class="fas fa-chart-simple"></i>
+                            </div>
+                            <div class="desc">Grafik & Analisis</div>
                         </div>
                     </div>
                     
-                    <div class="stat-card" onclick="showActiveLoans()">
+                    <div class="stat-card" onclick="showActiveLoans()" data-tooltip="Pantau peminjaman aktif">
                         <div class="stat-icon icon-warning">
                             <i class="fas fa-exchange-alt"></i>
                         </div>
@@ -1121,14 +1519,14 @@
                         </div>
                     </div>
                     
-                    <div class="stat-card" onclick="showLateReturnsModal()">
+                    <div class="stat-card" onclick="showLateReturnsModal()" data-tooltip="Lihat peminjaman terlambat">
                         <div class="stat-icon icon-danger">
-                            <i class="fas fa-money-bill-wave"></i>
+                            <i class="fas fa-exclamation-triangle"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>Kelola Denda</h3>
+                            <h3>Keterlambatan</h3>
                             <div class="number">{{ $peminjamanTerlambat }}</div>
-                            <div class="desc">Tagih keterlambatan</div>
+                            <div class="desc">Perlu tindakan</div>
                         </div>
                     </div>
                 </div>
@@ -1136,33 +1534,88 @@
 
             <!-- Footer -->
             <footer class="footer">
-                <p>Forent &copy; {{ date('Y') }}</p>
+                <p>Forent &copy; {{ date('Y') }} | Aplikasi Peminjaman Alat | Versi 2.0</p>
             </footer>
         </div>
     </div>
 
     <script>
-        // Inisialisasi halaman
+        // ============================================================
+        // GLOBAL VARIABLES
+        // ============================================================
+        let currentFilter = 'all';
+        let autoRefreshInterval = null;
+        let isAutoRefreshEnabled = false;
+
+        // ============================================================
+        // INITIALIZATION
+        // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
-            // Setup event listeners
             setupEventListeners();
-            
-            // Animate cards
             animateCards();
-            
-            // Auto-hide success alert
             autoHideAlerts();
-            
-            // Setup search functionality
             setupSearch();
-            
-            // Update notification badge color
             updateNotificationBadgeColor();
+            startRealTimeClock();
+            loadUserSettings();
         });
 
-        // Setup event listeners
+        // ============================================================
+        // REAL TIME CLOCK
+        // ============================================================
+        function startRealTimeClock() {
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+        }
+
+        function updateDateTime() {
+            const now = new Date();
+            const timeElement = document.getElementById('currentTime');
+            const dateElement = document.getElementById('currentDate');
+            
+            if (timeElement) {
+                timeElement.textContent = now.toLocaleTimeString('id-ID');
+            }
+            if (dateElement) {
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                dateElement.textContent = now.toLocaleDateString('id-ID', options);
+            }
+        }
+
+        // ============================================================
+        // LOAD USER SETTINGS
+        // ============================================================
+        function loadUserSettings() {
+            const savedAutoRefresh = localStorage.getItem('autoRefreshEnabled');
+            if (savedAutoRefresh === 'true') {
+                enableAutoRefresh();
+            }
+        }
+
+        function enableAutoRefresh() {
+            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+            autoRefreshInterval = setInterval(() => {
+                refreshTable();
+            }, 300000);
+            isAutoRefreshEnabled = true;
+            localStorage.setItem('autoRefreshEnabled', 'true');
+            showToast('Auto-refresh data diaktifkan (setiap 5 menit)', 'success');
+        }
+
+        function disableAutoRefresh() {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+                autoRefreshInterval = null;
+            }
+            isAutoRefreshEnabled = false;
+            localStorage.setItem('autoRefreshEnabled', 'false');
+            showToast('Auto-refresh data dinonaktifkan', 'info');
+        }
+
+        // ============================================================
+        // EVENT LISTENERS
+        // ============================================================
         function setupEventListeners() {
-            // Toggle sidebar untuk mobile
             const sidebarToggle = document.getElementById('sidebarToggle');
             const appContainer = document.getElementById('appContainer');
 
@@ -1174,29 +1627,25 @@
                 });
             }
 
-            // Notification button
-            const notificationBtn = document.querySelector('.notification-btn');
+            const notificationBtn = document.getElementById('notificationBtn');
             if (notificationBtn) {
-                notificationBtn.addEventListener('click', function() {
-                    const count = this.querySelector('.notification-badge').textContent;
-                    showToast(`Anda memiliki ${count} peminjaman menunggu persetujuan`, 'info');
-                });
+                notificationBtn.addEventListener('click', showNotifications);
             }
             
-            // Quick action button
             const quickActionBtn = document.getElementById('quickActionBtn');
             if (quickActionBtn) {
                 quickActionBtn.addEventListener('click', showQuickActions);
             }
             
-            // User menu
-            const userMenu = document.querySelector('.user-menu');
-            if (userMenu) {
-                userMenu.addEventListener('click', showUserMenu);
+            const userMenuBtn = document.getElementById('userMenuBtn');
+            if (userMenuBtn) {
+                userMenuBtn.addEventListener('click', showUserMenu);
             }
         }
 
-        // Animate cards
+        // ============================================================
+        // ANIMATIONS
+        // ============================================================
         function animateCards() {
             const cards = document.querySelectorAll('.dashboard-card');
             cards.forEach((card, index) => {
@@ -1204,175 +1653,164 @@
             });
         }
 
-        // Auto-hide alerts
+        // ============================================================
+        // AUTO HIDE ALERTS
+        // ============================================================
         function autoHideAlerts() {
             const successAlert = document.getElementById('successAlert');
             if (successAlert) {
                 setTimeout(() => {
                     successAlert.style.opacity = '0';
                     setTimeout(() => {
-                        successAlert.style.display = 'none';
+                        if (successAlert) successAlert.style.display = 'none';
                     }, 300);
                 }, 5000);
             }
             
-            const errorAlert = document.querySelector('.alert-danger');
+            const errorAlert = document.getElementById('errorAlert');
             if (errorAlert) {
                 setTimeout(() => {
                     errorAlert.style.opacity = '0';
                     setTimeout(() => {
-                        errorAlert.style.display = 'none';
-                    }, 300);
+                        if (errorAlert) errorAlert.style.display = 'none';
+                    }, 8000);
                 }, 8000);
             }
         }
 
-        // Setup search functionality
+        // ============================================================
+        // SEARCH FUNCTIONALITY
+        // ============================================================
         function setupSearch() {
-            const searchInput = document.querySelector('.search-input');
+            const searchInput = document.getElementById('globalSearch');
             if (searchInput) {
                 searchInput.addEventListener('input', function() {
                     performSearch(this.value.trim());
                 });
-                
-                searchInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        performSearch(this.value.trim());
-                    }
-                });
             }
         }
 
-        // Search functionality
         function performSearch(searchTerm) {
+            const rows = document.querySelectorAll('#tableBody tr, .data-table tbody tr');
+            
             if (!searchTerm) {
-                // Reset all rows
-                const rows = document.querySelectorAll('.data-table tbody tr');
                 rows.forEach(row => row.style.display = '');
                 return;
             }
 
-            const rows = document.querySelectorAll('.data-table tbody tr');
-            let found = false;
             const searchTermLower = searchTerm.toLowerCase();
+            let visibleCount = 0;
             
             rows.forEach(row => {
                 const text = row.textContent.toLowerCase();
                 if (text.includes(searchTermLower)) {
                     row.style.display = '';
-                    if (!found) {
-                        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        found = true;
-                    }
+                    row.style.backgroundColor = 'rgba(108, 99, 255, 0.2)';
+                    visibleCount++;
+                    setTimeout(() => {
+                        row.style.backgroundColor = '';
+                    }, 1000);
                 } else {
                     row.style.display = 'none';
                 }
             });
             
-            if (!found) {
+            if (visibleCount === 0) {
                 showToast(`Tidak ditemukan dengan kata kunci: "${searchTerm}"`, 'warning');
             }
         }
 
-        // Filter table function
-        function filterTable() {
+        // ============================================================
+        // FILTER MODAL
+        // ============================================================
+        function openFilterModal() {
             const filterOptions = [
-                { label: 'Semua', value: 'all' },
-                { label: 'Menunggu', value: 'menunggu' },
-                { label: 'Dipinjam', value: 'dipinjam' },
-                { label: 'Terlambat', value: 'terlambat' },
-                { label: 'Selesai', value: 'dikembalikan' }
+                { label: 'Semua', value: 'all', icon: 'fa-list' },
+                { label: 'Menunggu', value: 'menunggu', icon: 'fa-hourglass-half' },
+                { label: 'Dipinjam', value: 'dipinjam', icon: 'fa-sync-alt' },
+                { label: 'Terlambat', value: 'terlambat', icon: 'fa-exclamation-triangle' },
+                { label: 'Selesai', value: 'dikembalikan', icon: 'fa-check-circle' },
+                { label: 'Ditolak', value: 'ditolak', icon: 'fa-times-circle' }
             ];
             
-            // Create modal for filter
-            const filterModal = document.createElement('div');
-            filterModal.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0, 0, 0, 0.7);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 9999;
-                backdrop-filter: blur(5px);
-                animation: fadeIn 0.3s ease;
-            `;
-            
-            filterModal.innerHTML = `
-                <div style="background: var(--dark-card); border-radius: var(--radius-lg); 
-                           padding: 30px; max-width: 400px; width: 90%; 
-                           border: 1px solid rgba(108, 99, 255, 0.3);
-                           box-shadow: var(--shadow-lg); animation: slideUp 0.3s ease;">
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h3 style="color: var(--light); font-size: 20px; font-weight: 700;">Filter Status</h3>
-                        <button onclick="this.parentElement.parentElement.parentElement.remove()" 
+                        <h3 style="color: var(--light); font-size: 20px; font-weight: 700;">
+                            <i class="fas fa-filter"></i> Filter Status
+                        </h3>
+                        <button onclick="closeModal()" 
                                 style="background: none; border: none; color: var(--gray); cursor: pointer; font-size: 20px;">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
                     <div style="color: var(--light);">
-                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
                             ${filterOptions.map(option => `
                                 <label style="display: flex; align-items: center; gap: 12px; padding: 10px; cursor: pointer; 
                                              border-radius: var(--radius-sm); transition: var(--transition);
+                                             background: ${currentFilter === option.value ? 'rgba(108, 99, 255, 0.2)' : 'transparent'};
                                              &:hover { background: rgba(108, 99, 255, 0.1); }">
                                     <input type="radio" name="statusFilter" value="${option.value}" 
                                            style="accent-color: var(--primary);" 
-                                           ${option.value === 'all' ? 'checked' : ''}
-                                           onchange="applyFilter('${option.value}')">
+                                           ${option.value === currentFilter ? 'checked' : ''}>
+                                    <i class="fas ${option.icon}" style="width: 20px;"></i>
                                     <span>${option.label}</span>
                                 </label>
                             `).join('')}
                         </div>
-                        <button onclick="resetFilter()" 
-                                style="margin-top: 20px; width: 100%; padding: 12px; 
-                                       background: transparent; border: 1px solid var(--gray); 
-                                       color: var(--gray); border-radius: var(--radius-md); cursor: pointer;">
-                            Reset Filter
-                        </button>
+                        <div style="display: flex; gap: 12px; margin-top: 20px;">
+                            <button onclick="applyFilter()" class="btn btn-primary" style="flex: 1;">
+                                <i class="fas fa-check"></i> Terapkan
+                            </button>
+                            <button onclick="resetFilter()" class="btn btn-outline" style="flex: 1;">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
             
-            document.body.appendChild(filterModal);
+            document.body.appendChild(modal);
             
-            // Add animation styles
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes fadeIn {
-                    from { opacity: 0; }
-                    to { opacity: 1; }
-                }
-                @keyframes slideUp {
-                    from { 
-                        opacity: 0;
-                        transform: translateY(30px) scale(0.95);
-                    }
-                    to { 
-                        opacity: 1;
-                        transform: translateY(0) scale(1);
-                    }
-                }
-            `;
-            document.head.appendChild(style);
+            const radioButtons = modal.querySelectorAll('input[name="statusFilter"]');
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    currentFilter = this.value;
+                    const labels = modal.querySelectorAll('label');
+                    labels.forEach(label => {
+                        label.style.background = 'transparent';
+                    });
+                    this.closest('label').style.background = 'rgba(108, 99, 255, 0.2)';
+                });
+            });
         }
 
-        function applyFilter(filterValue) {
-            const rows = document.querySelectorAll('.data-table tbody tr');
+        function applyFilter() {
+            const rows = document.querySelectorAll('#tableBody tr, .data-table tbody tr');
             let count = 0;
             
             rows.forEach(row => {
-                if (filterValue === 'all') {
+                if (currentFilter === 'all') {
                     row.style.display = '';
                     count++;
+                } else if (currentFilter === 'terlambat') {
+                    const statusElem = row.querySelector('.status-badge');
+                    const isDipinjam = statusElem && statusElem.textContent.includes('Dipinjam');
+                    const lateInfo = row.querySelector('[style*="color: var(--danger)"]');
+                    if (isDipinjam && lateInfo) {
+                        row.style.display = '';
+                        count++;
+                    } else {
+                        row.style.display = 'none';
+                    }
                 } else {
-                    const statusBadge = row.querySelector('.status-badge');
-                    if (statusBadge) {
-                        const statusClass = statusBadge.className;
-                        if (statusClass.includes(`status-${filterValue}`)) {
+                    const statusElem = row.querySelector('.status-badge');
+                    if (statusElem) {
+                        const statusText = statusElem.textContent.toLowerCase();
+                        if (statusText.includes(currentFilter.toLowerCase())) {
                             row.style.display = '';
                             count++;
                         } else {
@@ -1382,21 +1820,16 @@
                 }
             });
             
-            // Close modal
-            const modal = document.querySelector('div[style*="position: fixed"]');
-            if (modal) modal.remove();
-            
-            showToast(`Menampilkan ${count} data dengan filter: ${getFilterLabel(filterValue)}`, 'success');
+            closeModal();
+            showToast(`Menampilkan ${count} data dengan filter: ${getFilterLabel(currentFilter)}`, 'success');
         }
 
         function resetFilter() {
-            const rows = document.querySelectorAll('.data-table tbody tr');
+            currentFilter = 'all';
+            const rows = document.querySelectorAll('#tableBody tr, .data-table tbody tr');
             rows.forEach(row => row.style.display = '');
-            
-            const modal = document.querySelector('div[style*="position: fixed"]');
-            if (modal) modal.remove();
-            
-            showToast('Filter direset', 'info');
+            closeModal();
+            showToast('Filter direset, menampilkan semua data', 'info');
         }
 
         function getFilterLabel(value) {
@@ -1405,211 +1838,151 @@
                 'menunggu': 'Menunggu',
                 'dipinjam': 'Dipinjam',
                 'terlambat': 'Terlambat',
-                'dikembalikan': 'Selesai'
+                'dikembalikan': 'Selesai',
+                'ditolak': 'Ditolak'
             };
             return labels[value] || value;
         }
 
-        // Quick actions modal
-        function showQuickActions() {
-            const modal = document.createElement('div');
-            modal.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0, 0, 0, 0.7);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 9999;
-                backdrop-filter: blur(5px);
-            `;
+        // ============================================================
+        // REFRESH TABLE
+        // ============================================================
+        function refreshTable() {
+            showToast('Memperbarui data tabel...', 'info');
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+        }
+
+        function refreshData() {
+            showToast('Memperbarui data dashboard...', 'info');
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+        }
+
+        // ============================================================
+        // EXPORT DATA
+        // ============================================================
+        function exportToExcel() {
+            const table = document.getElementById('loansTable');
+            if (!table) {
+                showToast('Tidak ada data untuk diexport', 'error');
+                return;
+            }
             
-            modal.innerHTML = `
-                <div style="background: var(--dark-card); border-radius: var(--radius-lg); 
-                           padding: 30px; max-width: 500px; width: 90%; 
-                           border: 1px solid rgba(108, 99, 255, 0.3);
-                           box-shadow: var(--shadow-lg);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h3 style="color: var(--light); font-size: 20px; font-weight: 700;">Tindakan Cepat</h3>
-                        <button onclick="this.parentElement.parentElement.parentElement.remove()" 
-                                style="background: none; border: none; color: var(--gray); cursor: pointer; font-size: 20px;">
-                            <i class="fas fa-times"></i>
-                        </button>
+            let csv = [];
+            const rows = table.querySelectorAll('tr');
+            
+            for (let i = 0; i < rows.length; i++) {
+                const row = [], cols = rows[i].querySelectorAll('td, th');
+                for (let j = 0; j < cols.length; j++) {
+                    let text = cols[j].innerText.replace(/,/g, ';');
+                    row.push(text);
+                }
+                csv.push(row.join(','));
+            }
+            
+            const blob = new Blob(["\uFEFF" + csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.href = url;
+            link.setAttribute('download', `laporan_peminjaman_${new Date().toISOString().slice(0,19)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            showToast('Data berhasil diexport ke CSV', 'success');
+        }
+
+        // ============================================================
+        // NOTIFICATIONS
+        // ============================================================
+        function showNotifications() {
+            @php
+                $pendingLoans = App\Models\Peminjaman::where('status', 'menunggu')->with(['user', 'alat'])->get();
+                $lateLoans = App\Models\Peminjaman::where('status', 'dipinjam')
+                    ->whereDate('tanggal_kembali', '<', now())
+                    ->with(['user', 'alat'])
+                    ->get();
+                $dueToday = App\Models\Peminjaman::whereDate('tanggal_kembali', now())
+                    ->where('status', 'dipinjam')
+                    ->with(['user', 'alat'])
+                    ->get();
+            @endphp
+            
+            let content = `
+                <div style="max-height: 400px; overflow-y: auto;">
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: var(--primary); margin-bottom: 10px;">
+                            <i class="fas fa-clock"></i> Menunggu Persetujuan ({{ $pendingLoans->count() }})
+                        </h4>
+                        <div style="font-size: 13px;">
+                            @if($pendingLoans->count() > 0)
+                                @foreach($pendingLoans as $loan)
+                                    <div style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                        <strong>{{ $loan->user->name ?? '-' }}</strong> meminjam <strong>{{ $loan->alat->nama_alat ?? '-' }}</strong>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div style="padding: 10px; color: var(--gray);">Tidak ada permintaan menunggu</div>
+                            @endif
+                        </div>
                     </div>
-                    <div style="display: flex; flex-direction: column; gap: 12px;">
-                        <button class="btn btn-primary" onclick="window.location.href='{{ route('petugas.peminjaman.index') }}?status=menunggu'">
-                            <i class="fas fa-tasks"></i> Proses Peminjaman Menunggu
-                        </button>
-                        <button class="btn btn-success" onclick="window.location.href='{{ route('petugas.peminjaman.index') }}?status=dipinjam'">
-                            <i class="fas fa-exchange-alt"></i> Konfirmasi Pengembalian
-                        </button>
-                        <button class="btn btn-warning" onclick="showLateReturnsModal()">
-                            <i class="fas fa-money-bill-wave"></i> Kelola Denda
-                        </button>
-                        <button class="btn btn-outline" onclick="this.parentElement.parentElement.parentElement.remove()">
-                            <i class="fas fa-times"></i> Tutup
-                        </button>
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: var(--warning); margin-bottom: 10px;">
+                            <i class="fas fa-calendar-day"></i> Jatuh Tempo Hari Ini ({{ $dueToday->count() }})
+                        </h4>
+                        <div style="font-size: 13px;">
+                            @if($dueToday->count() > 0)
+                                @foreach($dueToday as $loan)
+                                    <div style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                        <strong>{{ $loan->user->name ?? '-' }}</strong> - {{ $loan->alat->nama_alat ?? '-' }}
+                                        <span style="color: var(--warning);">(Harus dikembalikan hari ini)</span>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div style="padding: 10px; color: var(--gray);">Tidak ada peminjaman yang jatuh tempo hari ini</div>
+                            @endif
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--danger); margin-bottom: 10px;">
+                            <i class="fas fa-exclamation-triangle"></i> Peminjaman Terlambat ({{ $lateLoans->count() }})
+                        </h4>
+                        <div style="font-size: 13px;">
+                            @if($lateLoans->count() > 0)
+                                @foreach($lateLoans as $loan)
+                                    <div style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                        <strong>{{ $loan->user->name ?? '-' }}</strong> - {{ $loan->alat->nama_alat ?? '-' }}
+                                        @php
+                                            $daysLate = \Carbon\Carbon::parse($loan->tanggal_kembali)->diffInDays(now(), false);
+                                        @endphp
+                                        <span style="color: var(--danger);">(Terlambat {{ abs($daysLate) }} hari)</span>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div style="padding: 10px; color: var(--gray);">Tidak ada peminjaman terlambat</div>
+                            @endif
+                        </div>
                     </div>
                 </div>
             `;
             
-            document.body.appendChild(modal);
+            showModal('Notifikasi', content);
         }
 
-        // User menu
-        function showUserMenu() {
-            const modal = document.createElement('div');
-            modal.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0, 0, 0, 0.7);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 9999;
-                backdrop-filter: blur(5px);
-            `;
-            
-            modal.innerHTML = `
-                <div style="background: var(--dark-card); border-radius: var(--radius-lg); 
-                           padding: 30px; max-width: 400px; width: 90%; 
-                           border: 1px solid rgba(108, 99, 255, 0.3);
-                           box-shadow: var(--shadow-lg);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h3 style="color: var(--light); font-size: 20px; font-weight: 700;">Menu Pengguna</h3>
-                        <button onclick="this.parentElement.parentElement.parentElement.remove()" 
-                                style="background: none; border: none; color: var(--gray); cursor: pointer; font-size: 20px;">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 12px;">
-                        <button class="btn btn-outline" onclick="showProfile()" 
-                                style="justify-content: flex-start;">
-                            <i class="fas fa-user"></i> Profil Saya
-                        </button>
-                        <button class="btn btn-outline" onclick="showSettings()" 
-                                style="justify-content: flex-start;">
-                            <i class="fas fa-cog"></i> Pengaturan
-                        </button>
-                        <form method="POST" action="{{ route('logout') }}" style="width: 100%;">
-                            @csrf
-                            <button type="submit" class="btn btn-outline" 
-                                    style="justify-content: flex-start; color: var(--danger); width: 100%;">
-                                <i class="fas fa-sign-out-alt"></i> Keluar
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-        }
-
-        function showProfile() {
-            const modal = document.querySelector('div[style*="position: fixed"]');
-            if (modal) modal.remove();
-            
-            showModal('Profil Pengguna', 
-                `<div style="text-align: center;">
-                    <div class="user-menu-avatar" style="width: 80px; height: 80px; font-size: 24px; margin: 0 auto 20px;">PT</div>
-                    <h3 style="color: var(--light); margin-bottom: 5px;">Petugas Admin</h3>
-                    <p style="color: var(--gray); margin-bottom: 20px;">Role: Petugas Peminjaman Alat</p>
-                    <p style="color: var(--gray); font-size: 14px;">Bergabung sejak Januari 2024</p>
-                 </div>`
-            );
-        }
-
-        function showSettings() {
-            showModal('Pengaturan', 
-                `<div style="display: flex; flex-direction: column; gap: 12px;">
-                    <p style="color: var(--light);">Pengaturan aplikasi:</p>
-                    <button class="btn btn-outline" onclick="showNotificationSettings()">
-                        <i class="fas fa-bell"></i> Pengaturan Notifikasi
-                    </button>
-                    <button class="btn btn-outline" onclick="showDisplaySettings()">
-                        <i class="fas fa-palette"></i> Tema & Tampilan
-                    </button>
-                    <button class="btn btn-outline" onclick="closeModal()">
-                        <i class="fas fa-times"></i> Tutup
-                    </button>
-                 </div>`
-            );
-        }
-
-        function showNotificationSettings() {
-            showModal('Pengaturan Notifikasi', 
-                `<p style="color: var(--light); margin-bottom: 15px;">Atur preferensi notifikasi:</p>
-                 <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <label style="display: flex; align-items: center; gap: 10px; color: var(--light);">
-                        <input type="checkbox" checked style="accent-color: var(--primary);">
-                        <span>Notifikasi peminjaman baru</span>
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 10px; color: var(--light);">
-                        <input type="checkbox" checked style="accent-color: var(--primary);">
-                        <span>Pengingat pengembalian</span>
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 10px; color: var(--light);">
-                        <input type="checkbox" checked style="accent-color: var(--primary);">
-                        <span>Notifikasi keterlambatan</span>
-                    </label>
-                 </div>`
-            );
-        }
-
-        function showDisplaySettings() {
-            showModal('Tema & Tampilan', 
-                `<p style="color: var(--light); margin-bottom: 15px;">Pilih tema tampilan:</p>
-                 <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                    <button class="btn btn-primary" onclick="setDarkTheme()" style="flex: 1;">Tema Gelap</button>
-                    <button class="btn btn-outline" onclick="setLightTheme()" style="flex: 1;">Tema Terang</button>
-                 </div>
-                 <p style="color: var(--light); font-size: 14px;">*Perubahan tema memerlukan refresh halaman</p>`
-            );
-        }
-
-        function setDarkTheme() {
-            showToast('Tema gelap diterapkan', 'success');
-            closeModal();
-        }
-
-        function setLightTheme() {
-            showToast('Tema terang diterapkan', 'success');
-            closeModal();
-        }
-
-        // Modal utility functions
+        // ============================================================
+        // MODAL UTILITIES
+        // ============================================================
         function showModal(title, content) {
-            // Remove existing modal
-            const existingModal = document.querySelector('div[style*="position: fixed"]');
-            if (existingModal) existingModal.remove();
+            closeModal();
             
             const modal = document.createElement('div');
-            modal.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0, 0, 0, 0.7);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 9999;
-                backdrop-filter: blur(5px);
-                animation: fadeIn 0.3s ease;
-            `;
-            
+            modal.className = 'modal-overlay';
             modal.innerHTML = `
-                <div style="background: var(--dark-card); border-radius: var(--radius-lg); 
-                           padding: 30px; max-width: 500px; width: 90%; 
-                           border: 1px solid rgba(108, 99, 255, 0.3);
-                           box-shadow: var(--shadow-lg); animation: slideUp 0.3s ease;">
+                <div class="modal-content">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <h3 style="color: var(--light); font-size: 20px; font-weight: 700;">${title}</h3>
                         <button onclick="closeModal()" 
@@ -1627,49 +2000,31 @@
         }
 
         function closeModal() {
-            const modal = document.querySelector('div[style*="position: fixed"]');
-            if (modal) {
-                modal.style.animation = 'fadeOut 0.3s ease';
-                setTimeout(() => modal.remove(), 300);
-            }
+            const modal = document.querySelector('.modal-overlay');
+            if (modal) modal.remove();
         }
 
-        // Toast notification function
+        // ============================================================
+        // TOAST NOTIFICATION
+        // ============================================================
         function showToast(message, type = 'info') {
-            // Remove existing toast
             const existingToast = document.getElementById('customToast');
             if (existingToast) existingToast.remove();
             
             const toast = document.createElement('div');
             toast.id = 'customToast';
+            toast.className = 'toast-notification';
             
             const typeConfig = {
                 'success': { bg: 'var(--accent)', icon: 'fa-check-circle' },
                 'error': { bg: 'var(--danger)', icon: 'fa-times-circle' },
-                'warning': { bg: 'var(--warning)', icon: 'fa-exclamation-triangle' },
+                'warning': { bg: 'var(--warning)', icon: 'fa-exclamation-triangle', color: 'var(--dark)' },
                 'info': { bg: 'var(--primary)', icon: 'fa-info-circle' }
             };
             
             const config = typeConfig[type] || typeConfig.info;
-            
-            toast.style.cssText = `
-                position: fixed;
-                top: 30px;
-                right: 30px;
-                background: ${config.bg};
-                color: white;
-                padding: 16px 24px;
-                border-radius: var(--radius-md);
-                font-weight: 600;
-                box-shadow: var(--shadow-lg);
-                z-index: 10000;
-                animation: slideInRight 0.3s ease;
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                max-width: 400px;
-                min-width: 300px;
-            `;
+            toast.style.background = config.bg;
+            if (config.color) toast.style.color = config.color;
             
             toast.innerHTML = `
                 <i class="fas ${config.icon}"></i>
@@ -1678,40 +2033,6 @@
             
             document.body.appendChild(toast);
             
-            // Add animation styles
-            const style = document.createElement('style');
-            if (!document.querySelector('#toast-animations')) {
-                style.id = 'toast-animations';
-                style.textContent = `
-                    @keyframes slideInRight {
-                        from {
-                            opacity: 0;
-                            transform: translateX(100%);
-                        }
-                        to {
-                            opacity: 1;
-                            transform: translateX(0);
-                        }
-                    }
-                    @keyframes slideOutRight {
-                        from {
-                            opacity: 1;
-                            transform: translateX(0);
-                        }
-                        to {
-                            opacity: 0;
-                            transform: translateX(100%);
-                        }
-                    }
-                    @keyframes fadeOut {
-                        from { opacity: 1; }
-                        to { opacity: 0; }
-                    }
-                `;
-                document.head.appendChild(style);
-            }
-            
-            // Auto remove after 3 seconds
             setTimeout(() => {
                 toast.style.animation = 'slideOutRight 0.3s ease';
                 setTimeout(() => {
@@ -1720,20 +2041,294 @@
             }, 3000);
         }
 
-        // Handle window resize
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 1200) {
-                document.getElementById('appContainer').classList.remove('sidebar-collapsed');
-                const sidebarToggle = document.getElementById('sidebarToggle');
-                if (sidebarToggle) {
-                    sidebarToggle.querySelector('i').className = 'fas fa-bars';
-                }
-            }
-        });
+        // ============================================================
+        // QUICK ACTIONS
+        // ============================================================
+        function showQuickActions() {
+            showModal('Tindakan Cepat', `
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <button class="btn btn-primary" onclick="window.location.href='{{ route('petugas.peminjaman.index') }}?status=menunggu'" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-tasks"></i> Proses Peminjaman Menunggu
+                    </button>
+                    <button class="btn btn-success" onclick="window.location.href='{{ route('petugas.peminjaman.index') }}?status=dipinjam'" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-exchange-alt"></i> Konfirmasi Pengembalian
+                    </button>
+                    <button class="btn btn-warning" onclick="showLateReturnsModal()" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-exclamation-triangle"></i> Lihat Keterlambatan
+                    </button>
+                    <button class="btn btn-info" onclick="generateReport()" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-chart-pie"></i> Lihat Statistik
+                    </button>
+                    <button class="btn btn-outline" onclick="showSettings()" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-cog"></i> Pengaturan
+                    </button>
+                    <button class="btn btn-outline" onclick="closeModal()" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-times"></i> Tutup
+                    </button>
+                </div>
+            `);
+        }
 
-        // Update notification badge color
+        // ============================================================
+        // USER MENU
+        // ============================================================
+        function showUserMenu() {
+            showModal('Menu Pengguna', `
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <button class="btn btn-outline" onclick="showProfile()" style="justify-content: flex-start;">
+                        <i class="fas fa-user"></i> Profil Saya
+                    </button>
+                    <button class="btn btn-outline" onclick="showSettings()" style="justify-content: flex-start;">
+                        <i class="fas fa-cog"></i> Pengaturan
+                    </button>
+                    <button class="btn btn-outline" onclick="showHelp()" style="justify-content: flex-start;">
+                        <i class="fas fa-question-circle"></i> Bantuan
+                    </button>
+                    <hr style="border-color: rgba(255,255,255,0.1); margin: 10px 0;">
+                    <form method="POST" action="{{ route('logout') }}" style="width: 100%;">
+                        @csrf
+                        <button type="submit" class="btn btn-outline" style="justify-content: flex-start; color: var(--danger); width: 100%;">
+                            <i class="fas fa-sign-out-alt"></i> Keluar
+                        </button>
+                    </form>
+                </div>
+            `);
+        }
+
+        function showProfile() {
+            closeModal();
+            showModal('Profil Pengguna', `
+                <div style="text-align: center;">
+                    <div class="user-menu-avatar" style="width: 80px; height: 80px; font-size: 24px; margin: 0 auto 20px;">PT</div>
+                    <h3 style="color: var(--light); margin-bottom: 5px;">Petugas Admin</h3>
+                    <p style="color: var(--gray); margin-bottom: 20px;">Role: Petugas Peminjaman Alat</p>
+                    <p style="color: var(--gray); font-size: 14px;">Bergabung sejak Januari 2024</p>
+                    <p style="color: var(--gray); font-size: 14px;">Email: petugas@forent.com</p>
+                    <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary" style="flex: 1;">Edit Profil</button>
+                        <button class="btn btn-outline" onclick="closeModal()" style="flex: 1;">Tutup</button>
+                    </div>
+                </div>
+            `);
+        }
+
+        function showSettings() {
+            showModal('Pengaturan', `
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <p style="color: var(--light); margin-bottom: 10px;">Pengaturan aplikasi:</p>
+                    <button class="btn btn-outline" onclick="showNotificationSettings()" style="justify-content: flex-start;">
+                        <i class="fas fa-bell"></i> Pengaturan Notifikasi
+                    </button>
+                    <button class="btn btn-outline" onclick="showDisplaySettings()" style="justify-content: flex-start;">
+                        <i class="fas fa-palette"></i> Tema & Tampilan
+                    </button>
+                    <button class="btn btn-outline" onclick="showDataSettings()" style="justify-content: flex-start;">
+                        <i class="fas fa-database"></i> Pengaturan Data
+                    </button>
+                    <button class="btn btn-outline" onclick="showAutoRefreshSettings()" style="justify-content: flex-start;">
+                        <i class="fas fa-sync-alt"></i> Auto-Refresh Data
+                    </button>
+                </div>
+            `);
+        }
+
+        function showAutoRefreshSettings() {
+            showModal('Auto-Refresh Data', `
+                <p style="color: var(--light); margin-bottom: 15px;">Atur refresh otomatis data:</p>
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                    <label style="display: flex; align-items: center; gap: 10px; color: var(--light); cursor: pointer;">
+                        <input type="radio" name="autoRefresh" value="5" ${isAutoRefreshEnabled ? 'checked' : ''} style="accent-color: var(--primary);">
+                        <span>Aktifkan Auto-Refresh (setiap 5 menit)</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; color: var(--light); cursor: pointer;">
+                        <input type="radio" name="autoRefresh" value="0" ${!isAutoRefreshEnabled ? 'checked' : ''} style="accent-color: var(--primary);">
+                        <span>Nonaktifkan Auto-Refresh</span>
+                    </label>
+                </div>
+                <button class="btn btn-primary" onclick="saveAutoRefreshSettings()" style="width: 100%;">
+                    <i class="fas fa-save"></i> Simpan Pengaturan
+                </button>
+            `);
+        }
+
+        function saveAutoRefreshSettings() {
+            const selected = document.querySelector('input[name="autoRefresh"]:checked');
+            if (selected && selected.value === '5') {
+                enableAutoRefresh();
+            } else {
+                disableAutoRefresh();
+            }
+            closeModal();
+        }
+
+        function showNotificationSettings() {
+            showModal('Pengaturan Notifikasi', `
+                <p style="color: var(--light); margin-bottom: 15px;">Atur preferensi notifikasi:</p>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <label style="display: flex; align-items: center; gap: 10px; color: var(--light); cursor: pointer;">
+                        <input type="checkbox" checked style="accent-color: var(--primary);">
+                        <span>Notifikasi peminjaman baru</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; color: var(--light); cursor: pointer;">
+                        <input type="checkbox" checked style="accent-color: var(--primary);">
+                        <span>Pengingat pengembalian (H-2)</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; color: var(--light); cursor: pointer;">
+                        <input type="checkbox" checked style="accent-color: var(--primary);">
+                        <span>Notifikasi keterlambatan</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; color: var(--light); cursor: pointer;">
+                        <input type="checkbox" style="accent-color: var(--primary);">
+                        <span>Notifikasi suara</span>
+                    </label>
+                </div>
+                <button class="btn btn-primary" onclick="saveNotificationSettings()" style="width: 100%; margin-top: 20px;">
+                    <i class="fas fa-save"></i> Simpan Pengaturan
+                </button>
+            `);
+        }
+
+        function saveNotificationSettings() {
+            showToast('Pengaturan notifikasi disimpan', 'success');
+            closeModal();
+        }
+
+        function showDisplaySettings() {
+            showModal('Tema & Tampilan', `
+                <p style="color: var(--light); margin-bottom: 15px;">Pilih tema tampilan:</p>
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <button class="btn btn-primary" onclick="setDarkTheme()" style="flex: 1;">Tema Gelap</button>
+                    <button class="btn btn-outline" onclick="setLightTheme()" style="flex: 1;">Tema Terang</button>
+                </div>
+                <p style="color: var(--gray); font-size: 12px;">*Perubahan tema akan segera diterapkan</p>
+            `);
+        }
+
+        function showDataSettings() {
+            showModal('Pengaturan Data', `
+                <p style="color: var(--light); margin-bottom: 15px;">Pengaturan tampilan data:</p>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <label style="display: flex; align-items: center; gap: 10px; color: var(--light); cursor: pointer;">
+                        <input type="checkbox" checked style="accent-color: var(--primary);">
+                        <span>Tampilkan 10 data per halaman</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; color: var(--light); cursor: pointer;">
+                        <input type="checkbox" style="accent-color: var(--primary);">
+                        <span>Tampilkan ikon di menu</span>
+                    </label>
+                </div>
+                <button class="btn btn-primary" onclick="saveDataSettings()" style="width: 100%; margin-top: 20px;">
+                    <i class="fas fa-save"></i> Simpan Pengaturan
+                </button>
+            `);
+        }
+
+        function saveDataSettings() {
+            showToast('Pengaturan data disimpan', 'success');
+            closeModal();
+        }
+
+        function showHelp() {
+            showModal('Bantuan & Panduan', `
+                <div style="line-height: 1.8;">
+                    <p><strong><i class="fas fa-question-circle"></i> Panduan Penggunaan Dashboard:</strong></p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>📋 Kelola Peminjaman</strong> - Klik "Setujui" untuk menyetujui, "Tolak" untuk menolak</li>
+                        <li><strong>🔄 Konfirmasi Pengembalian</strong> - Klik "Konfirmasi" saat peminjam mengembalikan alat</li>
+                        <li><strong>🔍 Pencarian</strong> - Gunakan search bar untuk mencari data spesifik</li>
+                        <li><strong>🎯 Filter</strong> - Klik tombol Filter untuk menyaring data berdasarkan status</li>
+                        <li><strong>📊 Statistik</strong> - Lihat ringkasan data di card statistik</li>
+                        <li><strong>📈 Grafik</strong> - Pantau tren peminjaman melalui grafik batang</li>
+                        <li><strong>📎 Export Data</strong> - Export data ke format CSV/Excel</li>
+                        <li><strong>🔔 Notifikasi</strong> - Dapatkan pemberitahuan peminjaman baru dan keterlambatan</li>
+                    </ul>
+                    <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+                    <p><strong>💡 Tips:</strong> Gunakan fitur auto-refresh untuk selalu mendapatkan data terbaru secara otomatis.</p>
+                    <p style="margin-top: 15px;"><strong>📞 Kontak Dukungan:</strong> admin@forent.com | (021) 1234-5678</p>
+                </div>
+            `);
+        }
+
+        function setDarkTheme() {
+            showToast('Tema gelap sudah aktif', 'success');
+            closeModal();
+        }
+
+        function setLightTheme() {
+            showToast('Fitur tema terang akan segera tersedia', 'info');
+            closeModal();
+        }
+
+        // ============================================================
+        // STATISTICS & REPORTS
+        // ============================================================
+        function showMonthlyReport() {
+            @php
+                $monthlyStats = [];
+                for ($i = 5; $i >= 0; $i--) {
+                    $month = now()->subMonths($i);
+                    $count = App\Models\Peminjaman::whereMonth('created_at', $month->month)
+                        ->whereYear('created_at', $month->year)
+                        ->count();
+                    $monthlyStats[] = [
+                        'month' => $month->format('M Y'),
+                        'count' => $count
+                    ];
+                }
+            @endphp
+            
+            let content = `
+                <div style="text-align: center;">
+                    <p style="color: var(--light); margin-bottom: 20px;">Statistik peminjaman 6 bulan terakhir:</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+            `;
+            
+            @foreach($monthlyStats as $stat)
+                content += `
+                    <div style="background: rgba(108,99,255,0.1); padding: 15px; border-radius: var(--radius-md);">
+                        <div style="font-size: 20px; font-weight: 800; color: var(--primary);">{{ $stat['count'] }}</div>
+                        <div style="font-size: 11px; color: var(--gray);">{{ $stat['month'] }}</div>
+                    </div>
+                `;
+            @endforeach
+            
+            content += `
+                    </div>
+                    <button class="btn btn-primary" onclick="generateReport()" style="width: 100%;">
+                        <i class="fas fa-chart-line"></i> Lihat Detail Laporan
+                    </button>
+                </div>
+            `;
+            
+            showModal('Laporan Bulanan', content);
+        }
+
+        function generateReport() {
+            window.location.href = '{{ route("petugas.laporan") }}';
+        }
+
+        function showTodayReturns() {
+            showModal('Jatuh Tempo Hari Ini', `
+                <div style="text-align: center; padding: 20px;">
+                    <i class="fas fa-calendar-day" style="font-size: 48px; color: var(--warning); margin-bottom: 15px;"></i>
+                    <p style="color: var(--light);">Peminjaman yang harus dikembalikan hari ini: <strong>{{ $pengembalianHariIni }}</strong></p>
+                    <button class="btn btn-primary" onclick="window.location.href='{{ route('petugas.peminjaman.index') }}?status=dipinjam'" style="margin-top: 20px; width: 100%;">
+                        <i class="fas fa-list"></i> Lihat Detail
+                    </button>
+                </div>
+            `);
+        }
+
+        function showTotalUsers() {
+            showToast('Total pengguna terdaftar: {{ $totalUsers }}', 'info');
+        }
+
+        // ============================================================
+        // UTILITY FUNCTIONS
+        // ============================================================
         function updateNotificationBadgeColor() {
-            const badge = document.querySelector('.notification-badge');
+            const badge = document.getElementById('notificationBadge');
             if (badge) {
                 const count = parseInt(badge.textContent) || 0;
                 if (count > 5) {
@@ -1742,11 +2337,6 @@
                     badge.style.background = 'linear-gradient(135deg, var(--warning), var(--secondary))';
                 }
             }
-        }
-
-        // Additional utility functions
-        function showAllTools() {
-            showToast('Fitur daftar alat akan segera tersedia', 'info');
         }
 
         function showLateReturns() {
@@ -1763,10 +2353,14 @@
             }, 1000);
         }
 
+        function showPendingApprovals() {
+            window.location.href = '{{ route("petugas.peminjaman.index") }}?status=menunggu';
+        }
+
         function showLateReturnsModal() {
             @php
                 $lateLoans = App\Models\Peminjaman::where('status', 'dipinjam')
-                    ->whereDate('tanggal_rencana_kembali', '<', now())
+                    ->whereDate('tanggal_kembali', '<', now())
                     ->with(['user', 'alat'])
                     ->get();
             @endphp
@@ -1779,18 +2373,19 @@
             @if($lateLoans->count() > 0)
                 @foreach($lateLoans as $loan)
                     @php
-                        $daysLate = \Carbon\Carbon::parse($loan->tanggal_rencana_kembali)->diffInDays(now(), false);
-                        $denda = $daysLate * 5000; // Contoh: Rp 5.000 per hari
+                        $daysLate = \Carbon\Carbon::parse($loan->tanggal_kembali)->diffInDays(now(), false);
                     @endphp
                     content += `
                         <div style="background: rgba(255, 107, 107, 0.1); padding: 12px; border-radius: var(--radius-sm); margin-bottom: 10px;">
                             <div style="font-weight: 600; color: var(--light);">{{ $loan->alat->nama_alat ?? 'Alat' }}</div>
-                            <div style="font-size: 12px; color: var(--gray);">Peminjam: {{ $loan->user->name }}</div>
+                            <div style="font-size: 12px; color: var(--gray);">Peminjam: {{ $loan->user->name ?? '-' }}</div>
                             <div style="font-size: 12px; color: var(--danger);">
                                 <i class="fas fa-clock"></i> Terlambat {{ abs($daysLate) }} hari
                             </div>
-                            <div style="font-size: 12px; color: var(--warning); margin-top: 5px;">
-                                <i class="fas fa-money-bill-wave"></i> Denda: Rp {{ number_format($denda, 0, ',', '.') }}
+                            <div style="margin-top: 10px;">
+                                <button class="btn-action confirm" onclick="markAsReturned('{{ $loan->id_peminjaman }}')" style="font-size: 11px; padding: 5px 10px;">
+                                    <i class="fas fa-check"></i> Konfirmasi Pengembalian
+                                </button>
                             </div>
                         </div>
                     `;
@@ -1806,15 +2401,25 @@
             
             content += `</div>`;
             
-            showModal('Kelola Denda', content);
+            showModal('Peminjaman Terlambat', content);
         }
 
-        // Refresh page function
-        function refreshPage() {
-            showToast('Memperbarui data...', 'info');
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
+        function markAsReturned(loanId) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `{{ url('petugas/pengembalian/konfirmasi') }}/${loanId}`;
+            
+            const csrf = document.createElement('input');
+            csrf.type = 'hidden';
+            csrf.name = '_token';
+            csrf.value = '{{ csrf_token() }}';
+            form.appendChild(csrf);
+            
+            document.body.appendChild(form);
+            if (confirm('Konfirmasi pengembalian alat ini?')) {
+                form.submit();
+            }
+            closeModal();
         }
     </script>
 </body>

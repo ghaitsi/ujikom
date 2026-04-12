@@ -1286,7 +1286,7 @@
                                     @php
                                         // RESET KE AWAL HARI UNTUK MENGHINDARI DESIMAL
                                         $today = now()->startOfDay();
-                                        $rencanaKembali = \Carbon\Carbon::parse($row->tanggal_rencana_kembali)->startOfDay();
+                                        $rencanaKembali = \Carbon\Carbon::parse($row->tanggal_kembali)->startOfDay();
                                         
                                         // HITUNG SELISIH HARI (INTEGER)
                                         $selisihHari = $today->diffInDays($rencanaKembali, false);
@@ -1351,7 +1351,7 @@
                                         
                                         <td>
                                             <div class="date-cell">
-                                                <div class="date-primary">{{ \Carbon\Carbon::parse($row->tanggal_rencana_kembali)->format('d/m/Y') }}</div>
+                                                <div class="date-primary">{{ \Carbon\Carbon::parse($row->tanggal_kembali)->format('d/m/Y') }}</div>
                                             </div>
                                         </td>
                                         
@@ -1673,7 +1673,7 @@
                 
                 // Tanggal
                 const tglPinjam = row.tanggal_pinjam ? new Date(row.tanggal_pinjam) : null;
-                const tglRencana = row.tanggal_rencana_kembali ? new Date(row.tanggal_rencana_kembali) : null;
+                const tglRencana = row.tanggal_kembali ? new Date(row.tanggal_kembali) : null;
                 const tglKembali = row.tanggal_kembali ? new Date(row.tanggal_kembali) : null;
                 
                 document.getElementById('detailTglPinjam').innerHTML = tglPinjam ? tglPinjam.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + tglPinjam.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB' : '-';

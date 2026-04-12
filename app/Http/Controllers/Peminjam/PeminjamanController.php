@@ -38,7 +38,7 @@ class PeminjamanController extends Controller
     {
         $request->validate([
             'id_alat' => 'required|exists:alat,id_alat',
-            'tanggal_rencana_kembali' => 'required|date|after:today'
+            'tanggal_kembali' => 'required|date|after:today'
         ]);
 
         try {
@@ -57,7 +57,7 @@ class PeminjamanController extends Controller
                 'id_user' => Auth::id(),
                 'id_alat' => $request->id_alat,
                 'tanggal_pinjam' => now(),
-                'tanggal_rencana_kembali' => $request->tanggal_rencana_kembali,
+                'tanggal_kembali' => $request->tanggal_kembali,
                 'status' => 'menunggu',
             ]);
 
