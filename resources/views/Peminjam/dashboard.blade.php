@@ -15,6 +15,9 @@
     <!-- Animate CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         :root {
             --primary: #4361ee;
@@ -55,17 +58,15 @@
             overflow-x: hidden;
         }
 
-        /* Layout Container */
         .app-container {
             display: flex;
             min-height: 100vh;
             position: relative;
         }
 
-        /* Main Content dengan margin untuk sidebar */
         .main-content {
             flex: 1;
-            margin-left: 280px; /* Sama dengan lebar sidebar */
+            margin-left: 280px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -73,13 +74,11 @@
             width: calc(100% - 280px);
         }
 
-        /* Responsive: jika sidebar disembunyikan */
         .sidebar-collapsed .main-content {
             margin-left: 0;
             width: 100%;
         }
 
-        /* Glass Header */
         .header {
             background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(20px);
@@ -158,10 +157,6 @@
             transition: var(--transition);
         }
 
-        .search-input:focus + .search-icon {
-            color: var(--primary);
-        }
-
         .notification-btn {
             position: relative;
             background: rgba(248, 249, 250, 0.8);
@@ -236,13 +231,11 @@
             box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
         }
 
-        /* Content */
         .content-wrapper {
             flex: 1;
             padding: 40px;
         }
 
-        /* Welcome Section */
         .welcome-section {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-radius: var(--radius-lg);
@@ -266,7 +259,6 @@
             opacity: 0.9;
         }
 
-        /* Stats Cards */
         .stats-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -285,6 +277,7 @@
             display: flex;
             align-items: center;
             gap: 20px;
+            cursor: pointer;
         }
 
         .stat-card:hover {
@@ -329,7 +322,6 @@
             margin-top: 4px;
         }
 
-        /* Premium Card Container */
         .dashboard-card {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
@@ -387,7 +379,6 @@
             border-radius: 4px;
         }
 
-        /* Table Styling */
         .table-container {
             overflow-x: auto;
             border-radius: var(--radius-md);
@@ -442,10 +433,10 @@
             vertical-align: middle;
         }
 
-        /* Status Badges */
         .status-badge {
             display: inline-flex;
             align-items: center;
+            gap: 6px;
             padding: 6px 12px;
             border-radius: 20px;
             font-size: 12px;
@@ -479,7 +470,35 @@
             border: 2px solid rgba(249, 65, 68, 0.2);
         }
 
-        /* Stock Indicator */
+        .denda-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .denda-lunas {
+            background: rgba(76, 201, 240, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(76, 201, 240, 0.3);
+        }
+
+        .denda-belum {
+            background: rgba(249, 65, 68, 0.15);
+            color: var(--danger);
+            border: 1px solid rgba(249, 65, 68, 0.3);
+        }
+
+        .denda-tidak {
+            background: rgba(108, 117, 125, 0.1);
+            color: var(--gray);
+            border: 1px solid rgba(108, 117, 125, 0.2);
+        }
+
         .stock-indicator {
             display: inline-flex;
             align-items: center;
@@ -490,7 +509,6 @@
         .stock-medium { color: var(--warning); font-weight: 600; }
         .stock-high { color: var(--success); font-weight: 600; }
 
-        /* Condition Badges */
         .condition-badge {
             display: inline-flex;
             align-items: center;
@@ -519,7 +537,6 @@
             border: 1px solid rgba(248, 150, 30, 0.2);
         }
 
-        /* Pinjam Form */
         .pinjam-form {
             display: flex;
             gap: 12px;
@@ -542,7 +559,6 @@
             box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
         }
 
-        /* Action Buttons */
         .btn-pinjam {
             display: inline-flex;
             align-items: center;
@@ -564,11 +580,11 @@
             box-shadow: var(--shadow-sm);
         }
 
-        .btn-kembalikan {
+        .btn-bayar-denda {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: linear-gradient(135deg, var(--success), #0ea5e9);
+            background: linear-gradient(135deg, var(--danger), #c1121f);
             color: white;
             padding: 10px 20px;
             border-radius: var(--radius-sm);
@@ -580,12 +596,11 @@
             white-space: nowrap;
         }
 
-        .btn-kembalikan:hover {
+        .btn-bayar-denda:hover {
             transform: translateY(-2px);
             box-shadow: var(--shadow-sm);
         }
 
-        /* Alert Message */
         .alert {
             padding: 16px 24px;
             border-radius: var(--radius-md);
@@ -614,72 +629,191 @@
             border: 2px solid rgba(76, 201, 240, 0.2);
         }
 
-        .alert-success i {
-            color: var(--success);
-        }
-
         .alert-danger {
             background: linear-gradient(135deg, rgba(249, 65, 68, 0.15), rgba(249, 65, 68, 0.05));
             color: var(--danger);
             border: 2px solid rgba(249, 65, 68, 0.2);
         }
 
-        .alert-danger i {
-            color: var(--danger);
-        }
-
-        /* Pagination */
-        .pagination-container {
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
             display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid var(--gray-light);
-        }
-
-        .pagination {
-            display: flex;
-            gap: 8px;
-            list-style: none;
-            flex-wrap: wrap;
-        }
-
-        .pagination li {
-            display: inline-flex;
-        }
-
-        .pagination a, .pagination span {
-            display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 40px;
-            height: 40px;
-            padding: 0 12px;
-            border-radius: var(--radius-sm);
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
             background: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(67, 97, 238, 0.1);
+        }
+
+        .modal-header h3 {
+            font-size: 22px;
+            font-weight: 700;
             color: var(--dark);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            border: 2px solid var(--gray-light);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
             transition: var(--transition);
         }
 
-        .pagination a:hover {
-            background: var(--primary);
-            color: white;
+        .modal-close:hover {
+            color: var(--danger);
+        }
+
+        .payment-details {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+        }
+
+        .payment-details p {
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        .payment-details .label {
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .payment-details .value {
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .payment-details .denda-value {
+            font-size: 24px;
+            color: var(--danger);
+        }
+
+        .manual-payment-input {
+            margin-bottom: 20px;
+        }
+
+        .manual-payment-input label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .manual-payment-input input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--gray-light);
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .manual-payment-input input:focus {
+            outline: none;
             border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .payment-info {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+
+        .payment-info.warning {
+            color: var(--danger);
+        }
+
+        .payment-info.success {
+            color: var(--success);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-confirm {
+            background: linear-gradient(135deg, var(--success), #0ea5e9);
+            color: white;
+            border: none;
+        }
+
+        .btn-confirm:hover {
             transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
         }
 
-        .pagination .active span {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        .btn-confirm:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-cancel {
+            background: var(--gray-light);
+            color: var(--gray);
+            border: none;
+        }
+
+        .btn-cancel:hover {
+            background: var(--gray);
             color: white;
-            border-color: var(--primary);
         }
 
-        /* Empty State */
         .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -704,7 +838,6 @@
             margin: 0 auto 20px;
         }
 
-        /* Sidebar Toggle Button untuk Mobile */
         .sidebar-toggle {
             display: none;
             position: fixed;
@@ -727,19 +860,16 @@
             transform: scale(1.1);
         }
 
-        /* Responsive */
         @media (max-width: 1200px) {
             .main-content {
                 margin-left: 0;
                 width: 100%;
             }
-            
             .sidebar-toggle {
                 display: flex;
                 align-items: center;
                 justify-content: center;
             }
-            
             .search-bar {
                 width: 240px;
             }
@@ -750,47 +880,37 @@
                 padding: 0 20px;
                 height: 70px;
             }
-            
             .content-wrapper {
                 padding: 20px;
             }
-            
             .dashboard-card {
                 padding: 24px;
             }
-            
             .search-bar {
                 display: none;
             }
-            
             .stats-container {
                 grid-template-columns: 1fr;
             }
-            
             .card-header {
                 flex-direction: column;
                 gap: 16px;
                 align-items: flex-start;
             }
-            
             .pinjam-form {
                 flex-direction: column;
                 align-items: stretch;
             }
-            
             .date-input {
                 width: 100%;
             }
-            
-            .btn-pinjam, .btn-kembalikan {
+            .btn-pinjam, .btn-bayar-denda {
                 width: 100%;
                 justify-content: center;
             }
-            
             .peminjaman-table {
                 font-size: 12px;
             }
-            
             .peminjaman-table th,
             .peminjaman-table td {
                 padding: 12px;
@@ -801,32 +921,24 @@
             .header-title {
                 font-size: 22px;
             }
-            
             .card-title {
                 font-size: 18px;
             }
-            
-            .pagination {
-                flex-wrap: wrap;
-                justify-content: center;
+            .modal-content {
+                padding: 20px;
             }
         }
     </style>
 </head>
 <body class="font-sans antialiased">
-    <!-- Sidebar Toggle Button -->
     <button class="sidebar-toggle" id="sidebarToggle">
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- App Container -->
     <div class="app-container" id="appContainer">
-        <!-- Include Sidebar Peminjam -->
         @include('layouts.sidebarpeminjam')
 
-        <!-- Main Content -->
         <main class="main-content" id="mainContent">
-            <!-- Glass Header -->
             <header class="header">
                 <h1 class="header-title animate__animated animate__fadeIn">Dashboard Peminjam</h1>
                 <div class="header-actions">
@@ -854,9 +966,7 @@
                 </div>
             </header>
 
-            <!-- Content -->
             <div class="content-wrapper">
-                <!-- Welcome Section -->
                 <div class="welcome-section animate__animated animate__fadeIn">
                     <div class="welcome-text">
                         <h2>Selamat Datang, {{ Auth::user()->name ?? 'Peminjam' }}!</h2>
@@ -864,7 +974,6 @@
                     </div>
                 </div>
 
-                <!-- Stats Cards -->
                 <div class="stats-container">
                     @php
                         $totalAlatTersedia = App\Models\Alat::where('stok', '>', 0)->count();
@@ -872,7 +981,11 @@
                         $totalDipinjam = auth()->check() ? auth()->user()->peminjaman()->where('status', 'dipinjam')->count() : 0;
                         $totalTerlambat = auth()->check() ? auth()->user()->peminjaman()
                             ->where('status', 'dipinjam')
-                            ->whereDate('tanggal_kembali', '<', now())
+                            ->whereDate('tanggal_rencana_kembali', '<', now())
+                            ->count() : 0;
+                        $totalDendaBelum = auth()->check() ? auth()->user()->peminjaman()
+                            ->where('status_denda', 'belum_bayar')
+                            ->where('denda', '>', 0)
                             ->count() : 0;
                     @endphp
                     
@@ -914,14 +1027,13 @@
                             <i class="fas fa-exclamation-triangle"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>Terlambat</h3>
-                            <div class="number">{{ $totalTerlambat }}</div>
-                            <div class="desc">Belum dikembalikan</div>
+                            <h3>Denda Belum Bayar</h3>
+                            <div class="number">{{ $totalDendaBelum }}</div>
+                            <div class="desc">Perlu segera dibayar</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Success Message -->
                 @if(session('success'))
                     <div class="alert alert-success animate__animated animate__fadeIn">
                         <i class="fas fa-check-circle"></i>
@@ -929,7 +1041,13 @@
                     </div>
                 @endif
 
-                <!-- Error Messages -->
+                @if(session('error'))
+                    <div class="alert alert-danger animate__animated animate__fadeIn">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        {{ session('error') }}
+                    </div>
+                @endif
+
                 @if($errors->any())
                     <div class="alert alert-danger animate__animated animate__fadeIn">
                         <i class="fas fa-exclamation-triangle"></i>
@@ -944,7 +1062,7 @@
                     </div>
                 @endif
 
-                <!-- DAftar Alat Tersedia untuk Dipinjam -->
+                <!-- Daftar Alat Tersedia -->
                 <div class="dashboard-card animate__animated animate__fadeInUp">
                     <div class="card-header">
                         <h3 class="card-title">
@@ -960,102 +1078,86 @@
 
                     <div class="table-container">
                         @php
-                            $kategoriAlat = App\Models\Kategori::withCount(['alat' => function($query) {
-                                $query->where('stok', '>', 0);
-                            }])->get();
                             $alatTersedia = App\Models\Alat::where('stok', '>', 0)->latest()->get();
                         @endphp
                         
                         @if($alatTersedia->count() > 0)
-                            <table class="peminjaman-table" aria-label="Daftar Alat Tersedia">
+                            <table class="peminjaman-table">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Nama Alat</th>
-                                        <th scope="col">Gambar</th>
-                                        <th scope="col">Stok</th>
-                                        <th scope="col">Kondisi</th>
-                                        <th scope="col" style="width: 300px;">Pinjam Sekarang</th>
+                                        <th>Nama Alat</th>
+                                        <th>Gambar</th>
+                                        <th>Stok</th>
+                                        <th>Kondisi</th>
+                                        <th style="width: 300px;">Pinjam Sekarang</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($alatTersedia as $a)
-                                    <tr class="animate__animated animate__fadeIn" style="animation-delay: {{ $loop->index * 0.05 }}s">
+                                    <tr>
                                         <td>
-                                            <div style="font-weight: 600; color: var(--dark);">{{ $a->nama_alat }}</div>
+                                            <div style="font-weight: 600;">{{ $a->nama_alat }}</div>
                                             @if($a->kategori)
                                                 <div style="font-size: 12px; color: var(--gray); margin-top: 4px;">
                                                     {{ $a->kategori->nama_kategori }}
                                                 </div>
                                             @endif
-                                        </td>
-
+                                        </div>
+                                        
                                         <td>
-                                            <img src="{{ asset('storage/' . $a->gambar) }}"
-                                                 alt="Gambar {{ $a->nama_alat }}"
-                                                 style="width: 60px; height: 60px; object-fit: cover; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm);">  
-                                        </td>
-
+                                            @if($a->gambar)
+                                                <img src="{{ asset('storage/' . $a->gambar) }}"
+                                                     alt="{{ $a->nama_alat }}"
+                                                     style="width: 60px; height: 60px; object-fit: cover; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm);">
+                                            @else
+                                                <div style="width: 60px; height: 60px; background: var(--gray-light); display: flex; align-items: center; justify-content: center; border-radius: var(--radius-sm);">
+                                                    <i class="fas fa-image" style="color: var(--gray);"></i>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        
                                         <td>
-                                            <div class="stock-indicator {{ 
-                                                $a->stok <= 2 ? 'stock-low' : 
-                                                ($a->stok <= 5 ? 'stock-medium' : 'stock-high') 
-                                            }}">
-                                                <i class="fas fa-box"></i>
-                                                {{ $a->stok }} unit
+                                            <div class="stock-indicator {{ $a->stok <= 2 ? 'stock-low' : ($a->stok <= 5 ? 'stock-medium' : 'stock-high') }}">
+                                                <i class="fas fa-box"></i> {{ $a->stok }} unit
                                             </div>
-                                        </td>
+                                        </div>
                                         
                                         <td>
                                             @php
                                                 $conditionClass = 'condition-baik';
-                                                if(strpos(strtolower($a->kondisi), 'rusak') !== false) {
-                                                    $conditionClass = 'condition-rusak';
-                                                } elseif(strpos(strtolower($a->kondisi), 'perbaikan') !== false) {
-                                                    $conditionClass = 'condition-perbaikan';
-                                                }
+                                                if(strpos(strtolower($a->kondisi), 'rusak') !== false) $conditionClass = 'condition-rusak';
+                                                elseif(strpos(strtolower($a->kondisi), 'perbaikan') !== false) $conditionClass = 'condition-perbaikan';
                                             @endphp
                                             <span class="condition-badge {{ $conditionClass }}">
-                                                @if($conditionClass == 'condition-baik')
-                                                    <i class="fas fa-check-circle"></i>
-                                                @elseif($conditionClass == 'condition-rusak')
-                                                    <i class="fas fa-times-circle"></i>
-                                                @else
-                                                    <i class="fas fa-tools"></i>
-                                                @endif
+                                                <i class="fas {{ $conditionClass == 'condition-baik' ? 'fa-check-circle' : ($conditionClass == 'condition-rusak' ? 'fa-times-circle' : 'fa-tools') }}"></i>
                                                 {{ $a->kondisi }}
                                             </span>
-                                        </td>
+                                        </div>
                                         
                                         <td>
-                                            <form method="POST" 
-                                                  action="{{ route('peminjam.pinjam') }}" 
-                                                  class="pinjam-form">
+                                            <form method="POST" action="{{ route('peminjam.pinjam') }}" class="pinjam-form">
                                                 @csrf
                                                 <input type="hidden" name="id_alat" value="{{ $a->id_alat }}">
                                                 
                                                 <input type="date" 
-                                                       name="tanggal_kembali" 
+                                                       name="tanggal_rencana_kembali" 
                                                        class="date-input" 
                                                        required
                                                        min="{{ date('Y-m-d', strtotime('+1 day')) }}"
-                                                       value="{{ date('Y-m-d', strtotime('+7 days')) }}"
-                                                       title="Pilih tanggal rencana pengembalian">
+                                                       value="{{ date('Y-m-d', strtotime('+7 days')) }}">
                                                 
                                                 <button type="submit" class="btn-pinjam">
-                                                    <i class="fas fa-hand-paper"></i>
-                                                    Pinjam Alat
+                                                    <i class="fas fa-hand-paper"></i> Pinjam Alat
                                                 </button>
                                             </form>
-                                        </td>
+                                        </div>
                                     </tr>
                                     @endforeach
                                 </tbody>
                             </table>
                         @else
                             <div class="empty-state">
-                                <div class="empty-icon">
-                                    <i class="fas fa-tools"></i>
-                                </div>
+                                <div class="empty-icon"><i class="fas fa-tools"></i></div>
                                 <h3>Tidak ada alat tersedia</h3>
                                 <p>Semua alat sedang dipinjam atau dalam perbaikan. Silakan coba lagi nanti.</p>
                             </div>
@@ -1088,200 +1190,255 @@
                         @endphp
                         
                         @if($semuaPeminjaman->count() > 0)
-                            <table class="peminjaman-table" aria-label="Peminjaman Saya">
+                            <table class="peminjaman-table">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Alat</th>
-                                        <th scope="col">Kategori</th>
-                                        <th scope="col">Gambar</th>
-                                        <th scope="col">Tanggal Pinjam</th>
-                                        <th scope="col">Rencana Kembali</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Denda</th>
-                                        <th scope="col">Aksi</th>
+                                        <th>Alat</th>
+                                        <th>Gambar</th>
+                                        <th>Tanggal Pinjam</th>
+                                        <th>Rencana Kembali</th>
+                                        <th>Tanggal Kembali</th>
+                                        <th>Status</th>
+                                        <th>Denda</th>
+                                        <th>Status Denda</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($semuaPeminjaman as $r)
-                                    @php
-                                        $statusClass = 'status-menunggu';
-                                        if($r->status == 'dipinjam') {
-                                            $statusClass = 'status-dipinjam';
-                                        } elseif($r->status == 'dikembalikan') {
-                                            $statusClass = 'status-dikembalikan';
-                                        } elseif($r->status == 'terlambat') {
-                                            $statusClass = 'status-terlambat';
-                                        }
-                                        
-                                        // Hitung hari tersisa atau terlambat
-                                        $today = now();
-                                        $rencanaKembali = \Carbon\Carbon::parse($r->tanggal_kembali);
-                                        $daysLeft = $today->diffInDays($rencanaKembali, false);
-                                    @endphp
-                                    <tr class="animate__animated animate__fadeIn" style="animation-delay: {{ $loop->index * 0.05 }}s">
-                                        <td>
-                                            <div style="font-weight: 600; color: var(--dark);">
-                                                {{ $r->alat->nama_alat ?? '-' }}
-                                            </div>
-                                        </td>
-                                        
+@php
+    $today = now();
+    $rencanaKembali = $r->tanggal_rencana_kembali;
+    $tanggalKembali = $r->tanggal_kembali;
 
-                                
-                                <td> 
-                                    <div style="font-weight: 600; color: var(--dark);">
-                                        {{ $a->kategori->id_kategori ?? '-' }}
-                                    </div>
-                                
-                                    </td>
+    $daysLeft = $today->diffInDays($rencanaKembali, false);
+    $isTerlambat = $r->status == 'dipinjam' && $today->greaterThan($rencanaKembali);
+
+    // ===============================
+    // STATUS PINJAMAN
+    // ===============================
+    $statusClass = 'status-menunggu';
+
+    if ($isTerlambat) {
+        $statusClass = 'status-terlambat';
+    } elseif ($r->status == 'dipinjam') {
+        $statusClass = 'status-dipinjam';
+    } elseif ($r->status == 'selesai') {
+        $statusClass = 'status-dikembalikan';
+    }
+
+    // ===============================
+    // HITUNG DENDA
+    // ===============================
+    if ($r->status == 'dipinjam' && $today->greaterThan($rencanaKembali)) {
+        // realtime (belum dikembalikan)
+        $hariTerlambat = ceil(abs($daysLeft));
+        $denda = $hariTerlambat * 1000;
+    } else {
+        // ambil dari database (SUDAH FINAL)
+        $denda = $r->denda ?? 0;
+    }
+
+    // ===============================
+    // STATUS DENDA (FIX UTAMA)
+    // ===============================
+    if ($r->status == 'selesai') {
+        if ($r->denda > 0) {
+            $statusDenda = strtolower($r->status_denda ?? 'belum');
+        } else {
+            $statusDenda = 'tidak_ada';
+        }
+    } elseif ($isTerlambat) {
+        $statusDenda = 'belum';
+    } else {
+        $statusDenda = 'tidak_ada';
+    }
+
+    // ===============================
+    // BADGE STATUS DENDA
+    // ===============================
+    $dendaStatusClass = 'denda-tidak';
+    $dendaStatusText = 'Tidak Ada';
+
+    if ($denda > 0) {
+        if ($statusDenda == 'lunas') {
+            $dendaStatusClass = 'denda-lunas';
+            $dendaStatusText = 'Lunas';
+        } else {
+            $dendaStatusClass = 'denda-belum';
+            $dendaStatusText = 'Belum Bayar';
+        }
+    }
+@endphp                                    <tr>
+                                        <td>
+                                            <div style="font-weight: 600;">{{ $r->alat->nama_alat ?? '-' }}</div>
+                                            @if($r->alat && $r->alat->kategori)
+                                                <div style="font-size: 12px; color: var(--gray); margin-top: 4px;">{{ $r->alat->kategori->nama_kategori }}</div>
+                                            @endif
+                                        </div>
+                                        
                                         <td>
                                             @if($r->alat && $r->alat->gambar)
-                                                <img src="{{ asset('storage/' . $r->alat->gambar) }}"
-                                                     alt="Gambar {{ $r->alat->nama_alat }}"
-                                                     style="width: 60px; height: 60px; object-fit: cover; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm);">  
+                                                <img src="{{ asset('storage/' . $r->alat->gambar) }}" style="width: 60px; height: 60px; object-fit: cover; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm);">  
                                             @else
                                                 <div style="width: 60px; height: 60px; background: var(--gray-light); display: flex; align-items: center; justify-content: center; border-radius: var(--radius-sm);">
                                                     <i class="fas fa-image" style="color: var(--gray);"></i>
                                                 </div>
                                             @endif
-                                        <td>
-                                            <div style="font-weight: 600; color: var(--dark);">
-                                                {{ $r->tanggal_pinjam }}
-                                            </div>
-                                        </td>
+                                        </div>
+                                        
+                                        <td>{{ \Carbon\Carbon::parse($r->tanggal_pinjam)->format('d/m/Y') }}</div>
                                         
                                         <td>
-                                            <div style="font-weight: 600; color: var(--dark);">
-                                                {{ $r->tanggal_kembali }}
-                                            </div>
+                                            <div style="font-weight: 600;">{{ \Carbon\Carbon::parse($r->tanggal_rencana_kembali)->format('d/m/Y') }}</div>
                                             @if($r->status == 'dipinjam')
                                                 @if($daysLeft > 0)
-                                                    <div style="font-size: 12px; color: var(--success);">
-                                                        <i class="fas fa-clock"></i>
-                                                        {{ $daysLeft }} hari lagi
-                                                    </div>
+                                                    <div style="font-size: 12px; color: var(--success);"><i class="fas fa-clock"></i> {{ $daysLeft }} hari lagi</div>
                                                 @elseif($daysLeft == 0)
-                                                    <div style="font-size: 12px; color: var(--warning);">
-                                                        <i class="fas fa-exclamation-circle"></i>
-                                                        Hari ini
-                                                    </div>
+                                                    <div style="font-size: 12px; color: var(--warning);"><i class="fas fa-exclamation-circle"></i> Hari ini</div>
                                                 @else
-                                                    <div style="font-size: 12px; color: var(--danger);">
-                                                        <i class="fas fa-exclamation-triangle"></i>
-                                                        {{ abs($daysLeft) }} hari terlambat
-                                                    </div>
+                                                    <div style="font-size: 12px; color: var(--danger);"><i class="fas fa-exclamation-triangle"></i> {{ abs($daysLeft) }} hari terlambat</div>
                                                 @endif
                                             @endif
-                                        </td>
+                                        </div>
+                                        
+                                        <td>
+                                            @if($tanggalKembali)
+                                                <div style="font-weight: 600; color: var(--success);">{{ \Carbon\Carbon::parse($tanggalKembali)->format('d/m/Y') }}</div>
+                                                <div style="font-size: 12px; color: var(--success);"><i class="fas fa-check-circle"></i> Sudah dikembalikan</div>
+                                            @else
+                                                <span style="color: var(--gray); font-style: italic;">-</span>
+                                            @endif
+                                        </div>
                                         
                                         <td>
                                             <span class="status-badge {{ $statusClass }}">
-                                                @if($statusClass == 'status-dipinjam')
-                                                    <i class="fas fa-clock"></i>
-                                                @elseif($statusClass == 'status-dikembalikan')
-                                                    <i class="fas fa-check-circle"></i>
-                                                @elseif($statusClass == 'status-terlambat')
-                                                    <i class="fas fa-exclamation-triangle"></i>
-                                                @else
-                                                    <i class="fas fa-hourglass-half"></i>
-                                                @endif
-                                                {{ $r->status }}
+                                                <i class="fas {{ $statusClass == 'status-dipinjam' ? 'fa-clock' : ($statusClass == 'status-dikembalikan' ? 'fa-check-circle' : ($statusClass == 'status-terlambat' ? 'fa-exclamation-triangle' : 'fa-hourglass-half')) }}"></i>
+                                                {{ ucfirst($r->status) }}
                                             </span>
-                                        </td>
+                                        </div>
                                         
                                         <td>
-    @php
-        $denda = 0;
-        if ($r->status == 'dipinjam' && $daysLeft < 0) {
-            $denda = abs($daysLeft) * 2000;
-        }
-    @endphp
+                                            @if($denda > 0)
+                                                <div style="color: var(--danger); font-weight: 700;">Rp {{ number_format($denda, 0, ',', '.') }}</div>
+                                                <div style="font-size: 12px; color: var(--danger);">Terlambat {{ abs($daysLeft) }} hari</div>
+                                            @else
+                                                <span style="color: var(--success); font-weight: 600;">Tidak ada</span>
+                                            @endif
+                                        </div>
 
-    @if($denda > 0)
-        <div style="color: var(--danger); font-weight: 700;">
-            Rp {{ number_format($denda, 0, ',', '.') }}
-        </div>
-        <div style="font-size: 12px; color: var(--danger);">
-            Terlambat {{ abs($daysLeft) }} hari
-        </div>
-    @else
-        <span style="color: var(--success); font-weight: 600;">Tidak ada</span>
-    @endif
-</td>
+                                        <td>
+                                            <span class="denda-status-badge {{ $dendaStatusClass }}">
+                                                <i class="fas {{ $dendaStatusClass == 'denda-lunas' ? 'fa-check-circle' : ($dendaStatusClass == 'denda-belum' ? 'fa-exclamation-circle' : 'fa-minus-circle') }}"></i>
+                                                {{ $dendaStatusText }}
+                                            </span>
+                                        </div>
 
-<td>
-    @if($denda > 0)
-        <form method="POST" action="{{ route('peminjam.bayar.denda', $r->id) }}">
-            @csrf
-            <button type="submit" class="btn-pinjam" style="background: linear-gradient(135deg, var(--danger), #c1121f);">
-                <i class="fas fa-money-bill"></i>
-                Bayar
-            </button>
-        </form>
-    @elseif($r->status == 'dipinjam')
-        <form method="POST" action="{{ route('peminjam.kembalikan', $r->id) }}">
-            @csrf
-            <button type="submit" class="btn-kembalikan">
-                <i class="fas fa-undo"></i>
-                Kembalikan
-            </button>
-        </form>
-    @else
-        <span style="color: var(--gray);">-</span>
-    @endif
-</td>
-                                        
+                                        <td>
+                                            @if($r->status == 'dipinjam')
+                                                @if($denda > 0)
+                                                    <button type="button" class="btn-bayar-denda" onclick="openPaymentModal({{ $r->id_peminjaman }}, '{{ addslashes($r->alat->nama_alat ?? 'Alat') }}', {{ $denda }})">
+                                                        <i class="fas fa-money-bill"></i> Bayar & Kembalikan
+                                                    </button>
+                                                @else
+                                                    <form method="POST" action="{{ route('peminjam.pengembalian.kembalikan', $r->id_peminjaman) }}" style="display: inline;">
+                                                        @csrf
+                                                        <button type="submit" class="btn-pinjam" style="background: linear-gradient(135deg, var(--success), #0ea5e9);">
+                                                            <i class="fas fa-undo"></i> Kembalikan
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            @elseif($r->status == 'selesai' && $r->denda > 0 && $r->status_denda != 'lunas')
+                                            @else
+                                                <span style="color: var(--gray);">-</span>
+                                            @endif
+                                        </div>
                                     </tr>
                                     @endforeach
                                 </tbody>
                             </table>
                         @else
                             <div class="empty-state">
-                                <div class="empty-icon">
-                                    <i class="fas fa-history"></i>
-                                </div>
+                                <div class="empty-icon"><i class="fas fa-history"></i></div>
                                 <h3>Belum ada peminjaman</h3>
                                 <p>Mulai dengan meminjam alat dari daftar alat tersedia di atas.</p>
                             </div>
                         @endif
                     </div>
-
                 </div>
             </div>
         </main>
     </div>
 
+    <!-- Modal Pembayaran Denda -->
+    <div id="paymentModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-money-bill-wave"></i> Bayar Denda & Kembalikan Alat</h3>
+                <button class="modal-close" onclick="closePaymentModal()">&times;</button>
+            </div>
+            <form id="paymentForm" method="POST" action="">
+                @csrf
+                @method('PUT')
+                <input type="hidden" name="id_peminjaman" id="paymentLoanId">
+                
+                <div class="payment-details">
+                    <p><span class="label">Alat:</span> <span class="value" id="paymentAlatName"></span></p>
+                    <p><span class="label">Total Denda:</span> <span class="value denda-value" id="paymentDendaAmount"></span></p>
+                    <p><span class="label">Info:</span> <span class="value" style="color: var(--success);">Setelah bayar, status akan diperbarui sesuai jumlah pembayaran</span></p>
+                </div>
+                
+                <div class="manual-payment-input">
+                    <label for="jumlah_bayar">Masukkan Jumlah Pembayaran (Tunai)</label>
+                    <input type="number" 
+                           id="jumlah_bayar" 
+                           name="jumlah_bayar" 
+                           class="payment-amount-input"
+                           placeholder="Masukkan nominal pembayaran"
+                           min="0"
+                           step="1000"
+                           oninput="validatePaymentAmount(this)">
+                    <div id="paymentInfo" class="payment-info"></div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closePaymentModal()">Batal</button>
+                    <button type="submit" class="btn-confirm" id="confirmPaymentBtn">
+                        <i class="fas fa-check-circle"></i> Bayar & Kembalikan Alat
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-        // Toggle sidebar untuk mobile
+        let currentDendaAmount = 0;
+        let currentLoanId = null;
+
         const sidebarToggle = document.getElementById('sidebarToggle');
         const appContainer = document.getElementById('appContainer');
 
         if (sidebarToggle) {
             sidebarToggle.addEventListener('click', function() {
                 appContainer.classList.toggle('sidebar-collapsed');
-                
-                // Update icon toggle
                 const icon = this.querySelector('i');
-                if (appContainer.classList.contains('sidebar-collapsed')) {
-                    icon.className = 'fas fa-bars';
-                } else {
-                    icon.className = 'fas fa-times';
-                }
+                icon.className = appContainer.classList.contains('sidebar-collapsed') ? 'fas fa-bars' : 'fas fa-times';
             });
         }
 
-        // Search functionality
         const searchInput = document.querySelector('#globalSearchBar .search-input');
         
         function performSearch(searchTerm) {
-            if (searchTerm) {
-                const tableRows = document.querySelectorAll('.peminjaman-table tbody tr');
-                let found = false;
-                
-                tableRows.forEach(row => {
+            const allTables = document.querySelectorAll('.peminjaman-table');
+            let found = false;
+            
+            allTables.forEach(table => {
+                const rows = table.querySelectorAll('tbody tr');
+                rows.forEach(row => {
                     const text = row.textContent.toLowerCase();
-                    if (text.includes(searchTerm.toLowerCase())) {
+                    if (searchTerm === '' || text.includes(searchTerm.toLowerCase())) {
                         row.style.display = '';
-                        if (!found) {
+                        if (searchTerm !== '' && !found) {
                             row.scrollIntoView({ behavior: 'smooth', block: 'center' });
                             found = true;
                         }
@@ -1289,16 +1446,10 @@
                         row.style.display = 'none';
                     }
                 });
-                
-                if (!found) {
-                    showToast(`Tidak ditemukan dengan kata kunci: "${searchTerm}"`, 'warning');
-                }
-            } else {
-                // Reset all rows
-                const allRows = document.querySelectorAll('.peminjaman-table tbody tr');
-                allRows.forEach(row => {
-                    row.style.display = '';
-                });
+            });
+            
+            if (searchTerm !== '' && !found) {
+                showToast(`Tidak ditemukan dengan kata kunci: "${searchTerm}"`, 'warning');
             }
         }
 
@@ -1309,42 +1460,195 @@
                 }
             });
             
-            // Add search button
             const searchBar = document.querySelector('#globalSearchBar');
             const searchBtn = document.createElement('button');
             searchBtn.innerHTML = '<i class="fas fa-search"></i>';
-            searchBtn.style.cssText = `
-                position: absolute;
-                right: 10px;
-                top: 50%;
-                transform: translateY(-50%);
-                background: none;
-                border: none;
-                color: var(--primary);
-                font-size: 16px;
-                cursor: pointer;
-                padding: 8px;
-                transition: var(--transition);
-            `;
+            searchBtn.style.cssText = `position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--primary); font-size: 16px; cursor: pointer; padding: 8px;`;
             
-            searchBar.appendChild(searchBtn);
-            
-            searchBtn.addEventListener('click', () => performSearch(searchInput.value.trim()));
+            if (searchBar && !searchBar.querySelector('button')) {
+                searchBar.appendChild(searchBtn);
+                searchBtn.addEventListener('click', () => performSearch(searchInput.value.trim()));
+            }
         }
 
-        // Pinjam form validation
+        function validatePaymentAmount(input) {
+            let value = parseInt(input.value) || 0;
+            const infoDiv = document.getElementById('paymentInfo');
+            const confirmBtn = document.getElementById('confirmPaymentBtn');
+            
+            if (value > currentDendaAmount) {
+                infoDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> Jumlah pembayaran melebihi denda! Maksimal Rp ${formatRupiah(currentDendaAmount)}`;
+                infoDiv.className = 'payment-info warning';
+                confirmBtn.disabled = true;
+                confirmBtn.style.opacity = '0.6';
+                confirmBtn.style.cursor = 'not-allowed';
+            } else if (value > 0 && value < currentDendaAmount) {
+                const kurang = currentDendaAmount - value;
+                infoDiv.innerHTML = `<i class="fas fa-info-circle"></i> Pembayaran kurang Rp ${formatRupiah(kurang)}. Sisa denda akan tetap tercatat. Tetap bisa mengembalikan alat.`;
+                infoDiv.className = 'payment-info';
+                confirmBtn.disabled = false;
+                confirmBtn.style.opacity = '1';
+                confirmBtn.style.cursor = 'pointer';
+            } else if (value === currentDendaAmount) {
+                infoDiv.innerHTML = `<i class="fas fa-check-circle"></i> Pembayaran lunas! Status denda akan berubah menjadi LUNAS.`;
+                infoDiv.className = 'payment-info success';
+                confirmBtn.disabled = false;
+                confirmBtn.style.opacity = '1';
+                confirmBtn.style.cursor = 'pointer';
+            } else if (value === 0) {
+                infoDiv.innerHTML = `Masukkan nominal pembayaran`;
+                infoDiv.className = 'payment-info';
+                confirmBtn.disabled = true;
+                confirmBtn.style.opacity = '0.6';
+                confirmBtn.style.cursor = 'not-allowed';
+            } else {
+                infoDiv.innerHTML = `Pembayaran valid.`;
+                infoDiv.className = 'payment-info success';
+                confirmBtn.disabled = false;
+                confirmBtn.style.opacity = '1';
+                confirmBtn.style.cursor = 'pointer';
+            }
+        }
+
+        function formatRupiah(angka) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(angka);
+        }
+
+        function openPaymentModal(loanId, alatName, denda) {
+            currentLoanId = loanId;
+            currentDendaAmount = denda;
+            
+            const modal = document.getElementById('paymentModal');
+            const form = document.getElementById('paymentForm');
+            const loanIdInput = document.getElementById('paymentLoanId');
+            const alatNameSpan = document.getElementById('paymentAlatName');
+            const dendaSpan = document.getElementById('paymentDendaAmount');
+            const jumlahBayarInput = document.getElementById('jumlah_bayar');
+            const infoDiv = document.getElementById('paymentInfo');
+            
+            form.action = `/peminjam/bayar-denda-kembalikan/${loanId}`;
+            loanIdInput.value = loanId;
+            alatNameSpan.textContent = alatName;
+            dendaSpan.textContent = formatRupiah(denda);
+            
+            jumlahBayarInput.value = '';
+            jumlahBayarInput.max = denda;
+            infoDiv.innerHTML = 'Masukkan nominal pembayaran';
+            infoDiv.className = 'payment-info';
+            
+            const confirmBtn = document.getElementById('confirmPaymentBtn');
+            confirmBtn.disabled = true;
+            confirmBtn.style.opacity = '0.6';
+            confirmBtn.style.cursor = 'not-allowed';
+            
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closePaymentModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+        
+        document.getElementById('paymentModal').addEventListener('click', function(e) {
+            if (e.target === this) closePaymentModal();
+        });
+        
+        const paymentForm = document.getElementById('paymentForm');
+        if (paymentForm) {
+            paymentForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const jumlahBayar = parseInt(document.getElementById('jumlah_bayar').value) || 0;
+                
+                if (jumlahBayar > currentDendaAmount) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: `Jumlah pembayaran tidak boleh melebihi denda! Maksimal Rp ${formatRupiah(currentDendaAmount)}`,
+                        confirmButtonColor: '#4361ee'
+                    });
+                    return;
+                }
+                
+                if (jumlahBayar <= 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Masukkan jumlah pembayaran yang valid!',
+                        confirmButtonColor: '#4361ee'
+                    });
+                    return;
+                }
+                
+                const submitBtn = this.querySelector('.btn-confirm');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+                submitBtn.disabled = true;
+                
+                const loanId = document.getElementById('paymentLoanId').value;
+                
+                fetch(`/peminjam/bayar-denda-kembalikan/${loanId}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        jumlah_bayar: jumlahBayar,
+                        _method: 'PUT'
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: data.message,
+                            confirmButtonColor: '#4361ee'
+                        }).then(() => window.location.reload());
+                        closePaymentModal();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: data.message || 'Terjadi kesalahan',
+                            confirmButtonColor: '#4361ee'
+                        });
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Terjadi kesalahan jaringan. Silakan coba lagi.',
+                        confirmButtonColor: '#4361ee'
+                    });
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                });
+            });
+        }
+
         const pinjamForms = document.querySelectorAll('.pinjam-form');
         
         pinjamForms.forEach(form => {
             const dateInput = form.querySelector('.date-input');
             
-            // Set minimum date to tomorrow
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
             const tomorrowStr = tomorrow.toISOString().split('T')[0];
             
             if (dateInput && !dateInput.value) {
-                // Set default to 7 days from now
                 const defaultDate = new Date();
                 defaultDate.setDate(defaultDate.getDate() + 7);
                 dateInput.value = defaultDate.toISOString().split('T')[0];
@@ -1356,25 +1660,26 @@
                 dateInput.addEventListener('change', function() {
                     const selectedDate = new Date(this.value);
                     const today = new Date();
+                    today.setHours(0, 0, 0, 0);
                     
                     if (selectedDate <= today) {
-                        showToast('Tanggal kembali harus setelah hari ini', 'error');
+                        showToast('Tanggal rencana kembali harus setelah hari ini', 'error');
                         this.value = tomorrowStr;
                     }
                 });
             }
             
             form.addEventListener('submit', function(e) {
-                const alatName = this.closest('tr').querySelector('td:first-child div').textContent;
+                const row = this.closest('tr');
+                const alatName = row.querySelector('td:first-child div')?.textContent || 'Alat';
                 const returnDate = this.querySelector('.date-input').value;
                 const returnDateFormatted = new Date(returnDate).toLocaleDateString('id-ID');
                 
-                if (!confirm(`Konfirmasi peminjaman:\n\nAlat: ${alatName}\nTanggal Kembali: ${returnDateFormatted}\n\nApakah data sudah benar?`)) {
+                if (!confirm(`Konfirmasi peminjaman:\n\nAlat: ${alatName}\nRencana Tanggal Kembali: ${returnDateFormatted}\n\nApakah data sudah benar?`)) {
                     e.preventDefault();
                     return false;
                 }
                 
-                // Show loading
                 const submitBtn = this.querySelector('button[type="submit"]');
                 if (submitBtn) {
                     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
@@ -1385,131 +1690,60 @@
             });
         });
 
-        // Notification button click
         const notificationBtn = document.getElementById('notificationBtn');
         if (notificationBtn) {
             notificationBtn.addEventListener('click', function() {
-                // Scroll to peminjaman aktif
                 const peminjamanSection = document.querySelectorAll('.dashboard-card')[1];
-                if (peminjamanSection) {
-                    peminjamanSection.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'start' 
-                    });
-                    
-                    showToast('Dialihkan ke peminjaman Anda', 'info');
-                }
+                if (peminjamanSection) peminjamanSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                showToast('Dialihkan ke peminjaman Anda', 'info');
             });
         }
 
-        // Toast notification function
         function showToast(message, type = 'info') {
+            const existingToast = document.querySelector('.custom-toast');
+            if (existingToast) existingToast.remove();
+            
             const toast = document.createElement('div');
-            toast.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: ${type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--danger)' : type === 'warning' ? 'var(--warning)' : 'var(--primary)'};
-                color: white;
-                padding: 16px 24px;
-                border-radius: var(--radius-md);
-                font-weight: 600;
-                box-shadow: var(--shadow-lg);
-                z-index: 9999;
-                animation: slideInRight 0.3s ease;
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                max-width: 400px;
-            `;
-            
-            const icon = type === 'success' ? 'fas fa-check-circle' : type === 'error' ? 'fas fa-times-circle' : type === 'warning' ? 'fas fa-exclamation-triangle' : 'fas fa-info-circle';
-            toast.innerHTML = `
-                <i class="${icon}"></i>
-                <span>${message}</span>
-            `;
-            
+            toast.className = 'custom-toast';
+            const bgColor = type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--danger)' : type === 'warning' ? 'var(--warning)' : 'var(--primary)';
+            toast.style.cssText = `position: fixed; top: 20px; right: 20px; background: ${bgColor}; color: white; padding: 16px 24px; border-radius: var(--radius-md); font-weight: 600; box-shadow: var(--shadow-lg); z-index: 10000; animation: slideInRight 0.3s ease; display: flex; align-items: center; gap: 12px; max-width: 400px;`;
+            const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-times-circle' : type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle';
+            toast.innerHTML = `<i class="fas ${icon}"></i><span>${message}</span>`;
             document.body.appendChild(toast);
-            
-            // Auto remove after 3 seconds
             setTimeout(() => {
                 toast.style.animation = 'slideOutRight 0.3s ease';
-                setTimeout(() => {
-                    toast.remove();
-                }, 300);
+                setTimeout(() => { if (toast.parentNode) toast.remove(); }, 300);
             }, 3000);
         }
 
-        // Handle window resize
         window.addEventListener('resize', function() {
-            if (window.innerWidth > 1200) {
+            if (window.innerWidth > 1200 && appContainer) {
                 appContainer.classList.remove('sidebar-collapsed');
-                if (sidebarToggle) {
-                    sidebarToggle.querySelector('i').className = 'fas fa-bars';
-                }
+                if (sidebarToggle) sidebarToggle.querySelector('i').className = 'fas fa-bars';
             }
         });
 
-        // Add custom animations
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideInRight {
-                from {
-                    opacity: 0;
-                    transform: translateX(100%);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateX(0);
-                }
-            }
-            
-            @keyframes slideOutRight {
-                from {
-                    opacity: 1;
-                    transform: translateX(0);
-                }
-                to {
-                    opacity: 0;
-                    transform: translateX(100%);
-                }
-            }
-        `;
-        document.head.appendChild(style);
-        
-        // Add hover effect to table rows
+        if (!document.querySelector('#custom-animations')) {
+            const style = document.createElement('style');
+            style.id = 'custom-animations';
+            style.textContent = `@keyframes slideInRight { from { opacity: 0; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } } @keyframes slideOutRight { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(100%); } }`;
+            document.head.appendChild(style);
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
-            const tableRows = document.querySelectorAll('.peminjaman-table tbody tr');
-            tableRows.forEach(row => {
-                row.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateX(4px)';
-                });
-                
-                row.addEventListener('mouseleave', function() {
-                    this.style.transform = '';
-                });
+            document.querySelectorAll('.peminjaman-table tbody tr').forEach(row => {
+                row.addEventListener('mouseenter', function() { this.style.transform = 'translateX(4px)'; });
+                row.addEventListener('mouseleave', function() { this.style.transform = ''; });
             });
             
-            // Auto-refresh notification badge
             function updateNotificationBadge() {
-                const overdueItems = document.querySelectorAll('.status-badge.status-terlambat').length;
-                const activeItems = document.querySelectorAll('.status-badge.status-dipinjam').length;
-                const totalCount = overdueItems + activeItems;
-                
                 const badge = document.getElementById('notificationCount');
                 if (badge) {
+                    const totalCount = document.querySelectorAll('.status-badge.status-terlambat, .status-badge.status-dipinjam').length;
                     badge.textContent = totalCount;
-                    
-                    // Change color based on count
-                    if (overdueItems > 0) {
-                        badge.style.background = 'linear-gradient(135deg, var(--danger), var(--accent))';
-                    } else if (activeItems > 0) {
-                        badge.style.background = 'linear-gradient(135deg, var(--warning), var(--accent))';
-                    }
+                    badge.style.background = document.querySelector('.status-badge.status-terlambat') ? 'linear-gradient(135deg, var(--danger), var(--accent))' : document.querySelector('.status-badge.status-dipinjam') ? 'linear-gradient(135deg, var(--warning), var(--accent))' : 'linear-gradient(135deg, var(--accent), var(--danger))';
                 }
             }
-            
-            // Update notification badge on page load
             updateNotificationBadge();
         });
     </script>

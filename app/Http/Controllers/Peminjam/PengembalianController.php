@@ -8,120 +8,142 @@ use Illuminate\Support\Facades\DB;
 use App\Models\LogAktivitas;
 use App\Models\Peminjaman;
 use App\Models\Alat;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class PengembalianController extends Controller
 {
     // ===============================
-    // LIST ALAT YANG DIPINJAM
+    // HITUNG DENDA REALTIME
     // ===============================
-    public function index()
+    private function hitungDenda($tanggalRencana)
     {
-        $data = Peminjaman::where('id_user', Auth::id())
-            ->where('status', 'dipinjam')
-            ->with('alat')
-            ->get()
-            ->map(function ($item) {
-                $item->denda = $this->hitungDenda($item->tanggal_kembali);
-                return $item;
-            });
+        if (!$tanggalRencana) return 0;
 
-        return view('peminjam.pengembalian', compact('data'));
-    }
+        $now = Carbon::now();
+        $rencana = Carbon::parse($tanggalRencana);
 
-
-    // ===============================
-    // FUNGSI HITUNG DENDA (REALTIME)
-    // ===============================
-    private function hitungDenda($tanggalKembali)
-    {
-        if (!$tanggalKembali) {
+        if ($now->lte($rencana)) {
             return 0;
         }
 
-        $hariTerlambat = now()->diffInDays($tanggalKembali, false);
+        $hariTerlambat = ceil($rencana->diffInHours($now) / 24);
 
-        if ($hariTerlambat > 0) {
-            return $hariTerlambat * 2000; // tarif denda per hari
-        }
-
-        return 0;
+        return $hariTerlambat * 1000;
     }
 
-
     // ===============================
-    // PROSES KEMBALIKAN
+    // KEMBALIKAN TANPA BAYAR
     // ===============================
     public function kembalikan($id)
     {
         $pinjam = Peminjaman::where('id_user', Auth::id())
-            ->where('status','dipinjam')
+            ->where('status', 'dipinjam')
             ->findOrFail($id);
 
-        DB::transaction(function() use ($pinjam) {
-
+        DB::transaction(function () use ($pinjam) {
             $alat = Alat::findOrFail($pinjam->id_alat);
 
-            // HITUNG DENDA
-            $denda = $this->hitungDenda($pinjam->tanggal_kembali);
+            $dendaSaatIni = $this->hitungDenda($pinjam->tanggal_rencana_kembali);
 
-            // UPDATE PEMINJAMAN
             $pinjam->update([
                 'status' => 'selesai',
-                'tanggal_kembali' => now() // <-- ini yang bener
+                'tanggal_kembali' => now(),
             ]);
 
-            // TAMBAH STOK
             $alat->increment('stok');
 
             if ($alat->stok > 0) {
                 $alat->update(['status' => 'tersedia']);
             }
 
-            // LOG AKTIVITAS
             LogAktivitas::create([
                 'id_user' => Auth::id(),
-                'aktivitas' => 'Mengembalikan alat: ' . $alat->nama_alat . 
-                               ' | Denda: Rp ' . $denda,
+                'aktivitas' => 'Mengembalikan alat: ' . $alat->nama_alat .
+                               ' | Denda saat itu: Rp ' . number_format($dendaSaatIni, 0, ',', '.') . ' (tidak disimpan)',
                 'waktu' => now(),
-                'created_at' => now(),
-                'updated_at' => now(),
             ]);
-
-            // SIMPAN DENDA KE SESSION
-            session()->flash('denda', $denda);
         });
 
-        return back()->with('success','Alat berhasil dikembalikan');
+        return back()->with('success', 'Alat berhasil dikembalikan');
     }
 
-
     // ===============================
-    // BAYAR DENDA
+    // BAYAR DENDA + KEMBALIKAN (AUTO LUNAS)
     // ===============================
-    public function bayarDenda($id)
+    public function bayarDendaDanKembalikan(Request $request, $id)
     {
         $pinjam = Peminjaman::where('id_user', Auth::id())
+            ->where('status', 'dipinjam')
             ->findOrFail($id);
 
-        $denda = $this->hitungDenda($pinjam->tanggal_kembali);
+        $totalDenda = $this->hitungDenda($pinjam->tanggal_rencana_kembali);
 
-        if ($denda <= 0) {
+        if ($totalDenda <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada denda!'
+            ], 400);
+        }
+
+        DB::transaction(function () use ($pinjam, $totalDenda) {
+            $alat = Alat::findOrFail($pinjam->id_alat);
+
+            // 🔥 FIX UTAMA: LANGSUNG LUNAS
+            $pinjam->update([
+                'denda' => $totalDenda,
+                'status_denda' => 'lunas',
+                'status' => 'selesai',
+                'tanggal_kembali' => now()
+            ]);
+
+            $alat->increment('stok');
+
+            if ($alat->stok > 0) {
+                $alat->update(['status' => 'tersedia']);
+            }
+
+            LogAktivitas::create([
+                'id_user' => Auth::id(),
+                'aktivitas' => 'Membayar denda Rp ' . number_format($totalDenda, 0, ',', '.') .
+                               ' (LUNAS) | Alat: ' . $alat->nama_alat,
+                'waktu' => now(),
+            ]);
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => '✅ Denda lunas & alat dikembalikan'
+        ]);
+    }
+
+    // ===============================
+    // BAYAR SISA DENDA
+    // ===============================
+    public function bayarDendaSaja($id)
+    {
+        $pinjam = Peminjaman::where('id_user', Auth::id())
+            ->where('status', 'selesai')
+            ->findOrFail($id);
+
+        if ($pinjam->denda <= 0) {
             return back()->with('info', 'Tidak ada denda');
         }
 
-        // kalau kamu punya field ini di database
+        if ($pinjam->status_denda == 'lunas') {
+            return back()->with('info', 'Denda sudah lunas');
+        }
+
         $pinjam->update([
             'status_denda' => 'lunas'
         ]);
 
         LogAktivitas::create([
             'id_user' => Auth::id(),
-            'aktivitas' => 'Membayar denda: Rp ' . $denda,
+            'aktivitas' => 'Melunasi denda Rp ' . number_format($pinjam->denda, 0, ',', '.'),
             'waktu' => now(),
-            'created_at' => now(),
-            'updated_at' => now(),
         ]);
 
-        return back()->with('success', 'Denda berhasil dibayar');
+        return back()->with('success', 'Denda berhasil dilunasi');
     }
 }

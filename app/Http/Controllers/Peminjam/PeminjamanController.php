@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Alat;
 use App\Models\Peminjaman;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class PeminjamanController extends Controller
 {
@@ -17,12 +18,10 @@ class PeminjamanController extends Controller
     // ===============================
     public function index()
     {
-        // Alat yang tersedia untuk dipinjam
         $alat = Alat::where('status', 'tersedia')
             ->where('stok', '>', 0)
             ->paginate(10);
 
-        // Riwayat peminjaman user login
         $riwayat = Peminjaman::with('alat')
             ->where('id_user', Auth::id())
             ->orderBy('created_at', 'desc')
@@ -38,33 +37,39 @@ class PeminjamanController extends Controller
     {
         $request->validate([
             'id_alat' => 'required|exists:alat,id_alat',
-            'tanggal_kembali' => 'required|date|after:today'
+            'tanggal_rencana_kembali' => 'required|date|after:today'
         ]);
 
         try {
-
             DB::beginTransaction();
 
             $alat = Alat::findOrFail($request->id_alat);
 
-            // Cek stok
+            // 🔥 cek stok
             if ($alat->stok <= 0) {
                 return back()->withErrors('Stok alat habis!');
             }
 
-            // Simpan peminjaman
+            // ===============================
+            // SIMPAN PEMINJAMAN
+            // ===============================
             $pinjam = Peminjaman::create([
                 'id_user' => Auth::id(),
                 'id_alat' => $request->id_alat,
                 'tanggal_pinjam' => now(),
-                'tanggal_kembali' => $request->tanggal_kembali,
+                'tanggal_rencana_kembali' => $request->tanggal_rencana_kembali,
+                'tanggal_kembali' => null,
+                'denda' => 0,
                 'status' => 'menunggu',
+                'status_denda' => 'Belum'
             ]);
 
-            // ✅ LOG AKTIVITAS
+            // ===============================
+            // LOG AKTIVITAS
+            // ===============================
             LogAktivitas::create([
                 'id_user' => Auth::id(),
-                'aktivitas' => 'Mengajukan peminjaman alat ID '.$pinjam->id_alat,
+                'aktivitas' => 'Mengajukan peminjaman alat ID ' . $pinjam->id_alat,
                 'waktu' => now()
             ]);
 
@@ -82,6 +87,73 @@ class PeminjamanController extends Controller
             return back()->withErrors(
                 'Terjadi kesalahan saat mengajukan peminjaman'
             );
+        }
+    }
+
+    // ===============================
+    // KEMBALIKAN BARANG + HITUNG DENDA
+    // ===============================
+    public function kembalikan($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $pinjam = Peminjaman::findOrFail($id);
+
+            // 🔥 hanya bisa dikembalikan kalau sudah disetujui
+            if ($pinjam->status !== 'disetujui') {
+                return back()->withErrors('Peminjaman belum disetujui!');
+            }
+
+            $tanggalKembali = Carbon::now();
+            $tanggalRencana = Carbon::parse($pinjam->tanggal_rencana_kembali);
+
+            $denda = 0;
+
+            // ===============================
+            // HITUNG DENDA
+            // ===============================
+            if ($tanggalKembali->greaterThan($tanggalRencana)) {
+
+                $telatHari = $tanggalKembali->diffInDays($tanggalRencana);
+
+                $denda = $telatHari * 1000; // 🔥 1000 per hari
+            }
+
+            // ===============================
+            // UPDATE DATA
+            // ===============================
+            $pinjam->update([
+                'tanggal_kembali' => $tanggalKembali,
+                'denda' => $denda,
+                'status' => 'selesai',
+                'status_denda' => $denda > 0 ? 'Belum' : 'Lunas'
+            ]);
+
+            // ===============================
+            // BALIKIN STOK ALAT
+            // ===============================
+            $alat = Alat::find($pinjam->id_alat);
+            $alat->increment('stok');
+
+            // ===============================
+            // LOG AKTIVITAS
+            // ===============================
+            LogAktivitas::create([
+                'id_user' => Auth::id(),
+                'aktivitas' => 'Mengembalikan alat ID ' . $pinjam->id_alat,
+                'waktu' => now()
+            ]);
+
+            DB::commit();
+
+            return back()->with('success', 'Barang berhasil dikembalikan');
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return back()->withErrors('Terjadi kesalahan saat mengembalikan barang');
         }
     }
 }

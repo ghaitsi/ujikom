@@ -6,12 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Peminjaman;
 use App\Models\Alat;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class PeminjamanPetugasController extends Controller
 {
-    // ===============================
-    // DASHBOARD PETUGAS
-    // ===============================
     public function index()
     {
         $data = Peminjaman::with(['user', 'alat'])
@@ -22,9 +20,6 @@ class PeminjamanPetugasController extends Controller
         return view('petugas.dashboard', compact('data'));
     }
 
-    // ===============================
-    // SETUJUI PEMINJAMAN
-    // ===============================
     public function setujui($id)
     {
         $pinjam = Peminjaman::where('id_peminjaman', $id)
@@ -51,7 +46,7 @@ class PeminjamanPetugasController extends Controller
     }
 
     // ===============================
-    // KONFIRMASI PENGEMBALIAN
+    // 🔥 KONFIRMASI PENGEMBALIAN
     // ===============================
     public function kembalikan($id)
     {
@@ -61,12 +56,28 @@ class PeminjamanPetugasController extends Controller
 
         DB::transaction(function () use ($pinjam) {
 
-            // ✅ CUMA UPDATE STATUS
+            $alat = Alat::findOrFail($pinjam->id_alat);
+
+            $tanggalKembali = Carbon::now();
+            $tanggalRencana = Carbon::parse($pinjam->tanggal_rencana_kembali);
+
+            $denda = 0;
+
+            // 🔥 HITUNG DENDA YANG BENAR
+            if ($tanggalKembali->greaterThan($tanggalRencana)) {
+                $hariTerlambat = $tanggalKembali->diffInDays($tanggalRencana);
+                $denda = $hariTerlambat * 2000;
+            }
+
+            // 🔥 UPDATE DATA
             $pinjam->update([
                 'status' => 'selesai',
+                'tanggal_kembali' => $tanggalKembali,
+                'denda' => $denda,
+                'status_denda' => $denda > 0 ? 'belum' : 'lunas'
             ]);
 
-            $alat = Alat::findOrFail($pinjam->id_alat);
+            // 🔥 TAMBAH STOK
             $alat->increment('stok');
 
             if ($alat->stok > 0) {
@@ -78,27 +89,20 @@ class PeminjamanPetugasController extends Controller
             ->with('success', 'Pengembalian berhasil dikonfirmasi');
     }
 
-    // ===============================
-// TOLAK PEMINJAMAN
-// ===============================
-public function tolak($id)
-{
-    $pinjam = Peminjaman::where('id_peminjaman', $id)
-        ->where('status', 'menunggu')
-        ->firstOrFail();
+    public function tolak($id)
+    {
+        $pinjam = Peminjaman::where('id_peminjaman', $id)
+            ->where('status', 'menunggu')
+            ->firstOrFail();
 
-    $pinjam->update([
-        'status' => 'ditolak',
-    ]);
+        $pinjam->update([
+            'status' => 'ditolak',
+        ]);
 
-    return redirect()->route('petugas.dashboard')
-        ->with('success', 'Peminjaman berhasil ditolak');
-}
+        return redirect()->route('petugas.dashboard')
+            ->with('success', 'Peminjaman berhasil ditolak');
+    }
 
-
-    // ===============================
-    // LAPORAN
-    // ===============================
     public function laporan()
     {
         $data = Peminjaman::with(['user', 'alat'])

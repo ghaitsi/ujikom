@@ -709,6 +709,38 @@
         }
 
         /* ============================================================ */
+        /* DENDA STATUS BADGES */
+        /* ============================================================ */
+        .denda-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .denda-lunas {
+            background: rgba(0, 212, 170, 0.2);
+            color: var(--accent);
+            border: 1px solid rgba(0, 212, 170, 0.3);
+        }
+
+        .denda-belum {
+            background: rgba(255, 107, 107, 0.2);
+            color: var(--danger);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+
+        .denda-tidak {
+            background: rgba(142, 142, 160, 0.15);
+            color: #8E8EA0;
+            border: 1px solid rgba(142, 142, 160, 0.2);
+        }
+
+        /* ============================================================ */
         /* ACTION BUTTONS */
         /* ============================================================ */
         .btn-action {
@@ -1193,11 +1225,16 @@
                         $peminjamanBulanIni = App\Models\Peminjaman::whereMonth('created_at', now()->month)
                             ->whereYear('created_at', now()->year)
                             ->count();
-                        // Menggunakan tanggal_kembali untuk jadwal pengembalian hari ini
                         $pengembalianHariIni = App\Models\Peminjaman::whereDate('tanggal_kembali', now())
                             ->where('status', 'dipinjam')
                             ->count();
                         $totalUsers = App\Models\User::where('role', 'user')->count();
+                        
+                        // Statistik denda
+                        $totalDenda = App\Models\Peminjaman::sum('denda');
+                        $peminjamanDenda = App\Models\Peminjaman::where('denda', '>', 0)->count();
+                        $dendaBelumBayar = App\Models\Peminjaman::where('status_denda', 'belum_bayar')->where('denda', '>', 0)->count();
+                        $dendaLunas = App\Models\Peminjaman::where('status_denda', 'lunas')->where('denda', '>', 0)->count();
                     @endphp
                     
                     <div class="stat-card" onclick="showAllTools()" data-tooltip="Lihat semua alat">
@@ -1280,16 +1317,39 @@
                         </div>
                     </div>
                     
-                    <div class="stat-card" onclick="refreshData()" data-tooltip="Refresh data dashboard">
-                        <div class="stat-icon icon-warning">
-                            <i class="fas fa-sync-alt"></i>
+                    <div class="stat-card" onclick="showDendaStats()" data-tooltip="Statistik denda">
+                        <div class="stat-icon icon-danger">
+                            <i class="fas fa-money-bill-wave"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>Refresh Data</h3>
-                            <div class="number">
-                                <i class="fas fa-arrow-rotate-right"></i>
-                            </div>
-                            <div class="desc">Perbarui tampilan</div>
+                            <h3>Total Denda</h3>
+                            <div class="number">Rp {{ number_format($totalDenda, 0, ',', '.') }}</div>
+                            <div class="desc">{{ $peminjamanDenda }} peminjaman kena denda</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Cards Row 3 - Denda Status -->
+                <div class="stats-container">
+                    <div class="stat-card" onclick="filterDendaStatus('belum_bayar')" data-tooltip="Denda yang belum dibayar">
+                        <div class="stat-icon icon-danger">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Denda Belum Bayar</h3>
+                            <div class="number">{{ $dendaBelumBayar }}</div>
+                            <div class="desc">Perlu konfirmasi</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card" onclick="filterDendaStatus('lunas')" data-tooltip="Denda yang sudah lunas">
+                        <div class="stat-icon icon-success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Denda Lunas</h3>
+                            <div class="number">{{ $dendaLunas }}</div>
+                            <div class="desc">Sudah dibayar</div>
                         </div>
                     </div>
                 </div>
@@ -1333,155 +1393,226 @@
                 </div>
 
                 <!-- Peminjaman Table -->
-                <section class="dashboard-card" style="animation-delay: 0.1s;">
-                    <div class="card-header">
-                        <div class="card-title">
-                            <i class="fas fa-calendar-alt"></i>
-                            Data Peminjaman Terbaru
-                        </div>
-                        <div class="card-actions">
-                            <button class="btn btn-sm btn-primary" onclick="openFilterModal()" data-tooltip="Filter berdasarkan status">
-                                <i class="fas fa-filter"></i>
-                                Filter
-                            </button>
-                            <button class="btn btn-sm btn-success" onclick="exportToExcel()" data-tooltip="Export ke Excel">
-                                <i class="fas fa-file-excel"></i>
-                                Export
-                            </button>
-                            <button class="btn btn-sm btn-outline" onclick="window.location.href='{{ route('petugas.peminjaman.index') }}'" data-tooltip="Lihat semua peminjaman">
-                                <i class="fas fa-list"></i>
-                                Lihat Semua
-                            </button>
-                        </div>
-                    </div>
-                    <div class="table-container">
-                        @php
-                            $peminjaman = App\Models\Peminjaman::with(['user', 'alat'])
-                                ->orderBy('created_at', 'desc')
-                                ->limit(10)
-                                ->get();
-                        @endphp
-                        
-                        @if($peminjaman->count() > 0)
-                        <table class="data-table" id="loansTable">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Peminjam</th>
-                                    <th>Alat</th>
-                                    <th>Tgl Pinjam</th>
-                                    <th>Rencana Kembali</th>
-                                    <th>Status</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody">
-                                @foreach($peminjaman as $item)
-                                <tr data-status="{{ $item->status }}" data-id="{{ $item->id_peminjaman }}">
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>
-                                        <div style="display: flex; align-items: center; gap: 12px;">
-                                            <div class="user-avatar">
-                                                {{ strtoupper(substr($item->user->name ?? 'U', 0, 2)) }}
-                                            </div>
-                                            <div>
-                                                <div style="font-weight: 600;">{{ $item->user->name ?? '-' }}</div>
-                                                <div style="font-size: 12px; color: var(--gray);">{{ $item->user->email ?? '-' }}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>{{ $item->alat->nama_alat ?? '-' }}</td>
-                                    <td>{{ $item->tanggal_pinjam ? \Carbon\Carbon::parse($item->tanggal_pinjam)->format('d M Y') : '-' }}</td>
-                                    <td>
-                                        {{ $item->tanggal_kembali ? \Carbon\Carbon::parse($item->tanggal_kembali)->format('d M Y') : '-' }}
-                                        @if($item->status == 'dipinjam' && $item->tanggal_kembali)
-                                            @php
-                                                $today = \Carbon\Carbon::now();
-                                                $rencanaKembali = \Carbon\Carbon::parse($item->tanggal_kembali);
-                                                $daysLeft = $today->diffInDays($rencanaKembali, false);
-                                            @endphp
-                                            @if($daysLeft < 0)
-                                                <div style="font-size: 11px; color: var(--danger); margin-top: 4px;">
-                                                    <i class="fas fa-exclamation-triangle"></i>
-                                                    Terlambat {{ abs($daysLeft) }} hari
-                                                </div>
-                                            @elseif($daysLeft <= 2 && $daysLeft >= 0)
-                                                <div style="font-size: 11px; color: var(--warning); margin-top: 4px;">
-                                                    <i class="fas fa-hourglass-half"></i>
-                                                    Tersisa {{ $daysLeft }} hari
-                                                </div>
-                                            @endif
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if ($item->status == 'menunggu')
-                                            <span class="status-badge status-menunggu">
-                                                <i class="fas fa-hourglass-half"></i> Menunggu
-                                            </span>
-                                        @elseif ($item->status == 'dipinjam')
-                                            <span class="status-badge status-dipinjam">
-                                                <i class="fas fa-sync-alt"></i> Dipinjam
-                                            </span>
-                                        @elseif ($item->status == 'dikembalikan' || $item->status == 'selesai')
-                                            <span class="status-badge status-selesai">
-                                                <i class="fas fa-check-circle"></i> Selesai
-                                            </span>
-                                        @elseif ($item->status == 'ditolak')
-                                            <span class="status-badge status-ditolak">
-                                                <i class="fas fa-times-circle"></i> Ditolak
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if ($item->status == 'menunggu')
-                                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                                                <form method="POST" action="{{ route('petugas.peminjaman.setujui', $item->id_peminjaman) }}" style="display: inline;">
-                                                    @csrf
-                                                    <button type="submit" class="btn-action approve" onclick="return confirm('Setujui peminjaman ini?')" data-tooltip="Setujui peminjaman">
-                                                        <i class="fas fa-check"></i> Setujui
-                                                    </button>
-                                                </form>
-                                                <form method="POST" action="{{ route('petugas.peminjaman.tolak', $item->id_peminjaman) }}" style="display: inline;">
-                                                    @csrf
-                                                    <button type="submit" class="btn-action reject" onclick="return confirm('Tolak peminjaman ini?')" data-tooltip="Tolak peminjaman">
-                                                        <i class="fas fa-times"></i> Tolak
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        @elseif ($item->status == 'dipinjam')
-                                            <form method="POST" action="{{ route('petugas.pengembalian.konfirmasi', $item->id_peminjaman) }}" style="display: inline;">
-                                                @csrf
-                                                <button type="submit" class="btn-action confirm" onclick="return confirm('Konfirmasi pengembalian alat ini?')" data-tooltip="Konfirmasi pengembalian">
-                                                    <i class="fas fa-check-circle"></i> Konfirmasi
-                                                </button>
-                                            </form>
-                                        @else
-                                            <span style="font-size: 12px; color: var(--gray); font-style: italic;">Tidak ada aksi</span>
-                                        @endif
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        @else
-                        <div class="empty-state">
-                            <div class="empty-icon">
-                                <i class="fas fa-calendar-times"></i>
-                            </div>
-                            <h3>Tidak ada data peminjaman</h3>
-                            <p>Belum ada peminjaman yang tercatat.</p>
-                            <button class="btn btn-primary" onclick="window.location.href='{{ route('petugas.peminjaman.index') }}'">
-                                <i class="fas fa-plus"></i>
-                                Lihat Semua Peminjaman
-                            </button>
-                        </div>
-                        @endif
-                    </div>
-                    <div style="margin-top: 20px; text-align: center; font-size: 12px; color: var(--gray);">
-                        <i class="fas fa-info-circle"></i> Menampilkan 10 data terbaru
-                    </div>
-                </section>
+<section class="dashboard-card" style="animation-delay: 0.1s;">
+    <div class="card-header">
+        <div class="card-title">
+            <i class="fas fa-calendar-alt"></i>
+            Data Peminjaman Terbaru
+        </div>
+        <div class="card-actions">
+            <button class="btn btn-sm btn-primary" onclick="openFilterModal()" data-tooltip="Filter berdasarkan status">
+                <i class="fas fa-filter"></i>
+                Filter
+            </button>
+            <button class="btn btn-sm btn-success" onclick="exportToExcel()" data-tooltip="Export ke Excel">
+                <i class="fas fa-file-excel"></i>
+                Export
+            </button>
+            <button class="btn btn-sm btn-outline" onclick="window.location.href='{{ route('petugas.peminjaman.index') }}'" data-tooltip="Lihat semua peminjaman">
+                <i class="fas fa-list"></i>
+                Lihat Semua
+            </button>
+        </div>
+    </div>
 
+    <div class="table-container">
+        @php
+            $peminjaman = App\Models\Peminjaman::with(['user', 'alat'])
+                ->orderBy('created_at', 'desc')
+                ->limit(10)
+                ->get();
+        @endphp
+        
+        @if($peminjaman->count() > 0)
+        <table class="data-table" id="loansTable">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Peminjam</th>
+                    <th>Alat</th>
+                    <th>Tanggal Pinjam</th>
+                    <th>Tanggal Rencana Kembali</th>
+                    <th>Tanggal Kembali</th>
+                    <th>Status</th>
+                    <th>Denda</th>
+                    <th>Status Denda</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+
+            <tbody id="tableBody">
+                @foreach($peminjaman as $item)
+                @php
+                    $today = \Carbon\Carbon::now();
+
+                    $rencanaKembali = $item->tanggal_rencana_kembali 
+                        ? \Carbon\Carbon::parse($item->tanggal_rencana_kembali) 
+                        : null;
+
+                    $isTerlambat = $item->status == 'dipinjam' && $rencanaKembali && $today->greaterThan($rencanaKembali);
+                    $daysLate = $isTerlambat ? $today->diffInDays($rencanaKembali, false) : 0;
+                    $calculatedDenda = $isTerlambat ? abs($daysLate) * 2000 : 0;
+
+                    $dendaFinal = ($item->denda > 0) ? $item->denda : $calculatedDenda;
+
+                    $statusDenda = $item->status_denda ?? ($dendaFinal > 0 ? 'belum_bayar' : 'tidak_ada');
+
+                    $dendaStatusClass = 'denda-tidak';
+                    $dendaStatusText = 'Tidak Ada';
+
+                    if ($dendaFinal > 0) {
+                        if ($statusDenda == 'lunas') {
+                            $dendaStatusClass = 'denda-lunas';
+                            $dendaStatusText = 'Lunas';
+                        } else {
+                            $dendaStatusClass = 'denda-belum';
+                            $dendaStatusText = 'Belum Bayar';
+                        }
+                    }
+                @endphp
+
+                <tr data-status="{{ $item->status }}" data-denda-status="{{ $statusDenda }}" data-id="{{ $item->id_peminjaman }}">
+                    <td>{{ $loop->iteration }}</td>
+
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div class="user-avatar">
+                                {{ strtoupper(substr($item->user->name ?? 'U', 0, 2)) }}
+                            </div>
+                            <div>
+                                <div style="font-weight: 600;">{{ $item->user->name ?? '-' }}</div>
+                                <div style="font-size: 12px; color: var(--gray);">{{ $item->user->email ?? '-' }}</div>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td>{{ $item->alat->nama_alat ?? '-' }}</td>
+
+                    <td>{{ $item->tanggal_pinjam ? \Carbon\Carbon::parse($item->tanggal_pinjam)->format('d M Y') : '-' }}</td>
+
+                    <!-- RENCANA -->
+                    <td>
+                        {{ $item->tanggal_rencana_kembali ? \Carbon\Carbon::parse($item->tanggal_rencana_kembali)->format('d M Y') : '-' }}
+                    </td>
+
+                    <!-- KEMBALI -->
+                    <td>
+                        {{ $item->tanggal_kembali ? \Carbon\Carbon::parse($item->tanggal_kembali)->format('d M Y') : '-' }}
+
+                        @if($item->status == 'dipinjam' && $rencanaKembali)
+                            @php
+                                $daysLeft = $today->diffInDays($rencanaKembali, false);
+                            @endphp
+                            @if($daysLeft < 0)
+                                <div style="font-size: 11px; color: var(--danger); margin-top: 4px;">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    Terlambat {{ abs($daysLeft) }} hari
+                                </div>
+                            @elseif($daysLeft <= 2 && $daysLeft >= 0)
+                                <div style="font-size: 11px; color: var(--warning); margin-top: 4px;">
+                                    <i class="fas fa-hourglass-half"></i>
+                                    Tersisa {{ $daysLeft }} hari
+                                </div>
+                            @endif
+                        @endif
+                    </td>
+
+                    <td>
+                        @if ($item->status == 'menunggu')
+                            <span class="status-badge status-menunggu">
+                                <i class="fas fa-hourglass-half"></i> Menunggu
+                            </span>
+                        @elseif ($item->status == 'dipinjam')
+                            <span class="status-badge status-dipinjam">
+                                <i class="fas fa-sync-alt"></i> Dipinjam
+                            </span>
+                        @elseif ($item->status == 'dikembalikan' || $item->status == 'selesai')
+                            <span class="status-badge status-selesai">
+                                <i class="fas fa-check-circle"></i> Selesai
+                            </span>
+                        @elseif ($item->status == 'ditolak')
+                            <span class="status-badge status-ditolak">
+                                <i class="fas fa-times-circle"></i> Ditolak
+                            </span>
+                        @endif
+                    </td>
+
+                    <td>
+                        @if($dendaFinal > 0)
+                            <div style="color: var(--danger); font-weight: 600;">
+                                Rp {{ number_format($dendaFinal, 0, ',', '.') }}
+                            </div>
+                            <div style="font-size: 11px; color: var(--gray);">
+                                {{ abs($daysLate) }} hari terlambat
+                            </div>
+                        @else
+                            <span style="color: var(--success);">-</span>
+                        @endif
+                    </td>
+
+                    <td>
+                        <span class="denda-status-badge {{ $dendaStatusClass }}">
+                            @if($dendaStatusClass == 'denda-lunas')
+                                <i class="fas fa-check-circle"></i>
+                            @elseif($dendaStatusClass == 'denda-belum')
+                                <i class="fas fa-exclamation-circle"></i>
+                            @else
+                                <i class="fas fa-minus-circle"></i>
+                            @endif
+                            {{ $dendaStatusText }}
+                        </span>
+                    </td>
+
+                    <!-- ✅ AKSI BALIK LENGKAP -->
+                    <td>
+                        @if ($item->status == 'menunggu')
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <form method="POST" action="{{ route('petugas.peminjaman.setujui', $item->id_peminjaman) }}">
+                                    @csrf
+                                    <button type="submit" class="btn-action approve" onclick="return confirm('Setujui peminjaman ini?')">
+                                        <i class="fas fa-check"></i> Setujui
+                                    </button>
+                                </form>
+
+                                <form method="POST" action="{{ route('petugas.peminjaman.tolak', $item->id_peminjaman) }}">
+                                    @csrf
+                                    <button type="submit" class="btn-action reject" onclick="return confirm('Tolak peminjaman ini?')">
+                                        <i class="fas fa-times"></i> Tolak
+                                    </button>
+                                </form>
+                            </div>
+
+                        @elseif ($item->status == 'dipinjam')
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <form method="POST" action="{{ route('petugas.pengembalian.konfirmasi', $item->id_peminjaman) }}">
+                                    @csrf
+                                    <button type="submit" class="btn-action confirm" onclick="return confirm('Konfirmasi pengembalian alat ini?')">
+                                        <i class="fas fa-check-circle"></i> Konfirmasi
+                                    </button>
+                                </form>
+
+                                @if($dendaFinal > 0 && $statusDenda == 'belum_bayar')
+                                <form method="POST" action="{{ route('petugas.denda.konfirmasi', $item->id_peminjaman) }}">
+                                    @csrf
+                                    <button type="submit" class="btn-action approve" onclick="return confirm('Konfirmasi pembayaran denda Rp {{ number_format($dendaFinal, 0, ',', '.') }}?')">
+                                        <i class="fas fa-money-bill"></i> Denda
+                                    </button>
+                                </form>
+                                @endif
+                            </div>
+
+                        @else
+                            <span style="font-size: 12px; color: var(--gray); font-style: italic;">Tidak ada aksi</span>
+                        @endif
+                    </td>
+
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+        @endif
+    </div>
+</section>
                 <!-- Quick Actions Section -->
                 <div class="stats-container">
                     <div class="stat-card" onclick="showPendingApprovals()" data-tooltip="Proses permintaan peminjaman">
@@ -1519,14 +1650,14 @@
                         </div>
                     </div>
                     
-                    <div class="stat-card" onclick="showLateReturnsModal()" data-tooltip="Lihat peminjaman terlambat">
+                    <div class="stat-card" onclick="showDendaManagement()" data-tooltip="Kelola denda">
                         <div class="stat-icon icon-danger">
-                            <i class="fas fa-exclamation-triangle"></i>
+                            <i class="fas fa-money-bill-wave"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>Keterlambatan</h3>
-                            <div class="number">{{ $peminjamanTerlambat }}</div>
-                            <div class="desc">Perlu tindakan</div>
+                            <h3>Kelola Denda</h3>
+                            <div class="number">{{ $peminjamanDenda }}</div>
+                            <div class="desc">Total: Rp {{ number_format($totalDenda, 0, ',', '.') }}</div>
                         </div>
                     </div>
                 </div>
@@ -1544,6 +1675,7 @@
         // GLOBAL VARIABLES
         // ============================================================
         let currentFilter = 'all';
+        let currentDendaFilter = 'all';
         let autoRefreshInterval = null;
         let isAutoRefreshEnabled = false;
 
@@ -1730,7 +1862,10 @@
                 { label: 'Dipinjam', value: 'dipinjam', icon: 'fa-sync-alt' },
                 { label: 'Terlambat', value: 'terlambat', icon: 'fa-exclamation-triangle' },
                 { label: 'Selesai', value: 'dikembalikan', icon: 'fa-check-circle' },
-                { label: 'Ditolak', value: 'ditolak', icon: 'fa-times-circle' }
+                { label: 'Ditolak', value: 'ditolak', icon: 'fa-times-circle' },
+                { label: 'Ada Denda', value: 'denda_ada', icon: 'fa-money-bill-wave' },
+                { label: 'Denda Belum Bayar', value: 'denda_belum', icon: 'fa-exclamation-circle' },
+                { label: 'Denda Lunas', value: 'denda_lunas', icon: 'fa-check-circle' }
             ];
             
             const modal = document.createElement('div');
@@ -1806,6 +1941,30 @@
                     } else {
                         row.style.display = 'none';
                     }
+                } else if (currentFilter === 'denda_ada') {
+                    const dendaElem = row.cells[6];
+                    if (dendaElem && dendaElem.textContent.trim() !== '-') {
+                        row.style.display = '';
+                        count++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                } else if (currentFilter === 'denda_belum') {
+                    const dendaStatusElem = row.querySelector('.denda-status-badge');
+                    if (dendaStatusElem && dendaStatusElem.textContent.includes('Belum Bayar')) {
+                        row.style.display = '';
+                        count++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                } else if (currentFilter === 'denda_lunas') {
+                    const dendaStatusElem = row.querySelector('.denda-status-badge');
+                    if (dendaStatusElem && dendaStatusElem.textContent.includes('Lunas')) {
+                        row.style.display = '';
+                        count++;
+                    } else {
+                        row.style.display = 'none';
+                    }
                 } else {
                     const statusElem = row.querySelector('.status-badge');
                     if (statusElem) {
@@ -1839,9 +1998,17 @@
                 'dipinjam': 'Dipinjam',
                 'terlambat': 'Terlambat',
                 'dikembalikan': 'Selesai',
-                'ditolak': 'Ditolak'
+                'ditolak': 'Ditolak',
+                'denda_ada': 'Ada Denda',
+                'denda_belum': 'Denda Belum Bayar',
+                'denda_lunas': 'Denda Lunas'
             };
             return labels[value] || value;
+        }
+
+        function filterDendaStatus(status) {
+            currentFilter = status === 'belum_bayar' ? 'denda_belum' : 'denda_lunas';
+            applyFilter();
         }
 
         // ============================================================
@@ -1897,6 +2064,105 @@
         }
 
         // ============================================================
+        // DENDA STATISTICS
+        // ============================================================
+        function showDendaStats() {
+            @php
+                $dendaStats = [
+                    'total_denda' => App\Models\Peminjaman::sum('denda'),
+                    'jumlah_denda' => App\Models\Peminjaman::where('denda', '>', 0)->count(),
+                    'max_denda' => App\Models\Peminjaman::max('denda') ?? 0,
+                    'avg_denda' => App\Models\Peminjaman::where('denda', '>', 0)->avg('denda') ?? 0,
+                    'denda_belum' => App\Models\Peminjaman::where('status_denda', 'belum_bayar')->where('denda', '>', 0)->sum('denda'),
+                    'denda_lunas' => App\Models\Peminjaman::where('status_denda', 'lunas')->where('denda', '>', 0)->sum('denda'),
+                ];
+            @endphp
+            
+            let content = `
+                <div style="text-align: center;">
+                    <p style="color: var(--light); margin-bottom: 20px;">Statistik Denda Peminjaman:</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                        <div style="background: rgba(255,107,107,0.1); padding: 15px; border-radius: var(--radius-md);">
+                            <div style="font-size: 20px; font-weight: 800; color: var(--danger);">Rp {{ number_format($dendaStats['total_denda'], 0, ',', '.') }}</div>
+                            <div style="font-size: 11px; color: var(--gray);">Total Seluruh Denda</div>
+                        </div>
+                        <div style="background: rgba(255,107,107,0.1); padding: 15px; border-radius: var(--radius-md);">
+                            <div style="font-size: 20px; font-weight: 800; color: var(--warning);">{{ $dendaStats['jumlah_denda'] }}</div>
+                            <div style="font-size: 11px; color: var(--gray);">Peminjaman Kena Denda</div>
+                        </div>
+                        <div style="background: rgba(255,107,107,0.1); padding: 15px; border-radius: var(--radius-md);">
+                            <div style="font-size: 20px; font-weight: 800; color: var(--danger);">Rp {{ number_format($dendaStats['denda_belum'], 0, ',', '.') }}</div>
+                            <div style="font-size: 11px; color: var(--gray);">Denda Belum Bayar</div>
+                        </div>
+                        <div style="background: rgba(0,212,170,0.1); padding: 15px; border-radius: var(--radius-md);">
+                            <div style="font-size: 20px; font-weight: 800; color: var(--accent);">Rp {{ number_format($dendaStats['denda_lunas'], 0, ',', '.') }}</div>
+                            <div style="font-size: 11px; color: var(--gray);">Denda Lunas</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="showDendaManagement()" style="width: 100%;">
+                        <i class="fas fa-money-bill-wave"></i> Lihat Detail Denda
+                    </button>
+                </div>
+            `;
+            
+            showModal('Statistik Denda', content);
+        }
+
+        function showDendaManagement() {
+            @php
+                $peminjamanWithDenda = App\Models\Peminjaman::where('denda', '>', 0)
+                    ->with(['user', 'alat'])
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+            @endphp
+            
+            let content = `
+                <p style="color: var(--light); margin-bottom: 15px;">Daftar Peminjaman dengan Denda:</p>
+                <div style="max-height: 400px; overflow-y: auto;">
+            `;
+            
+            @if($peminjamanWithDenda->count() > 0)
+                @foreach($peminjamanWithDenda as $loan)
+                    @php
+                        $statusDenda = $loan->status_denda ?? 'belum_bayar';
+                        $statusClass = $statusDenda == 'lunas' ? 'denda-lunas' : 'denda-belum';
+                        $statusText = $statusDenda == 'lunas' ? 'Lunas' : 'Belum Bayar';
+                    @endphp
+                    content += `
+                        <div style="background: rgba(255,107,107,0.1); padding: 15px; border-radius: var(--radius-sm); margin-bottom: 10px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                                <div>
+                                    <div style="font-weight: 600; color: var(--light);">{{ $loan->alat->nama_alat ?? 'Alat' }}</div>
+                                    <div style="font-size: 12px; color: var(--gray);">Peminjam: {{ $loan->user->name ?? '-' }}</div>
+                                    <div style="font-size: 14px; font-weight: 700; color: var(--danger); margin-top: 5px;">
+                                        Denda: Rp {{ number_format($loan->denda, 0, ',', '.') }}
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="denda-status-badge ${statusClass}">
+                                        <i class="fas ${statusDenda == 'lunas' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                                        ${statusText}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                @endforeach
+            @else
+                content += `
+                    <div style="text-align: center; padding: 20px; color: var(--gray);">
+                        <i class="fas fa-check-circle" style="font-size: 48px; margin-bottom: 15px;"></i>
+                        <p>Tidak ada peminjaman dengan denda</p>
+                    </div>
+                `;
+            @endif
+            
+            content += `</div>`;
+            
+            showModal('Kelola Denda', content);
+        }
+
+        // ============================================================
         // NOTIFICATIONS
         // ============================================================
         function showNotifications() {
@@ -1908,6 +2174,13 @@
                     ->get();
                 $dueToday = App\Models\Peminjaman::whereDate('tanggal_kembali', now())
                     ->where('status', 'dipinjam')
+                    ->with(['user', 'alat'])
+                    ->get();
+                $loansWithDenda = App\Models\Peminjaman::where('denda', '>', 0)
+                    ->with(['user', 'alat'])
+                    ->get();
+                $unpaidDenda = App\Models\Peminjaman::where('status_denda', 'belum_bayar')
+                    ->where('denda', '>', 0)
                     ->with(['user', 'alat'])
                     ->get();
             @endphp
@@ -1947,7 +2220,7 @@
                             @endif
                         </div>
                     </div>
-                    <div>
+                    <div style="margin-bottom: 20px;">
                         <h4 style="color: var(--danger); margin-bottom: 10px;">
                             <i class="fas fa-exclamation-triangle"></i> Peminjaman Terlambat ({{ $lateLoans->count() }})
                         </h4>
@@ -1964,6 +2237,23 @@
                                 @endforeach
                             @else
                                 <div style="padding: 10px; color: var(--gray);">Tidak ada peminjaman terlambat</div>
+                            @endif
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--danger); margin-bottom: 10px;">
+                            <i class="fas fa-money-bill-wave"></i> Denda Belum Dibayar ({{ $unpaidDenda->count() }})
+                        </h4>
+                        <div style="font-size: 13px;">
+                            @if($unpaidDenda->count() > 0)
+                                @foreach($unpaidDenda as $loan)
+                                    <div style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                        <strong>{{ $loan->user->name ?? '-' }}</strong> - {{ $loan->alat->nama_alat ?? '-' }}
+                                        <span style="color: var(--danger);">Denda: Rp {{ number_format($loan->denda, 0, ',', '.') }}</span>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div style="padding: 10px; color: var(--gray);">Tidak ada denda yang belum dibayar</div>
                             @endif
                         </div>
                     </div>
@@ -2055,6 +2345,12 @@
                     </button>
                     <button class="btn btn-warning" onclick="showLateReturnsModal()" style="width: 100%; justify-content: center;">
                         <i class="fas fa-exclamation-triangle"></i> Lihat Keterlambatan
+                    </button>
+                    <button class="btn btn-danger" onclick="filterDendaStatus('belum_bayar')" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-money-bill-wave"></i> Denda Belum Bayar
+                    </button>
+                    <button class="btn btn-success" onclick="filterDendaStatus('lunas')" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-check-circle"></i> Denda Lunas
                     </button>
                     <button class="btn btn-info" onclick="generateReport()" style="width: 100%; justify-content: center;">
                         <i class="fas fa-chart-pie"></i> Lihat Statistik
@@ -2179,6 +2475,10 @@
                         <span>Notifikasi keterlambatan</span>
                     </label>
                     <label style="display: flex; align-items: center; gap: 10px; color: var(--light); cursor: pointer;">
+                        <input type="checkbox" checked style="accent-color: var(--primary);">
+                        <span>Notifikasi denda</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; color: var(--light); cursor: pointer;">
                         <input type="checkbox" style="accent-color: var(--primary);">
                         <span>Notifikasi suara</span>
                     </label>
@@ -2236,12 +2536,13 @@
                     <ul style="margin-left: 20px; margin-top: 10px;">
                         <li><strong>📋 Kelola Peminjaman</strong> - Klik "Setujui" untuk menyetujui, "Tolak" untuk menolak</li>
                         <li><strong>🔄 Konfirmasi Pengembalian</strong> - Klik "Konfirmasi" saat peminjam mengembalikan alat</li>
+                        <li><strong>💰 Lihat Denda</strong> - Lihat daftar peminjaman yang memiliki denda</li>
+                        <li><strong>📊 Status Denda</strong> - Lihat status denda (Lunas/Belum Bayar) di tabel</li>
                         <li><strong>🔍 Pencarian</strong> - Gunakan search bar untuk mencari data spesifik</li>
                         <li><strong>🎯 Filter</strong> - Klik tombol Filter untuk menyaring data berdasarkan status</li>
-                        <li><strong>📊 Statistik</strong> - Lihat ringkasan data di card statistik</li>
                         <li><strong>📈 Grafik</strong> - Pantau tren peminjaman melalui grafik batang</li>
                         <li><strong>📎 Export Data</strong> - Export data ke format CSV/Excel</li>
-                        <li><strong>🔔 Notifikasi</strong> - Dapatkan pemberitahuan peminjaman baru dan keterlambatan</li>
+                        <li><strong>🔔 Notifikasi</strong> - Dapatkan pemberitahuan peminjaman baru, keterlambatan, dan denda</li>
                     </ul>
                     <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
                     <p><strong>💡 Tips:</strong> Gunakan fitur auto-refresh untuk selalu mendapatkan data terbaru secara otomatis.</p>
@@ -2380,7 +2681,7 @@
                             <div style="font-weight: 600; color: var(--light);">{{ $loan->alat->nama_alat ?? 'Alat' }}</div>
                             <div style="font-size: 12px; color: var(--gray);">Peminjam: {{ $loan->user->name ?? '-' }}</div>
                             <div style="font-size: 12px; color: var(--danger);">
-                                <i class="fas fa-clock"></i> Terlambat {{ abs($daysLate) }} hari
+                                <i class="fas fa-clock"></i> Terlambat ${Math.abs({{ $daysLate }})} hari
                             </div>
                             <div style="margin-top: 10px;">
                                 <button class="btn-action confirm" onclick="markAsReturned('{{ $loan->id_peminjaman }}')" style="font-size: 11px; padding: 5px 10px;">

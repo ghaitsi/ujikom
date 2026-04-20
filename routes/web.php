@@ -11,7 +11,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\LogAktivitasController;
 use App\Http\Controllers\Admin\KategoriController;
 use App\Http\Controllers\Admin\CekPeminjamanController;
-use App\Http\Controllers\Admin\PengembalianController; // ✅ TAMBAHAN
+use App\Http\Controllers\Admin\PengembalianController;
 
 // ================= PEMINJAM =================
 use App\Http\Controllers\Peminjam\PeminjamanController;
@@ -20,7 +20,6 @@ use App\Http\Controllers\Peminjam\PengembalianController as PeminjamPengembalian
 // ================= PETUGAS =================
 use App\Http\Controllers\Petugas\PeminjamanPetugasController;
 use App\Http\Controllers\Petugas\LaporanController;
-
 
 
 /*
@@ -59,14 +58,9 @@ Route::get('/dashboard', function () {
 */
 Route::middleware('auth')->group(function () {
 
-    Route::get('/profile', [ProfileController::class, 'edit'])
-        ->name('profile.edit');
-
-    Route::patch('/profile', [ProfileController::class, 'update'])
-        ->name('profile.update');
-
-    Route::delete('/profile', [ProfileController::class, 'destroy'])
-        ->name('profile.destroy');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 
@@ -80,9 +74,7 @@ Route::middleware(['auth','role:admin'])
     ->name('admin.')
     ->group(function () {
 
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', fn() => view('admin.dashboard'))->name('dashboard');
 
         Route::resource('users', UserController::class);
         Route::resource('alat', AlatController::class);
@@ -90,7 +82,6 @@ Route::middleware(['auth','role:admin'])
         Route::resource('peminjaman', CekPeminjamanController::class);
         Route::resource('log', LogAktivitasController::class);
 
-        // ✅ HALAMAN DATA PENGEMBALIAN ADMIN
         Route::get('/pengembalian',
             [PengembalianController::class,'index']
         )->name('pengembalian.index');
@@ -131,8 +122,10 @@ Route::middleware(['auth','role:petugas'])
             [PeminjamanPetugasController::class,'laporan']
         )->name('laporan');
     });
-    
-Route::get('/petugas/laporan', [LaporanController::class,'index'])
+
+// 🔥 FIX: pindahin ke dalam middleware (biar aman)
+Route::middleware(['auth','role:petugas'])
+    ->get('/petugas/laporan', [LaporanController::class,'index'])
     ->name('petugas.laporan');
 
 
@@ -161,6 +154,16 @@ Route::middleware(['auth','role:peminjam'])
         Route::post('/pengembalian/{id}',
             [PeminjamPengembalianController::class,'kembalikan']
         )->name('pengembalian.kembalikan');
+
+        Route::post('/bayar-denda/{id}',
+            [PeminjamPengembalianController::class,'bayarDendaSaja']
+        )->name('bayar.denda');
+
+        // 🔥 ROUTE UTAMA FETCH (SUDAH BENAR)
+        Route::put('/bayar-denda-kembalikan/{id}',
+            [PeminjamPengembalianController::class,'bayarDendaDanKembalikan']
+        )->name('bayar.denda.kembalikan');
+
     });
 
 
