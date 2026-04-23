@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Forent - Data Peminjaman</title>
+    <title>LibTrack - Data Peminjaman Buku</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800|playfair:400,500,600,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Animate CSS -->
@@ -17,24 +17,24 @@
 
     <style>
         :root {
-            --primary: #4361ee;
-            --primary-dark: #3a56d4;
-            --primary-light: #4895ef;
-            --secondary: #7209b7;
-            --accent: #f72585;
-            --success: #4cc9f0;
-            --warning: #f8961e;
-            --danger: #f94144;
-            --dark: #1a1a2e;
-            --darker: #16213e;
-            --light: #f8f9fa;
-            --gray: #6c757d;
-            --gray-light: #e9ecef;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --sidebar-bg: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.12);
-            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.15);
+            --primary: #2c7da0;
+            --primary-dark: #1f5e7a;
+            --primary-light: #4a9fc9;
+            --secondary: #7b5c8e;
+            --secondary-light: #9b7aae;
+            --accent: #e2a55a;
+            --success: #3a9b7a;
+            --warning: #f0b84d;
+            --danger: #e86f4f;
+            --dark: #2c3e50;
+            --darker: #1a2a3a;
+            --light: #ffffff;
+            --gray: #6c7a8a;
+            --gray-light: #eef2f5;
+            --card-bg: rgba(255, 255, 255, 0.96);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12);
             --radius-sm: 10px;
             --radius-md: 16px;
             --radius-lg: 24px;
@@ -45,7 +45,6 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
         }
 
         body {
@@ -53,6 +52,7 @@
             color: var(--dark);
             min-height: 100vh;
             overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
         }
 
         /* Layout Container */
@@ -62,7 +62,6 @@
             position: relative;
         }
 
-        /* Main Content dengan margin untuk sidebar */
         .main-content {
             flex: 1;
             margin-left: 280px;
@@ -73,7 +72,6 @@
             width: calc(100% - 280px);
         }
 
-        /* Responsive: jika sidebar disembunyikan */
         .sidebar-collapsed .main-content {
             margin-left: 0;
             width: 100%;
@@ -81,14 +79,14 @@
 
         /* Glass Header */
         .header {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
-            padding: 0 40px;
-            height: 80px;
+            padding: 0 32px;
+            height: 72px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             box-shadow: var(--shadow-sm);
             position: sticky;
             top: 0;
@@ -96,8 +94,9 @@
         }
 
         .header-title {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
+            font-family: 'Playfair', serif;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             background-clip: text;
@@ -107,70 +106,73 @@
         }
 
         .header-title::before {
-            content: '';
+            content: '📚';
             position: absolute;
-            left: 0;
+            left: -8px;
             top: 50%;
             transform: translateY(-50%);
-            width: 6px;
-            height: 30px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 3px;
+            font-size: 24px;
+            opacity: 0.7;
         }
 
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 24px;
+            gap: 16px;
         }
 
         .search-bar {
             position: relative;
-            width: 320px;
+            width: 300px;
         }
 
         .search-input {
             width: 100%;
-            padding: 14px 20px 14px 48px;
-            background: rgba(248, 249, 250, 0.8);
-            border: 2px solid transparent;
-            border-radius: var(--radius-lg);
-            font-size: 15px;
+            padding: 10px 16px 10px 42px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 40px;
+            font-size: 14px;
             color: var(--dark);
             transition: var(--transition);
-            box-shadow: var(--shadow-sm);
         }
 
         .search-input:focus {
             outline: none;
             border-color: var(--primary);
-            background: white;
-            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+            box-shadow: 0 0 0 3px rgba(44, 125, 160, 0.1);
         }
 
         .search-icon {
             position: absolute;
-            left: 18px;
+            left: 16px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--gray);
-            font-size: 18px;
-            transition: var(--transition);
+            font-size: 14px;
         }
 
-        .search-input:focus + .search-icon {
-            color: var(--primary);
+        .search-shortcut {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.05);
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-size: 10px;
+            color: var(--gray);
         }
 
         .notification-btn {
             position: relative;
-            background: rgba(248, 249, 250, 0.8);
-            border: 2px solid transparent;
+            background: white;
+            border: 1px solid #e2e8f0;
             color: var(--gray);
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            font-size: 20px;
+            font-size: 18px;
             cursor: pointer;
             transition: var(--transition);
             display: flex;
@@ -179,11 +181,10 @@
         }
 
         .notification-btn:hover {
-            background: white;
-            color: var(--primary);
-            border-color: var(--primary-light);
-            transform: rotate(15deg) scale(1.1);
-            box-shadow: var(--shadow-md);
+            background: var(--primary);
+            color: white;
+            transform: scale(1.05);
+            border-color: var(--primary);
         }
 
         .notification-badge {
@@ -193,38 +194,41 @@
             background: linear-gradient(135deg, var(--accent), var(--danger));
             color: white;
             border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            font-size: 12px;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            box-shadow: 0 2px 8px rgba(247, 37, 133, 0.4);
         }
 
         .user-menu {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             cursor: pointer;
-            padding: 8px 16px;
-            border-radius: var(--radius-lg);
-            background: rgba(248, 249, 250, 0.8);
-            border: 2px solid transparent;
+            padding: 6px 12px;
+            border-radius: 40px;
+            background: white;
+            border: 1px solid #e2e8f0;
             transition: var(--transition);
         }
 
         .user-menu:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .user-menu:hover .user-menu-avatar {
             background: white;
-            border-color: var(--primary-light);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
+            color: var(--primary);
         }
 
         .user-menu-avatar {
-            width: 40px;
-            height: 40px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             display: flex;
@@ -232,46 +236,46 @@
             justify-content: center;
             color: white;
             font-weight: 700;
-            font-size: 16px;
-            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+            font-size: 12px;
+            transition: var(--transition);
         }
 
-        /* Content */
         .content-wrapper {
             flex: 1;
-            padding: 40px;
+            padding: 32px;
         }
 
         /* Stats Cards */
         .stats-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 32px;
         }
 
         .stat-card {
             background: var(--card-bg);
-            border-radius: var(--radius-md);
-            padding: 24px;
-            box-shadow: var(--shadow-md);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
             transition: var(--transition);
-            backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 16px;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
         }
 
         .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
+            width: 52px;
+            height: 52px;
+            border-radius: var(--radius-md);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -280,250 +284,191 @@
             flex-shrink: 0;
         }
 
-        .icon-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); }
-        .icon-success { background: linear-gradient(135deg, var(--success), #0ea5e9); }
-        .icon-warning { background: linear-gradient(135deg, var(--warning), #f97316); }
-        .icon-danger { background: linear-gradient(135deg, var(--danger), #e53e3e); }
+        .icon-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); }
+        .icon-success { background: linear-gradient(135deg, var(--success), #2d7a5e); }
+        .icon-warning { background: linear-gradient(135deg, var(--warning), #d49a2d); }
+        .icon-danger { background: linear-gradient(135deg, var(--danger), #c95a3a); }
 
         .stat-info h3 {
-            font-size: 14px;
+            font-size: 12px;
             color: var(--gray);
             margin-bottom: 4px;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .stat-info .number {
             font-size: 28px;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--dark);
             line-height: 1;
         }
 
         .stat-info .desc {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--gray);
             margin-top: 4px;
         }
 
-        /* Premium Card Container */
+        /* Dashboard Card */
         .dashboard-card {
             background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: 32px;
+            border-radius: var(--radius-xl);
+            padding: 24px;
             box-shadow: var(--shadow-md);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid #e2e8f0;
             transition: var(--transition);
-            backdrop-filter: blur(10px);
-            animation: cardEntrance 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-            opacity: 0;
-            transform: translateY(20px);
             margin-bottom: 40px;
-        }
-
-        @keyframes cardEntrance {
-            from {
-                opacity: 0;
-                transform: translateY(40px) scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
         }
 
         .dashboard-card:hover {
             box-shadow: var(--shadow-lg);
-            transform: translateY(-8px);
-            border-color: var(--primary-light);
         }
 
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
             padding-bottom: 16px;
-            border-bottom: 2px solid rgba(67, 97, 238, 0.1);
-        }
-
-        .card-title {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--dark);
-            display: flex;
-            align-items: center;
+            border-bottom: 2px solid rgba(44, 125, 160, 0.1);
+            flex-wrap: wrap;
             gap: 12px;
         }
 
-        .card-title::before {
-            content: '';
-            width: 8px;
-            height: 24px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 4px;
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            font-family: 'Playfair', serif;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        /* Info Badge - View Only Mode */
+        .card-title i {
+            color: var(--primary);
+        }
+
         .info-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 8px 16px;
-            background: rgba(67, 97, 238, 0.08);
-            border-radius: 999px;
+            padding: 6px 12px;
+            background: rgba(44, 125, 160, 0.1);
+            border-radius: 40px;
             color: var(--primary);
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
-            border: 1px solid rgba(67, 97, 238, 0.2);
         }
 
-        .info-badge i {
-            color: var(--primary);
-        }
-
-        /* Premium Table Styling */
+        /* Table */
         .table-container {
             overflow-x: auto;
             border-radius: var(--radius-md);
-            box-shadow: var(--shadow-sm);
-            -webkit-overflow-scrolling: touch;
         }
 
         .peminjaman-table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
+            border-collapse: collapse;
             background: white;
             border-radius: var(--radius-md);
             overflow: hidden;
-            min-width: 1100px;
+            min-width: 900px;
         }
 
         .peminjaman-table thead {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
-            position: sticky;
-            top: 0;
         }
 
         .peminjaman-table th {
-            padding: 18px 20px;
+            padding: 14px 16px;
             text-align: left;
             color: white;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            white-space: nowrap;
         }
 
         .peminjaman-table tbody tr {
+            border-bottom: 1px solid #eef2f5;
             transition: var(--transition);
-            border-bottom: 1px solid var(--gray-light);
-        }
-
-        .peminjaman-table tbody tr:last-child {
-            border-bottom: none;
         }
 
         .peminjaman-table tbody tr:hover {
-            background: rgba(67, 97, 238, 0.05);
-            transform: translateX(4px);
+            background: rgba(44, 125, 160, 0.04);
         }
 
         .peminjaman-table td {
-            padding: 20px 16px;
+            padding: 14px 16px;
             color: var(--dark);
-            font-size: 14px;
+            font-size: 13px;
             vertical-align: middle;
         }
 
-        /* ID Styling */
+        /* Badges */
         .id-badge {
             display: inline-block;
-            padding: 4px 8px;
-            background: rgba(67, 97, 238, 0.1);
+            padding: 3px 8px;
+            background: rgba(44, 125, 160, 0.1);
             color: var(--primary);
-            border-radius: var(--radius-sm);
+            border-radius: 6px;
             font-weight: 600;
-            font-size: 12px;
-            border: 1px solid rgba(67, 97, 238, 0.2);
+            font-size: 11px;
+            font-family: monospace;
         }
 
-        /* Status Badges */
         .status-badge {
             display: inline-flex;
             align-items: center;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
             gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
         }
 
         .status-dipinjam {
-            background: linear-gradient(135deg, rgba(248, 150, 30, 0.15), rgba(248, 150, 30, 0.05));
-            color: var(--warning);
-            border: 2px solid rgba(248, 150, 30, 0.2);
+            background: rgba(240, 184, 77, 0.15);
+            color: #b88a2d;
         }
 
         .status-dikembalikan {
-            background: linear-gradient(135deg, rgba(76, 201, 240, 0.15), rgba(76, 201, 240, 0.05));
+            background: rgba(58, 155, 122, 0.12);
             color: var(--success);
-            border: 2px solid rgba(76, 201, 240, 0.2);
         }
 
         .status-terlambat {
-            background: linear-gradient(135deg, rgba(249, 65, 68, 0.15), rgba(249, 65, 68, 0.05));
+            background: rgba(232, 111, 79, 0.12);
             color: var(--danger);
-            border: 2px solid rgba(249, 65, 68, 0.2);
         }
 
         .status-selesai {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
-            color: #10b981;
-            border: 2px solid rgba(16, 185, 129, 0.2);
+            background: rgba(58, 155, 122, 0.12);
+            color: var(--success);
         }
 
         /* User & Alat Info */
-        .user-info {
+        .user-info, .alat-info {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 2px;
         }
 
-        .user-name {
+        .user-name, .alat-name {
             font-weight: 600;
             color: var(--dark);
         }
 
-        .user-email {
-            font-size: 12px;
+        .user-email, .alat-id {
+            font-size: 11px;
             color: var(--gray);
         }
 
-        .alat-info {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .alat-name {
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .alat-id {
-            font-size: 12px;
-            color: var(--gray);
-        }
-
-        /* Date Styling */
         .date-cell {
-            font-family: 'Monaco', 'Courier New', monospace;
-            font-size: 13px;
+            font-family: monospace;
         }
 
         .date-primary {
@@ -532,322 +477,165 @@
         }
 
         .date-secondary {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--gray);
         }
 
-        /* Detail Button - Hanya Lihat Detail */
+        /* Button Detail */
         .btn-detail-view {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 8px 16px;
-            border-radius: var(--radius-sm);
+            padding: 6px 14px;
+            border-radius: 8px;
             font-weight: 600;
-            font-size: 12px;
+            font-size: 11px;
             border: none;
             cursor: pointer;
             transition: var(--transition);
-            text-decoration: none;
-            white-space: nowrap;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
         }
 
         .btn-detail-view:hover {
             transform: translateY(-2px);
-            box-shadow: var(--shadow-sm);
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            box-shadow: 0 4px 12px rgba(44, 125, 160, 0.3);
         }
 
-        .btn-detail-view i {
-            font-size: 12px;
-        }
-
-        /* Empty State - Tanpa Tombol Tambah */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--gray);
-        }
-
-        .empty-icon {
-            font-size: 64px;
-            color: var(--gray-light);
-            margin-bottom: 20px;
-        }
-
-        .empty-state h3 {
-            font-size: 20px;
-            margin-bottom: 10px;
-            color: var(--dark);
-        }
-
-        .empty-state p {
-            font-size: 14px;
-            max-width: 400px;
-            margin: 0 auto;
-            color: var(--gray);
-        }
-
-        /* ===== PREMIUM PAGINATION STYLING ===== */
+        /* Pagination */
         .pagination-wrapper {
-            margin-top: 32px;
-            padding-top: 24px;
-            border-top: 2px solid rgba(67, 97, 238, 0.1);
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #eef2f5;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
             gap: 16px;
         }
 
         .pagination-info {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 8px 16px;
-            background: rgba(67, 97, 238, 0.03);
-            border-radius: 100px;
+            gap: 8px;
             color: var(--gray);
             font-size: 13px;
-            font-weight: 500;
-        }
-
-        .pagination-info i {
-            color: var(--primary);
-            font-size: 14px;
         }
 
         .pagination {
             display: flex;
-            align-items: center;
             gap: 8px;
             list-style: none;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin: 0;
-            padding: 0;
         }
 
-        .pagination-item {
-            display: inline-flex;
-        }
-
-        .pagination-link,
-        .pagination-current {
+        .pagination a, .pagination span {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 44px;
-            height: 44px;
-            padding: 0 12px;
-            border-radius: 12px;
+            min-width: 36px;
+            height: 36px;
+            padding: 0 10px;
+            border-radius: 8px;
             background: white;
             color: var(--dark);
             text-decoration: none;
             font-weight: 600;
-            font-size: 14px;
-            border: 2px solid transparent;
+            font-size: 13px;
+            border: 1px solid #e2e8f0;
             transition: var(--transition);
-            box-shadow: var(--shadow-sm);
-            position: relative;
-            overflow: hidden;
         }
 
-        .pagination-link {
-            border-color: var(--gray-light);
-        }
-
-        .pagination-link::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(67, 97, 238, 0.2);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-            z-index: 0;
-        }
-
-        .pagination-link:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .pagination-link:hover {
+        .pagination a:hover {
+            background: var(--primary);
+            color: white;
             border-color: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-            color: var(--primary);
         }
 
-        .pagination-link i {
-            position: relative;
-            z-index: 1;
-            font-size: 14px;
-        }
-
-        .pagination-current {
+        .pagination .active span {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            border: none;
-            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
-            transform: scale(1.05);
+            border-color: transparent;
         }
 
-        .pagination-current::after {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 14px;
-            z-index: -1;
-            opacity: 0.5;
-            filter: blur(8px);
-        }
-
-        .pagination-dots {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 44px;
-            height: 44px;
-            color: var(--gray);
-            font-weight: 600;
-            font-size: 18px;
-            letter-spacing: 2px;
-        }
-
-        .pagination-nav {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 0 8px;
-        }
-
-        .pagination-nav .pagination-link {
-            min-width: 44px;
-            background: white;
-        }
-
-        .pagination-nav .pagination-link:first-child i {
-            margin-right: 4px;
-        }
-
-        .pagination-nav .pagination-link:last-child i {
-            margin-left: 4px;
-        }
-
-        /* Per-page selector */
         .per-page-selector {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-left: 16px;
+            gap: 8px;
         }
 
         .per-page-selector select {
-            padding: 8px 12px;
-            border-radius: 10px;
-            border: 2px solid var(--gray-light);
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
             background: white;
-            color: var(--dark);
             font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            transition: var(--transition);
-            outline: none;
         }
 
-        .per-page-selector select:hover {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
-        }
-
-        .per-page-selector select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-        }
-
-        .per-page-selector label {
-            color: var(--gray);
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        /* Detail Modal - View Only */
+        /* Modal */
         .modal {
-            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(8px);
-            z-index: 9999;
+            backdrop-filter: blur(4px);
+            display: flex;
             align-items: center;
             justify-content: center;
-            animation: fadeIn 0.3s ease;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: var(--transition);
         }
 
         .modal.show {
-            display: flex;
+            visibility: visible;
+            opacity: 1;
         }
 
         .modal-content {
             background: white;
-            border-radius: var(--radius-lg);
-            padding: 32px;
-            max-width: 550px;
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            max-width: 500px;
             width: 90%;
-            max-height: 90vh;
+            max-height: 80vh;
             overflow-y: auto;
-            box-shadow: var(--shadow-lg);
-            animation: slideUp 0.4s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.show .modal-content {
+            transform: scale(1);
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             padding-bottom: 16px;
-            border-bottom: 2px solid rgba(67, 97, 238, 0.1);
+            border-bottom: 2px solid rgba(44, 125, 160, 0.1);
         }
 
-        .modal-title {
+        .modal-header h3 {
             font-size: 20px;
             font-weight: 700;
-            color: var(--dark);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .modal-title i {
-            color: var(--primary);
+            font-family: 'Playfair', serif;
         }
 
         .modal-close {
             background: none;
             border: none;
-            color: var(--gray);
             font-size: 20px;
             cursor: pointer;
+            color: var(--gray);
             transition: var(--transition);
         }
 
         .modal-close:hover {
             color: var(--danger);
-            transform: rotate(90deg);
         }
 
         .detail-grid {
@@ -858,68 +646,56 @@
         }
 
         .detail-item {
-            background: rgba(67, 97, 238, 0.03);
+            background: #f8fafc;
+            padding: 12px;
             border-radius: var(--radius-md);
-            padding: 16px;
-            border: 1px solid rgba(67, 97, 238, 0.1);
+            border: 1px solid #eef2f5;
         }
 
         .detail-label {
-            font-size: 11px;
-            text-transform: uppercase;
+            font-size: 10px;
             color: var(--gray);
+            text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .detail-value {
-            font-size: 16px;
             font-weight: 700;
             color: var(--dark);
         }
 
-        .detail-sub {
-            font-size: 12px;
-            color: var(--gray);
-            margin-top: 4px;
-        }
-
         .detail-row {
             display: flex;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--gray-light);
-        }
-
-        .detail-row:last-child {
-            border-bottom: none;
+            padding: 10px 0;
+            border-bottom: 1px solid #eef2f5;
         }
 
         .detail-row .label {
-            width: 140px;
+            width: 120px;
             color: var(--gray);
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .detail-row .value {
             flex: 1;
-            color: var(--dark);
             font-weight: 600;
+            color: var(--dark);
         }
 
         .modal-footer {
             display: flex;
             justify-content: flex-end;
-            margin-top: 24px;
+            margin-top: 20px;
             padding-top: 16px;
-            border-top: 1px solid var(--gray-light);
+            border-top: 1px solid #eef2f5;
         }
 
         .btn-close-modal {
-            padding: 10px 24px;
-            background: var(--gray-light);
-            color: var(--dark);
+            padding: 8px 20px;
+            background: #eef2f5;
             border: none;
-            border-radius: var(--radius-md);
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
@@ -930,52 +706,74 @@
             color: white;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Alert Message */
+        /* Alert */
         .alert {
-            padding: 16px 24px;
+            padding: 14px 20px;
             border-radius: var(--radius-md);
             margin-bottom: 24px;
-            font-weight: 500;
             display: flex;
             align-items: center;
             gap: 12px;
-            animation: slideIn 0.5s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            border-left: 4px solid;
+            animation: slideIn 0.3s ease;
         }
 
         .alert-success {
-            background: linear-gradient(135deg, rgba(76, 201, 240, 0.15), rgba(76, 201, 240, 0.05));
+            background: rgba(58, 155, 122, 0.1);
+            border-left-color: var(--success);
             color: var(--success);
-            border: 2px solid rgba(76, 201, 240, 0.2);
         }
 
-        /* Sidebar Toggle Button untuk Mobile */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            color: #e2e8f0;
+            margin-bottom: 16px;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        /* Toast */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            box-shadow: var(--shadow-lg);
+            z-index: 1100;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideInBottom 0.3s ease;
+        }
+
+        @keyframes slideInBottom {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideOutBottom {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(50px); }
+        }
+
+        /* Sidebar Toggle */
         .sidebar-toggle {
             display: none;
             position: fixed;
@@ -984,18 +782,13 @@
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border: none;
-            width: 48px;
-            height: 48px;
-            border-radius: var(--radius-sm);
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
             font-size: 20px;
             cursor: pointer;
             z-index: 1000;
             box-shadow: var(--shadow-md);
-            transition: var(--transition);
-        }
-
-        .sidebar-toggle:hover {
-            transform: scale(1.1);
         }
 
         /* Responsive */
@@ -1004,237 +797,123 @@
                 margin-left: 0;
                 width: 100%;
             }
-            
             .sidebar-toggle {
                 display: flex;
                 align-items: center;
                 justify-content: center;
             }
-            
-            .search-bar {
-                width: 240px;
-            }
-        }
-
-        @media (max-width: 992px) {
-            .detail-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .pagination-wrapper {
-                flex-direction: column;
-                align-items: center;
-                gap: 16px;
-            }
-            
-            .per-page-selector {
-                margin-left: 0;
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
         @media (max-width: 768px) {
             .header {
                 padding: 0 20px;
-                height: 70px;
+                height: 64px;
             }
-            
             .content-wrapper {
                 padding: 20px;
             }
-            
             .dashboard-card {
-                padding: 24px;
+                padding: 20px;
             }
-            
             .search-bar {
                 display: none;
             }
-            
             .stats-container {
                 grid-template-columns: 1fr;
             }
-            
             .card-header {
                 flex-direction: column;
-                gap: 16px;
                 align-items: flex-start;
             }
-            
-            .btn-detail-view {
-                width: 100%;
-                justify-content: center;
+            .pagination-wrapper {
+                flex-direction: column;
+                align-items: center;
             }
-            
-            .peminjaman-table th,
-            .peminjaman-table td {
-                padding: 12px;
-            }
-
-            .modal-content {
-                padding: 24px;
-            }
-
-            .pagination {
-                gap: 4px;
-            }
-
-            .pagination-link,
-            .pagination-current {
-                min-width: 38px;
-                height: 38px;
-                padding: 0 8px;
-                font-size: 13px;
-            }
-
-            .pagination-dots {
-                min-width: 38px;
-                height: 38px;
+            .detail-grid {
+                grid-template-columns: 1fr;
             }
         }
 
         @media (max-width: 480px) {
             .header-title {
-                font-size: 22px;
+                font-size: 18px;
             }
-            
-            .user-menu {
-                padding: 6px 12px;
+            .user-menu span {
+                display: none;
             }
-            
-            .user-menu-avatar {
-                width: 32px;
-                height: 32px;
-                font-size: 14px;
-            }
-            
-            .peminjaman-table {
-                font-size: 12px;
-            }
-
             .detail-row {
                 flex-direction: column;
                 gap: 4px;
             }
-
             .detail-row .label {
                 width: 100%;
             }
-
-            .pagination-info {
-                flex-wrap: wrap;
-                justify-content: center;
-                text-align: center;
-            }
-
-            .per-page-selector {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-
-        /* Loading Skeleton */
-        .skeleton {
-            animation: skeleton-loading 1s linear infinite alternate;
-        }
-
-        @keyframes skeleton-loading {
-            0% { background-color: hsl(200, 20%, 90%); }
-            100% { background-color: hsl(200, 20%, 95%); }
         }
     </style>
 </head>
 <body>
-    <!-- Sidebar Toggle Button -->
-    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle Sidebar">
+    <button class="sidebar-toggle" id="sidebarToggle">
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- App Container -->
     <div class="app-container" id="appContainer">
-        <!-- Include Sidebar -->
         @include('layouts.sidebar')
 
-        <!-- Main Content -->
         <main class="main-content" id="mainContent">
-            <!-- Glass Header -->
-            <header class="header animate__animated animate__fadeIn">
-                <h1 class="header-title">
-                    <i class="fas fa-box" aria-hidden="true" style="margin-right: 10px;"></i>
-                    Data Peminjaman
-                </h1>
+            <header class="header">
+                <h1 class="header-title">Data Peminjaman Buku</h1>
                 <div class="header-actions">
-                    <div class="search-bar" role="search">
-                        <i class="fas fa-search search-icon" aria-hidden="true"></i>
-                        <input type="text" class="search-input" id="searchInput" placeholder="Cari peminjaman... (Ctrl+K)" aria-label="Pencarian peminjaman">
+                    <div class="search-bar">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input" id="searchInput" placeholder="Cari peminjaman...">
+                        <span class="search-shortcut">⌘K</span>
                     </div>
-                    <button class="notification-btn" id="notificationBtn" aria-label="Notifikasi">
-                        <i class="fas fa-bell" aria-hidden="true"></i>
-                        <span class="notification-badge" aria-label="3 notifikasi baru">3</span>
+                    <button class="notification-btn" id="notificationBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
                     </button>
-                    <div class="user-menu" id="userMenu" role="button" tabindex="0" aria-label="Menu pengguna">
-                        <div class="user-menu-avatar" aria-hidden="true">
-                            @auth
-                                {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
-                            @else
-                                GU
-                            @endauth
+                    <div class="user-menu" id="userMenu">
+                        <div class="user-menu-avatar">
+                            @auth {{ strtoupper(substr(Auth::user()->name, 0, 2)) }} @else AD @endauth
                         </div>
-                        <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                            <span style="font-weight: 600; font-size: 14px; color: var(--dark);">
-                                @auth
-                                    {{ Auth::user()->name }}
-                                @else
-                                    Guest User
-                                @endauth
-                            </span>
-                            <span style="font-size: 12px; color: var(--gray);">Viewer</span>
-                        </div>
-                        <i class="fas fa-chevron-down" style="color: var(--gray); font-size: 12px;" aria-hidden="true"></i>
+                        <span>{{ Auth::user()->name ?? 'Admin' }}</span>
+                        <i class="fas fa-chevron-down"></i>
                     </div>
                 </div>
             </header>
 
-            <!-- Content -->
             <div class="content-wrapper">
                 <!-- Stats Cards -->
                 <div class="stats-container">
-                    <div class="stat-card animate__animated animate__fadeInUp">
-                        <div class="stat-icon icon-primary" aria-hidden="true">
-                            <i class="fas fa-calendar-alt"></i>
-                        </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-primary"><i class="fas fa-calendar-alt"></i></div>
                         <div class="stat-info">
                             <h3>Total Peminjaman</h3>
                             <div class="number">{{ $totalPeminjaman ?? $data->total() }}</div>
                             <div class="desc">Semua peminjaman</div>
                         </div>
                     </div>
-
-                    <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s">
-                        <div class="stat-icon icon-success" aria-hidden="true">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-success"><i class="fas fa-check-circle"></i></div>
                         <div class="stat-info">
                             <h3>Selesai</h3>
                             <div class="number">{{ $selesai ?? 0 }}</div>
                             <div class="desc">Peminjaman selesai</div>
                         </div>
                     </div>
-
-                    <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
-                        <div class="stat-icon icon-warning" aria-hidden="true">
-                            <i class="fas fa-clock"></i>
-                        </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-warning"><i class="fas fa-book-open"></i></div>
                         <div class="stat-info">
                             <h3>Dipinjam</h3>
                             <div class="number">{{ $dipinjam ?? 0 }}</div>
                             <div class="desc">Masih dipinjam</div>
                         </div>
                     </div>
-
-                    <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s">
-                        <div class="stat-icon icon-danger" aria-hidden="true">
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-danger"><i class="fas fa-exclamation-triangle"></i></div>
                         <div class="stat-info">
                             <h3>Terlambat</h3>
                             <div class="number">{{ $terlambat ?? 0 }}</div>
@@ -1243,221 +922,80 @@
                     </div>
                 </div>
 
-                <!-- Success Message -->
                 @if(session('success'))
-                    <div class="alert alert-success animate__animated animate__fadeIn" role="alert">
-                        <i class="fas fa-check-circle" aria-hidden="true"></i>
-                        {{ session('success') }}
+                    <div class="alert alert-success animate__animated animate__fadeIn">
+                        <i class="fas fa-check-circle"></i> {{ session('success') }}
                     </div>
                 @endif
 
-                <!-- Premium Card Container - Tanpa Tombol Tambah -->
-                <div class="dashboard-card animate__animated animate__fadeInUp">
+                <!-- Dashboard Card -->
+                <div class="dashboard-card">
                     <div class="card-header">
-                        <h3 class="card-title">
-                            <i class="fas fa-list-alt" aria-hidden="true"></i>
-                            Daftar Peminjaman
-                        </h3>
-                        <div class="info-badge">
-                            <i class="fas fa-eye" aria-hidden="true"></i>
-                            Mode Lihat Saja
-                        </div>
+                        <h3 class="card-title"><i class="fas fa-list-alt"></i> Daftar Peminjaman</h3>
+                        <div class="info-badge"><i class="fas fa-eye"></i> Mode Lihat Saja</div>
                     </div>
 
-                    <!-- Table - Tanpa Kolom Aksi -->
                     <div class="table-container">
                         @if($data->count() > 0)
                             <table class="peminjaman-table">
-                                <caption class="sr-only">Daftar peminjaman alat</caption>
                                 <thead>
                                     <tr>
-                                        <th scope="col">ID</th>
-                                        <th scope="col">User</th>
-                                        <th scope="col">buku</th>
-                                        <th scope="col">Tanggal Pinjam</th>
-                                        <th scope="col">Rencana Kembali</th>
-                                        <th scope="col">Sisa Waktu</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Detail</th>
+                                        <th>ID</th>
+                                        <th>Peminjam</th>
+                                        <th>Buku</th>
+                                        <th>Tgl Pinjam</th>
+                                        <th>Rencana Kembali</th>
+                                        <th>Sisa Waktu</th>
+                                        <th>Status</th>
+                                        <th>Detail</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="tableBody">
                                     @foreach($data as $row)
                                     @php
-                                        // RESET KE AWAL HARI UNTUK MENGHINDARI DESIMAL
                                         $today = now()->startOfDay();
                                         $rencanaKembali = \Carbon\Carbon::parse($row->tanggal_kembali)->startOfDay();
-                                        
-                                        // HITUNG SELISIH HARI (INTEGER)
                                         $selisihHari = $today->diffInDays($rencanaKembali, false);
                                         
-                                        // TENTUKAN STATUS
-                                        $statusClass = '';
-                                        $statusIcon = '';
-                                        $statusText = '';
-                                        
-                                        // PRIORITAS 1: SELESAI
-                                        if($row->status == 'selesai') {
+                                        if($row->status == 'selesai' || $row->status == 'dikembalikan') {
                                             $statusClass = 'status-selesai';
-                                            $statusIcon = 'fa-check-double';
-                                            $statusText = 'Selesai';
-                                        }
-                                        // PRIORITAS 2: DIKEMBALIKAN
-                                        elseif($row->status == 'dikembalikan') {
-                                            $statusClass = 'status-dikembalikan';
                                             $statusIcon = 'fa-check-circle';
-                                            $statusText = 'Dikembalikan';
-                                        }
-                                        // PRIORITAS 3: TERLAMBAT (berdasarkan status atau perhitungan)
-                                        elseif($row->status == 'terlambat' || $selisihHari < 0) {
+                                            $statusText = 'Selesai';
+                                        } elseif($row->status == 'terlambat' || $selisihHari < 0) {
                                             $statusClass = 'status-terlambat';
                                             $statusIcon = 'fa-exclamation-triangle';
                                             $statusText = 'Terlambat';
-                                        }
-                                        // PRIORITAS 4: DIPINJAM (default)
-                                        else {
+                                        } else {
                                             $statusClass = 'status-dipinjam';
                                             $statusIcon = 'fa-clock';
                                             $statusText = 'Dipinjam';
                                         }
                                     @endphp
-                                    <tr class="animate__animated animate__fadeIn" style="animation-delay: {{ $loop->index * 0.05 }}s">
-                                        <td>
-                                            <span class="id-badge">#{{ $row->id_peminjaman }}</span>
-                                        </td>
-                                        
-                                        <td>
-                                            <div class="user-info">
-                                                <div class="user-name">{{ $row->user->name ?? '-' }}</div>
-                                                <div class="user-email">{{ $row->user->email ?? '' }}</div>
-                                            </div>
-                                        </td>
-                                        
-                                        <td>
-                                            <div class="alat-info">
-                                                <div class="alat-name">{{ $row->alat->nama_alat ?? '-' }}</div>
-                                                <div class="alat-id">ID: {{ $row->alat->id_alat ?? '' }}</div>
-                                            </div>
-                                        </td>
-                                        
-                                        <td>
-                                            <div class="date-cell">
-                                                <div class="date-primary">{{ \Carbon\Carbon::parse($row->tanggal_pinjam)->format('d/m/Y') }}</div>
-                                                @if($row->created_at)
-                                                    <div class="date-secondary">{{ $row->created_at->format('H:i') }} WIB</div>
-                                                @endif
-                                            </div>
-                                        </td>
-                                        
-                                        <td>
-                                            <div class="date-cell">
-                                                <div class="date-primary">{{ \Carbon\Carbon::parse($row->tanggal_kembali)->format('d/m/Y') }}</div>
-                                            </div>
-                                        </td>
-                                        
-                                        <td>
-                                            <div class="date-cell">
-                                                @if(in_array($row->status, ['selesai', 'dikembalikan']))
-                                                    <div class="date-primary" style="color: var(--gray);">-</div>
-                                                    <div class="date-secondary">Selesai</div>
-                                                @elseif($selisihHari > 0)
-                                                    <div class="date-primary" style="color: var(--success);">{{ $selisihHari }} hari</div>
-                                                    <div class="date-secondary">Tersisa</div>
-                                                @elseif($selisihHari == 0)
-                                                    <div class="date-primary" style="color: var(--warning);">Hari ini</div>
-                                                    <div class="date-secondary">Batas akhir</div>
-                                                @else
-                                                    <div class="date-primary" style="color: var(--danger);">{{ abs($selisihHari) }} hari</div>
-                                                    <div class="date-secondary">Terlambat</div>
-                                                @endif
-                                            </div>
-                                        </td>
-                                        
-                                        <td>
-                                            <span class="status-badge {{ $statusClass }}">
-                                                <i class="fas {{ $statusIcon }}" aria-hidden="true"></i>
-                                                {{ $statusText }}
-                                            </span>
-                                        </td>
-                                        
-                                        <td>
-                                            <button class="btn-detail-view" onclick='showDetailModal({{ json_encode($row) }}, {{ json_encode(["selisihHari" => $selisihHari, "status" => $statusText]) }})' aria-label="Lihat detail peminjaman">
-                                                <i class="fas fa-info-circle" aria-hidden="true"></i>
-                                                Detail
-                                            </button>
-                                        </td>
+                                    <tr data-search="{{ $row->user->name ?? '' }} {{ $row->alat->nama_alat ?? '' }} {{ $row->id_peminjaman }}">
+                                        <td><span class="id-badge">#{{ $row->id_peminjaman }}</span></td>
+                                        <td><div class="user-info"><span class="user-name">{{ $row->user->name ?? '-' }}</span><span class="user-email">{{ $row->user->email ?? '' }}</span></div></td>
+                                        <td><div class="alat-info"><span class="alat-name">{{ $row->alat->nama_alat ?? '-' }}</span><span class="alat-id">ID: {{ $row->alat->id_alat ?? '' }}</span></div></td>
+                                        <td><div class="date-cell"><div class="date-primary">{{ \Carbon\Carbon::parse($row->tanggal_pinjam)->format('d/m/Y') }}</div><div class="date-secondary">{{ \Carbon\Carbon::parse($row->tanggal_pinjam)->format('H:i') }} WIB</div></div></td>
+                                        <td><div class="date-primary">{{ \Carbon\Carbon::parse($row->tanggal_kembali)->format('d/m/Y') }}</div></td>
+                                        <td>@if(in_array($row->status, ['selesai', 'dikembalikan']))<span class="date-primary" style="color: var(--gray);">-</span>@elseif($selisihHari > 0)<span style="color: var(--success);">{{ $selisihHari }} hari</span><div class="date-secondary">Tersisa</div>@elseif($selisihHari == 0)<span style="color: var(--warning);">Hari ini</span><div class="date-secondary">Batas akhir</div>@else<span style="color: var(--danger);">{{ abs($selisihHari) }} hari</span><div class="date-secondary">Terlambat</div>@endif</div>
+                                        <td><span class="status-badge {{ $statusClass }}"><i class="fas {{ $statusIcon }}"></i> {{ $statusText }}</span></td>
+                                        <td><button class="btn-detail-view" onclick='showDetail({{ json_encode($row) }}, {{ $selisihHari }})'><i class="fas fa-info-circle"></i> Detail</button></td>
                                     </tr>
                                     @endforeach
                                 </tbody>
                             </table>
                         @else
-                            <div class="empty-state">
-                                <div class="empty-icon" aria-hidden="true">
-                                    <i class="fas fa-calendar-alt"></i>
-                                </div>
-                                <h3>Tidak ada data peminjaman</h3>
-                                <p>Belum ada peminjaman yang tercatat.</p>
-                            </div>
+                            <div class="empty-state"><div class="empty-icon"><i class="fas fa-calendar-alt"></i></div><h3>Tidak ada data peminjaman</h3><p>Belum ada peminjaman yang tercatat.</p></div>
                         @endif
                     </div>
 
-                    <!-- Premium Pagination -->
+                    <!-- Pagination -->
                     @if(method_exists($data, 'links') && $data->hasPages())
-                        <div class="pagination-wrapper animate__animated animate__fadeInUp">
-                            <!-- Info Pagination -->
-                            <div class="pagination-info">
-                                <i class="fas fa-chart-bar"></i>
-                                <span>Menampilkan {{ $data->firstItem() }} - {{ $data->lastItem() }} dari {{ $data->total() }} data</span>
-                            </div>
-
-                            <!-- Custom Pagination dengan Style Premium -->
-                            <div class="pagination">
-                                {{-- Tombol Previous --}}
-                                @if($data->onFirstPage())
-                                    <span class="pagination-link" style="opacity: 0.5; cursor: not-allowed; background: #f8f9fa;">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </span>
-                                @else
-                                    <a href="{{ $data->previousPageUrl() }}" class="pagination-link" aria-label="Halaman sebelumnya">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </a>
-                                @endif
-
-                                {{-- Nomor Halaman dengan efek premium --}}
-                                @foreach($data->getUrlRange(1, $data->lastPage()) as $page => $url)
-                                    @if($page == $data->currentPage())
-                                        <span class="pagination-current" aria-current="page">{{ $page }}</span>
-                                    @elseif($page == 1 || $page == $data->lastPage() || ($page >= $data->currentPage() - 2 && $page <= $data->currentPage() + 2))
-                                        <a href="{{ $url }}" class="pagination-link">{{ $page }}</a>
-                                    @elseif($page == $data->currentPage() - 3 || $page == $data->currentPage() + 3)
-                                        <span class="pagination-dots">...</span>
-                                    @endif
-                                @endforeach
-
-                                {{-- Tombol Next --}}
-                                @if($data->hasMorePages())
-                                    <a href="{{ $data->nextPageUrl() }}" class="pagination-link" aria-label="Halaman selanjutnya">
-                                        <i class="fas fa-chevron-right"></i>
-                                    </a>
-                                @else
-                                    <span class="pagination-link" style="opacity: 0.5; cursor: not-allowed; background: #f8f9fa;">
-                                        <i class="fas fa-chevron-right"></i>
-                                    </span>
-                                @endif
-                            </div>
-
-                            <!-- Per Page Selector -->
-                            <div class="per-page-selector">
-                                <label for="perPage">Tampilkan:</label>
-                                <select id="perPage" onchange="changePerPage(this.value)">
-                                    <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
-                                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                    <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                                    <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
-                                </select>
-                                <span>data per halaman</span>
-                            </div>
-                        </div>
+                    <div class="pagination-wrapper">
+                        <div class="pagination-info"><i class="fas fa-chart-bar"></i> Menampilkan {{ $data->firstItem() }} - {{ $data->lastItem() }} dari {{ $data->total() }} data</div>
+                        <div class="pagination">{{ $data->appends(request()->query())->links() }}</div>
+                        <div class="per-page-selector"><label>Tampilkan:</label><select id="perPage" onchange="changePerPage(this.value)"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select><span>data</span></div>
+                    </div>
                     @endif
                 </div>
             </div>
@@ -1465,415 +1003,146 @@
     </div>
 
     <!-- Detail Modal -->
-    <div class="modal" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal" id="detailModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title" id="modalTitle">
-                    <i class="fas fa-info-circle" aria-hidden="true"></i>
-                    Detail Peminjaman
-                </h3>
-                <button class="modal-close" onclick="closeDetailModal()" aria-label="Tutup modal">
-                    <i class="fas fa-times" aria-hidden="true"></i>
-                </button>
+                <h3><i class="fas fa-info-circle"></i> Detail Peminjaman</h3>
+                <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-body">
                 <div class="detail-grid">
-                    <div class="detail-item">
-                        <div class="detail-label">ID Peminjaman</div>
-                        <div class="detail-value" id="detailId">-</div>
-                        <div class="detail-sub" id="detailStatus">-</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Status</div>
-                        <div class="detail-value" id="detailStatusBadge">-</div>
-                        <div class="detail-sub" id="detailKondisi">-</div>
-                    </div>
+                    <div class="detail-item"><div class="detail-label">ID Peminjaman</div><div class="detail-value" id="detailId">-</div></div>
+                    <div class="detail-item"><div class="detail-label">Status</div><div class="detail-value" id="detailStatus">-</div></div>
                 </div>
-
-                <div class="detail-row">
-                    <span class="label">Peminjam</span>
-                    <span class="value" id="detailUser">-</span>
-                </div>
-                <div class="detail-row">
-                    <span class="label">Email</span>
-                    <span class="value" id="detailEmail">-</span>
-                </div>
-                <div class="detail-row">
-                    <span class="label">Alat</span>
-                    <span class="value" id="detailAlat">-</span>
-                </div>
-                <div class="detail-row">
-                    <span class="label">ID Alat</span>
-                    <span class="value" id="detailAlatId">-</span>
-                </div>
-                <div class="detail-row">
-                    <span class="label">Tanggal Pinjam</span>
-                    <span class="value" id="detailTglPinjam">-</span>
-                </div>
-                <div class="detail-row">
-                    <span class="label">Rencana Kembali</span>
-                    <span class="value" id="detailRencanaKembali">-</span>
-                </div>
-                <div class="detail-row">
-                    <span class="label">Tanggal Kembali</span>
-                    <span class="value" id="detailTglKembali">-</span>
-                </div>
-                <div class="detail-row">
-                    <span class="label">Sisa Waktu</span>
-                    <span class="value" id="detailSisaWaktu">-</span>
-                </div>
-                <div class="detail-row">
-                    <span class="label">Keterangan</span>
-                    <span class="value" id="detailKeterangan">-</span>
-                </div>
+                <div class="detail-row"><span class="label">Peminjam</span><span class="value" id="detailUser">-</span></div>
+                <div class="detail-row"><span class="label">Email</span><span class="value" id="detailEmail">-</span></div>
+                <div class="detail-row"><span class="label">Judul Buku</span><span class="value" id="detailAlat">-</span></div>
+                <div class="detail-row"><span class="label">ID Buku</span><span class="value" id="detailAlatId">-</span></div>
+                <div class="detail-row"><span class="label">Tanggal Pinjam</span><span class="value" id="detailTglPinjam">-</span></div>
+                <div class="detail-row"><span class="label">Rencana Kembali</span><span class="value" id="detailRencanaKembali">-</span></div>
+                <div class="detail-row"><span class="label">Tanggal Kembali</span><span class="value" id="detailTglKembali">-</span></div>
+                <div class="detail-row"><span class="label">Sisa Waktu</span><span class="value" id="detailSisaWaktu">-</span></div>
             </div>
-            <div class="modal-footer">
-                <button class="btn-close-modal" onclick="closeDetailModal()">
-                    <i class="fas fa-times" aria-hidden="true"></i>
-                    Tutup
-                </button>
-            </div>
+            <div class="modal-footer"><button class="btn-close-modal" onclick="closeModal()"><i class="fas fa-times"></i> Tutup</button></div>
         </div>
     </div>
 
     <script>
-        (function() {
-            'use strict';
-            
-            // ===== SIDEBAR TOGGLE =====
-            const sidebarToggle = document.getElementById('sidebarToggle');
-            const appContainer = document.getElementById('appContainer');
+        // Toggle sidebar
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const appContainer = document.getElementById('appContainer');
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', function() {
+                appContainer.classList.toggle('sidebar-collapsed');
+            });
+        }
 
-            if (sidebarToggle) {
-                sidebarToggle.addEventListener('click', function() {
-                    appContainer.classList.toggle('sidebar-collapsed');
-                    
-                    const icon = this.querySelector('i');
-                    if (appContainer.classList.contains('sidebar-collapsed')) {
-                        icon.className = 'fas fa-bars';
-                    } else {
-                        icon.className = 'fas fa-times';
-                    }
-                });
-            }
-
-            // ===== DOM ELEMENTS =====
-            const searchInput = document.getElementById('searchInput');
-            const notificationBtn = document.getElementById('notificationBtn');
-            const userMenu = document.getElementById('userMenu');
-            
-            // ===== SEARCH FUNCTIONALITY =====
-            function performSearch(searchTerm) {
-                if (!searchTerm || searchTerm.length < 2) {
-                    document.querySelectorAll('.peminjaman-table tbody tr').forEach(row => {
-                        row.style.display = '';
-                    });
-                    return;
-                }
-                
-                const rows = document.querySelectorAll('.peminjaman-table tbody tr');
-                let foundCount = 0;
-                
-                rows.forEach(row => {
-                    const text = row.textContent.toLowerCase();
-                    const isMatch = text.includes(searchTerm.toLowerCase());
-                    row.style.display = isMatch ? '' : 'none';
-                    if (isMatch) foundCount++;
-                });
-                
-                showNotification(
-                    foundCount > 0 
-                        ? `✅ Ditemukan ${foundCount} hasil pencarian` 
-                        : `❌ Tidak ditemukan data dengan kata kunci "${searchTerm}"`,
-                    foundCount > 0 ? 'success' : 'warning'
-                );
-            }
-            
-            // Search with debounce
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
             let searchTimeout;
-            if (searchInput) {
-                searchInput.addEventListener('input', function(e) {
-                    clearTimeout(searchTimeout);
-                    searchTimeout = setTimeout(() => {
-                        performSearch(this.value.trim());
-                    }, 300);
-                });
-                
-                // Search on enter key
-                searchInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        performSearch(this.value.trim());
-                    }
-                });
-            }
-            
-            // ===== PER PAGE SELECTOR =====
-            window.changePerPage = function(value) {
-                const url = new URL(window.location.href);
-                url.searchParams.set('per_page', value);
-                url.searchParams.set('page', 1); // Reset ke halaman pertama
-                window.location.href = url.toString();
-            };
-            
-            // ===== DETAIL MODAL =====
-            window.showDetailModal = function(row, extra) {
-                const modal = document.getElementById('detailModal');
-                
-                // ID
-                document.getElementById('detailId').innerHTML = `#${row.id_peminjaman}`;
-                
-                // Status
-                let statusClass = '';
-                let statusIcon = '';
-                let statusText = row.status || '-';
-                
-                if (row.status == 'selesai') {
-                    statusClass = 'status-selesai';
-                    statusIcon = 'fa-check-double';
-                } else if (row.status == 'dikembalikan') {
-                    statusClass = 'status-dikembalikan';
-                    statusIcon = 'fa-check-circle';
-                } else if (row.status == 'terlambat' || extra.selisihHari < 0) {
-                    statusClass = 'status-terlambat';
-                    statusIcon = 'fa-exclamation-triangle';
-                } else {
-                    statusClass = 'status-dipinjam';
-                    statusIcon = 'fa-clock';
-                }
-                
-                document.getElementById('detailStatus').innerHTML = extra.status || statusText;
-                document.getElementById('detailStatusBadge').innerHTML = `
-                    <span class="status-badge ${statusClass}" style="display: inline-flex;">
-                        <i class="fas ${statusIcon}"></i>
-                        ${extra.status || statusText}
-                    </span>
-                `;
-                
-                // Kondisi
-                let kondisi = '';
-                if (in_array(row.status, ['selesai', 'dikembalikan'])) {
-                    kondisi = 'Selesai';
-                } else if (extra.selisihHari < 0) {
-                    kondisi = 'Terlambat';
-                } else if (extra.selisihHari == 0) {
-                    kondisi = 'Batas akhir';
-                } else {
-                    kondisi = 'Tepat waktu';
-                }
-                document.getElementById('detailKondisi').innerHTML = kondisi;
-                
-                // User
-                document.getElementById('detailUser').innerHTML = row.user?.name || '-';
-                document.getElementById('detailEmail').innerHTML = row.user?.email || '-';
-                
-                // Alat
-                document.getElementById('detailAlat').innerHTML = row.alat?.nama_alat || '-';
-                document.getElementById('detailAlatId').innerHTML = row.alat?.id_alat || '-';
-                
-                // Tanggal
-                const tglPinjam = row.tanggal_pinjam ? new Date(row.tanggal_pinjam) : null;
-                const tglRencana = row.tanggal_kembali ? new Date(row.tanggal_kembali) : null;
-                const tglKembali = row.tanggal_kembali ? new Date(row.tanggal_kembali) : null;
-                
-                document.getElementById('detailTglPinjam').innerHTML = tglPinjam ? tglPinjam.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + tglPinjam.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB' : '-';
-                
-                document.getElementById('detailRencanaKembali').innerHTML = tglRencana ? tglRencana.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '-';
-                
-                document.getElementById('detailTglKembali').innerHTML = tglKembali ? tglKembali.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + tglKembali.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB' : '-';
-                
-                // Sisa Waktu
-                let sisaWaktu = '';
-                if (in_array(row.status, ['selesai', 'dikembalikan'])) {
-                    sisaWaktu = `<span style="color: var(--gray);">-</span>`;
-                } else if (extra.selisihHari > 0) {
-                    sisaWaktu = `<span style="color: var(--success);">${extra.selisihHari} hari tersisa</span>`;
-                } else if (extra.selisihHari == 0) {
-                    sisaWaktu = `<span style="color: var(--warning);">Batas akhir hari ini</span>`;
-                } else {
-                    sisaWaktu = `<span style="color: var(--danger);">${Math.abs(extra.selisihHari)} hari terlambat</span>`;
-                }
-                document.getElementById('detailSisaWaktu').innerHTML = sisaWaktu;
-                
-                // Keterangan
-                document.getElementById('detailKeterangan').innerHTML = row.keterangan || '-';
-                
-                // Show modal
-                modal.classList.add('show');
-                document.body.style.overflow = 'hidden';
-            };
-            
-            function in_array(value, array) {
-                return array.indexOf(value) > -1;
-            }
-            
-            window.closeDetailModal = function() {
-                const modal = document.getElementById('detailModal');
-                modal.classList.remove('show');
-                document.body.style.overflow = '';
-            };
-            
-            // ===== NOTIFICATION BUTTON =====
-            if (notificationBtn) {
-                notificationBtn.addEventListener('click', function() {
-                    showNotification('📬 Tidak ada notifikasi baru', 'info');
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    const term = this.value.toLowerCase();
+                    const rows = document.querySelectorAll('#tableBody tr');
+                    let visibleCount = 0;
                     
-                    const badge = this.querySelector('.notification-badge');
-                    if (badge) {
-                        badge.style.transform = 'scale(0)';
-                        setTimeout(() => {
-                            badge.style.transform = 'scale(1)';
-                            badge.textContent = '0';
-                        }, 300);
-                    }
-                });
-            }
-            
-            // ===== USER MENU =====
-            if (userMenu) {
-                userMenu.addEventListener('click', function() {
-                    showNotification('👤 Menu pengguna', 'info');
-                });
-
-                // Keyboard accessibility
-                userMenu.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        this.click();
-                    }
-                });
-            }
-            
-            // ===== TOAST NOTIFICATION =====
-            function showNotification(message, type = 'info') {
-                const existingToast = document.querySelector('.custom-toast');
-                if (existingToast) existingToast.remove();
-                
-                const toast = document.createElement('div');
-                toast.className = 'custom-toast';
-                toast.setAttribute('role', 'alert');
-                
-                const bgColor = type === 'success' ? 'var(--success)' : 
-                               type === 'warning' ? 'var(--warning)' : 
-                               type === 'error' ? 'var(--danger)' : 'var(--primary)';
-                
-                toast.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    background: ${bgColor};
-                    color: white;
-                    padding: 16px 24px;
-                    border-radius: var(--radius-md);
-                    font-weight: 600;
-                    box-shadow: var(--shadow-lg);
-                    z-index: 9999;
-                    display: flex;
-                    align-items: center;
-                    gap: 12px;
-                    animation: slideInRight 0.3s ease;
-                    max-width: 400px;
-                `;
-                
-                const icon = type === 'success' ? 'fa-check-circle' : 
-                           type === 'warning' ? 'fa-exclamation-triangle' : 
-                           type === 'error' ? 'fa-times-circle' : 'fa-info-circle';
-                
-                toast.innerHTML = `
-                    <i class="fas ${icon}" style="font-size: 18px;" aria-hidden="true"></i>
-                    <span style="flex: 1;">${message}</span>
-                    <button onclick="this.parentElement.remove()" style="background: none; border: none; color: white; cursor: pointer; font-size: 16px; opacity: 0.8;" aria-label="Tutup notifikasi">
-                        <i class="fas fa-times" aria-hidden="true"></i>
-                    </button>
-                `;
-                
-                document.body.appendChild(toast);
-                
-                setTimeout(() => {
-                    if (toast.parentNode) {
-                        toast.style.animation = 'slideOutRight 0.3s ease';
-                        setTimeout(() => toast.remove(), 300);
-                    }
-                }, 3000);
-            }
-            
-            // ===== KEYBOARD SHORTCUTS =====
-            document.addEventListener('keydown', function(e) {
-                // Ctrl/Cmd + K to focus search
-                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                    e.preventDefault();
-                    if (searchInput) {
-                        searchInput.focus();
-                        showNotification('🔍 Pencarian siap', 'info');
-                    }
-                }
-                
-                // ESC to clear search
-                if (e.key === 'Escape' && document.activeElement === searchInput) {
-                    searchInput.value = '';
-                    document.querySelectorAll('.peminjaman-table tbody tr').forEach(row => {
-                        row.style.display = '';
+                    rows.forEach(row => {
+                        const text = row.dataset.search?.toLowerCase() || row.textContent.toLowerCase();
+                        if (term === '' || text.includes(term)) {
+                            row.style.display = '';
+                            visibleCount++;
+                        } else {
+                            row.style.display = 'none';
+                        }
                     });
-                    searchInput.blur();
-                    showNotification('🧹 Pencarian dibersihkan', 'info');
-                }
-                
-                // ESC to close modal
-                if (e.key === 'Escape') {
-                    closeDetailModal();
-                }
-            });
-            
-            // ===== ANIMATION STYLES =====
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes slideInRight {
-                    from { opacity: 0; transform: translateX(100%); }
-                    to { opacity: 1; transform: translateX(0); }
-                }
-                
-                @keyframes slideOutRight {
-                    from { opacity: 1; transform: translateX(0); }
-                    to { opacity: 0; transform: translateX(100%); }
-                }
-                
-                .custom-toast {
-                    will-change: transform;
-                }
-
-                .sr-only {
-                    position: absolute;
-                    width: 1px;
-                    height: 1px;
-                    padding: 0;
-                    margin: -1px;
-                    overflow: hidden;
-                    clip: rect(0, 0, 0, 0);
-                    white-space: nowrap;
-                    border: 0;
-                }
-            `;
-            document.head.appendChild(style);
-            
-            // ===== RESIZE HANDLER =====
-            window.addEventListener('resize', function() {
-                if (window.innerWidth > 1200) {
-                    appContainer.classList.remove('sidebar-collapsed');
-                    if (sidebarToggle) {
-                        sidebarToggle.querySelector('i').className = 'fas fa-bars';
+                    
+                    if (term && visibleCount === 0) {
+                        showToast(`Tidak ditemukan data dengan kata "${term}"`, 'warning');
                     }
-                }
+                }, 300);
             });
+        }
+
+        // Per page selector
+        function changePerPage(value) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('per_page', value);
+            window.location.href = url.toString();
+        }
+
+        // Modal functions
+        function showDetail(row, selisihHari) {
+            document.getElementById('detailId').innerHTML = `#${row.id_peminjaman}`;
             
-            // ===== CLOSE MODAL ON CLICK OUTSIDE =====
-            document.getElementById('detailModal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeDetailModal();
-                }
-            });
+            let statusText = row.status;
+            let statusColor = '';
+            if (row.status == 'selesai' || row.status == 'dikembalikan') statusColor = '#3a9b7a';
+            else if (row.status == 'terlambat' || selisihHari < 0) statusColor = '#e86f4f';
+            else statusColor = '#f0b84d';
             
-            console.log('🚀 Forent Data Peminjaman - View Only Mode dengan Premium Pagination');
-        })();
+            document.getElementById('detailStatus').innerHTML = `<span style="color: ${statusColor}; font-weight: 700;">${statusText}</span>`;
+            document.getElementById('detailUser').innerHTML = row.user?.name || '-';
+            document.getElementById('detailEmail').innerHTML = row.user?.email || '-';
+            document.getElementById('detailAlat').innerHTML = row.alat?.nama_alat || '-';
+            document.getElementById('detailAlatId').innerHTML = row.alat?.id_alat || '-';
+            document.getElementById('detailTglPinjam').innerHTML = new Date(row.tanggal_pinjam).toLocaleString('id-ID');
+            document.getElementById('detailRencanaKembali').innerHTML = new Date(row.tanggal_kembali).toLocaleDateString('id-ID');
+            document.getElementById('detailTglKembali').innerHTML = row.tanggal_kembali ? new Date(row.tanggal_kembali).toLocaleString('id-ID') : '-';
+            
+            let sisaWaktu = '';
+            if (row.status == 'selesai' || row.status == 'dikembalikan') {
+                sisaWaktu = '-';
+            } else if (selisihHari > 0) {
+                sisaWaktu = `<span style="color: #3a9b7a;">${selisihHari} hari tersisa</span>`;
+            } else if (selisihHari == 0) {
+                sisaWaktu = `<span style="color: #f0b84d;">Batas akhir hari ini</span>`;
+            } else {
+                sisaWaktu = `<span style="color: #e86f4f;">${Math.abs(selisihHari)} hari terlambat</span>`;
+            }
+            document.getElementById('detailSisaWaktu').innerHTML = sisaWaktu;
+            
+            document.getElementById('detailModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // Close modal on outside click
+        document.getElementById('detailModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // Toast notification
+        function showToast(message, type = 'info') {
+            const existing = document.querySelector('.toast-notification');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.style.background = type === 'success' ? '#3a9b7a' : type === 'error' ? '#e86f4f' : type === 'warning' ? '#f0b84d' : '#2c7da0';
+            toast.style.color = type === 'warning' ? '#2c3e50' : 'white';
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-times-circle' : type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'}"></i><span>${message}</span>`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOutBottom 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                if (searchInput) searchInput.focus();
+            }
+            if (e.key === 'Escape') closeModal();
+        });
     </script>
 </body>
 </html>

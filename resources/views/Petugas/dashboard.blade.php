@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Dashboard Petugas - Aplikasi Peminjaman Alat</title>
+    <title>Dashboard Petugas - Aplikasi Peminjaman Buku</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -1149,7 +1149,7 @@
                         <div class="date" id="currentDate">---, -- --- ----</div>
                     </div>
                     <div class="search-bar">
-                        <input type="text" class="search-input" id="globalSearch" placeholder="Cari peminjaman, alat, atau peminjam...">
+                        <input type="text" class="search-input" id="globalSearch" placeholder="Cari peminjaman, Buku, atau peminjam...">
                         <i class="search-icon fas fa-search"></i>
                     </div>
                     <button class="notification-btn" id="notificationBtn" data-tooltip="Notifikasi">
@@ -1198,7 +1198,7 @@
                 <section class="welcome-section">
                     <div class="welcome-text">
                         <h2>Selamat Datang, Petugas! 👋</h2>
-                        <p>Kelola peminjaman alat dengan mudah. Ada <strong>{{ $peminjamanMenunggu }} permintaan peminjaman</strong> yang menunggu persetujuan Anda.</p>
+                        <p>Kelola peminjaman Buku dengan mudah. Ada <strong>{{ $peminjamanMenunggu }} permintaan peminjaman</strong> yang menunggu persetujuan Anda.</p>
                     </div>
                     <div class="welcome-actions">
                         <button class="btn btn-outline" onclick="window.location.href='{{ route('petugas.laporan') }}'">
@@ -1237,14 +1237,14 @@
                         $dendaLunas = App\Models\Peminjaman::where('status_denda', 'lunas')->where('denda', '>', 0)->count();
                     @endphp
                     
-                    <div class="stat-card" onclick="showAllTools()" data-tooltip="Lihat semua alat">
+                    <div class="stat-card" onclick="showAllTools()" data-tooltip="Lihat semua Buku">
                         <div class="stat-icon icon-primary">
                             <i class="fas fa-tools"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>Total Alat</h3>
+                            <h3>Total Buku</h3>
                             <div class="number">{{ $totalAlat }}</div>
-                            <div class="desc">Semua alat tersedia</div>
+                            <div class="desc">Semua Buku tersedia</div>
                         </div>
                     </div>
                     
@@ -1429,7 +1429,7 @@
                 <tr>
                     <th>No</th>
                     <th>Peminjam</th>
-                    <th>Alat</th>
+                    <th>Buku</th>
                     <th>Tanggal Pinjam</th>
                     <th>Tanggal Rencana Kembali</th>
                     <th>Tanggal Kembali</th>
@@ -1587,7 +1587,7 @@
                                                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                                                     <form method="POST" action="{{ route('petugas.pengembalian.konfirmasi', $item->id_peminjaman) }}">
                                                         @csrf
-                                                        <button type="submit" class="btn-action confirm" onclick="return confirm('Konfirmasi pengembalian alat ini?')">
+                                                        <button type="submit" class="btn-action confirm" onclick="return confirm('Konfirmasi pengembalian Buku ini?')">
                                                             <i class="fas fa-check-circle"></i> Konfirmasi
                                                         </button>
                                                     </form>
@@ -1666,7 +1666,7 @@
 
             <!-- Footer -->
             <footer class="footer">
-                <p>Forent &copy; {{ date('Y') }} | Aplikasi Peminjaman Alat | Versi 2.0</p>
+                <p>Forent &copy; {{ date('Y') }} | Aplikasi Peminjaman Buku | Versi 2.0</p>
             </footer>
         </div>
     </div>

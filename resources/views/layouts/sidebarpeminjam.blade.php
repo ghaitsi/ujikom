@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sidebar Peminjam</title>
+    <title>LibSpace - Sidebar Peminjam</title>
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800|playfair:400,500,600,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -112,6 +114,7 @@
             font-weight: 800;
             color: white;
             letter-spacing: -0.5px;
+            font-family: 'Playfair', serif;
         }
 
         .logo-text span {
@@ -341,14 +344,14 @@
     </style>
 </head>
 <body>
-    <!-- Minimal Sidebar untuk Peminjam -->
+    <!-- Minimal Sidebar untuk Peminjam - LibSpace Theme -->
     <aside class="sidebar">
         <div class="sidebar-header">
             <a href="{{ route('peminjam.dashboard') }}" class="logo">
                 <div class="logo-icon">
-                    <i class="fas fa-user-tie"></i>
+                    <i class="fas fa-book-open"></i>
                 </div>
-                <div class="logo-text">Fore<span>nt</span></div>
+                <div class="logo-text">Lib<span>Space</span></div>
             </a>
         </div>
 
@@ -362,7 +365,7 @@
             </a>
 
             <!-- Pengembalian Alat -->
-        <a href="{{ route('peminjam.pengembalian') }}" class="nav-item {{ request()->routeIs('peminjam.pengembalian.*') ? 'active' : '' }}">
+            <a href="{{ route('peminjam.pengembalian') }}" class="nav-item {{ request()->routeIs('peminjam.pengembalian.*') ? 'active' : '' }}">
                 <div class="nav-icon">
                     <i class="fas fa-undo"></i>
                 </div>
@@ -444,6 +447,13 @@
                 });
             }
             
+            // User profile click
+            const userProfile = document.getElementById('userProfile');
+            if (userProfile) {
+                userProfile.addEventListener('click', function() {
+                    alert('Fitur profile user akan ditampilkan di sini');
+                });
+            }
         });
     </script>
 </body>

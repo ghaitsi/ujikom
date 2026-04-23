@@ -5,39 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Forent - Pengembalian Alat</title>
+    <title>LibTrack - Pengembalian Buku</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800|playfair:400,500,600,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Animate CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         :root {
-            --primary: #4361ee;
-            --primary-dark: #3a56d4;
-            --primary-light: #4895ef;
-            --secondary: #7209b7;
-            --accent: #f72585;
-            --success: #4cc9f0;
-            --warning: #f8961e;
-            --danger: #f94144;
-            --dark: #1a1a2e;
-            --darker: #16213e;
-            --light: #f8f9fa;
-            --gray: #6c757d;
-            --gray-light: #e9ecef;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --sidebar-bg: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.12);
-            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.15);
+            --primary: #3b6e8c;
+            --primary-dark: #2c556d;
+            --primary-light: #5c8da8;
+            --secondary: #8b5e7e;
+            --secondary-light: #a87c9a;
+            --accent: #d4a373;
+            --success: #4a7c6f;
+            --warning: #c9a03d;
+            --danger: #c97b5e;
+            --dark: #3a4a5a;
+            --darker: #2a3a48;
+            --light: #fefaf0;
+            --gray: #8a9aa8;
+            --gray-light: #e8e2d5;
+            --card-bg: rgba(254, 250, 240, 0.96);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12);
             --radius-sm: 10px;
             --radius-md: 16px;
             --radius-lg: 24px;
+            --radius-xl: 32px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -45,14 +49,14 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            background: linear-gradient(135deg, #f5e6ca 0%, #e8d5b7 100%);
             color: var(--dark);
             min-height: 100vh;
             overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
         }
 
         /* Layout Container */
@@ -62,10 +66,9 @@
             position: relative;
         }
 
-        /* Main Content dengan margin untuk sidebar */
         .main-content {
             flex: 1;
-            margin-left: 280px; /* Sama dengan lebar sidebar */
+            margin-left: 280px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -73,7 +76,6 @@
             width: calc(100% - 280px);
         }
 
-        /* Responsive: jika sidebar disembunyikan */
         .sidebar-collapsed .main-content {
             margin-left: 0;
             width: 100%;
@@ -81,14 +83,14 @@
 
         /* Glass Header */
         .header {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(20px);
-            padding: 0 40px;
-            height: 80px;
+            background: rgba(254, 250, 240, 0.92);
+            backdrop-filter: blur(12px);
+            padding: 0 32px;
+            height: 72px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(212, 163, 115, 0.2);
             box-shadow: var(--shadow-sm);
             position: sticky;
             top: 0;
@@ -96,8 +98,9 @@
         }
 
         .header-title {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
+            font-family: 'Playfair', serif;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             background-clip: text;
@@ -107,70 +110,75 @@
         }
 
         .header-title::before {
-            content: '';
+            content: '📚';
             position: absolute;
-            left: 0;
+            left: -8px;
             top: 50%;
             transform: translateY(-50%);
-            width: 6px;
-            height: 30px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 3px;
+            font-size: 24px;
+            opacity: 0.7;
         }
 
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 24px;
+            gap: 16px;
         }
 
-        .search-bar {
+        .search-wrapper {
             position: relative;
-            width: 320px;
+            width: 300px;
         }
 
         .search-input {
             width: 100%;
-            padding: 14px 20px 14px 48px;
-            background: rgba(248, 249, 250, 0.8);
-            border: 2px solid transparent;
-            border-radius: var(--radius-lg);
-            font-size: 15px;
+            padding: 10px 16px 10px 42px;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(212, 163, 115, 0.3);
+            border-radius: 40px;
+            font-size: 14px;
             color: var(--dark);
             transition: var(--transition);
-            box-shadow: var(--shadow-sm);
         }
 
         .search-input:focus {
             outline: none;
-            border-color: var(--primary);
+            border-color: var(--primary-light);
             background: white;
-            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+            box-shadow: 0 0 0 3px rgba(59, 110, 140, 0.1);
         }
 
         .search-icon {
             position: absolute;
-            left: 18px;
+            left: 16px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--gray);
-            font-size: 18px;
-            transition: var(--transition);
+            font-size: 14px;
         }
 
-        .search-input:focus + .search-icon {
-            color: var(--primary);
+        .search-shortcut {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.04);
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-size: 10px;
+            color: var(--gray);
+            font-weight: 600;
         }
 
         .notification-btn {
             position: relative;
-            background: rgba(248, 249, 250, 0.8);
-            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(212, 163, 115, 0.3);
             color: var(--gray);
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            font-size: 20px;
+            font-size: 18px;
             cursor: pointer;
             transition: var(--transition);
             display: flex;
@@ -182,120 +190,119 @@
             background: white;
             color: var(--primary);
             border-color: var(--primary-light);
-            transform: rotate(15deg) scale(1.1);
-            box-shadow: var(--shadow-md);
+            transform: scale(1.05);
         }
 
         .notification-badge {
             position: absolute;
-            top: -4px;
-            right: -4px;
+            top: -3px;
+            right: -3px;
             background: linear-gradient(135deg, var(--accent), var(--danger));
             color: white;
             border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            font-size: 12px;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            box-shadow: 0 2px 8px rgba(247, 37, 133, 0.4);
         }
 
         .user-menu {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             cursor: pointer;
-            padding: 8px 16px;
-            border-radius: var(--radius-lg);
-            background: rgba(248, 249, 250, 0.8);
-            border: 2px solid transparent;
+            padding: 6px 12px;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(212, 163, 115, 0.3);
             transition: var(--transition);
         }
 
         .user-menu:hover {
             background: white;
-            border-color: var(--primary-light);
             transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
+            box-shadow: var(--shadow-sm);
         }
 
         .user-menu-avatar {
-            width: 40px;
-            height: 40px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-weight: 700;
-            font-size: 16px;
-            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+            font-weight: 600;
+            font-size: 12px;
         }
 
-        /* Content */
         .content-wrapper {
             flex: 1;
-            padding: 40px;
+            padding: 32px;
         }
 
         /* Welcome Section */
         .welcome-section {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius-xl);
             padding: 32px;
-            margin-bottom: 30px;
+            margin-bottom: 32px;
             color: white;
             box-shadow: var(--shadow-md);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
         }
 
         .welcome-text h2 {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 700;
+            font-family: 'Playfair', serif;
             margin-bottom: 8px;
         }
 
         .welcome-text p {
-            font-size: 16px;
-            opacity: 0.9;
+            font-size: 14px;
+            opacity: 0.85;
         }
 
         /* Stats Cards */
         .stats-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 32px;
         }
 
         .stat-card {
             background: var(--card-bg);
-            border-radius: var(--radius-md);
-            padding: 24px;
-            box-shadow: var(--shadow-md);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
             transition: var(--transition);
-            backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 16px;
+            border: 1px solid rgba(212, 163, 115, 0.15);
+            cursor: pointer;
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: rgba(212, 163, 115, 0.3);
         }
 
         .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
+            width: 52px;
+            height: 52px;
+            border-radius: var(--radius-md);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -304,141 +311,115 @@
             flex-shrink: 0;
         }
 
-        .icon-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); }
-        .icon-success { background: linear-gradient(135deg, var(--success), #0ea5e9); }
-        .icon-warning { background: linear-gradient(135deg, var(--warning), #f97316); }
-        .icon-danger { background: linear-gradient(135deg, var(--danger), #e53e3e); }
+        .icon-primary { background: linear-gradient(145deg, var(--primary), var(--primary-dark)); }
+        .icon-success { background: linear-gradient(145deg, var(--success), #3a6b5e); }
+        .icon-warning { background: linear-gradient(145deg, var(--warning), #b88a2d); }
+        .icon-danger { background: linear-gradient(145deg, var(--danger), #b86a4a); }
 
         .stat-info h3 {
-            font-size: 14px;
+            font-size: 11px;
             color: var(--gray);
             margin-bottom: 4px;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
         }
 
         .stat-info .number {
             font-size: 28px;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--dark);
             line-height: 1;
         }
 
         .stat-info .desc {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--gray);
             margin-top: 4px;
         }
 
-        /* Premium Card Container */
+        /* Dashboard Card */
         .dashboard-card {
             background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: 32px;
+            border-radius: var(--radius-xl);
+            padding: 24px;
             box-shadow: var(--shadow-md);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(212, 163, 115, 0.15);
             transition: var(--transition);
-            backdrop-filter: blur(10px);
-            animation: cardEntrance 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-            opacity: 0;
-            transform: translateY(20px);
             margin-bottom: 40px;
-        }
-
-        @keyframes cardEntrance {
-            from {
-                opacity: 0;
-                transform: translateY(40px) scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
         }
 
         .dashboard-card:hover {
             box-shadow: var(--shadow-lg);
-            transform: translateY(-8px);
-            border-color: var(--primary-light);
         }
 
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 28px;
+            margin-bottom: 20px;
             padding-bottom: 16px;
-            border-bottom: 2px solid rgba(67, 97, 238, 0.1);
-        }
-
-        .card-title {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--dark);
-            display: flex;
-            align-items: center;
+            border-bottom: 2px solid rgba(212, 163, 115, 0.25);
+            flex-wrap: wrap;
             gap: 12px;
         }
 
-        .card-title::before {
-            content: '';
-            width: 8px;
-            height: 24px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 4px;
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            font-family: 'Playfair', serif;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        /* Table Styling */
+        .card-title i {
+            color: var(--primary);
+        }
+
+        /* Table */
         .table-container {
             overflow-x: auto;
             border-radius: var(--radius-md);
-            box-shadow: var(--shadow-sm);
-            -webkit-overflow-scrolling: touch;
         }
 
         .peminjaman-table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
+            border-collapse: collapse;
             background: white;
             border-radius: var(--radius-md);
             overflow: hidden;
+            min-width: 800px;
         }
 
         .peminjaman-table thead {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
-            position: sticky;
-            top: 0;
         }
 
         .peminjaman-table th {
-            padding: 18px 20px;
+            padding: 14px 16px;
             text-align: left;
             color: white;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            white-space: nowrap;
         }
 
         .peminjaman-table tbody tr {
+            border-bottom: 1px solid #eef2f5;
             transition: var(--transition);
-            border-bottom: 1px solid var(--gray-light);
-        }
-
-        .peminjaman-table tbody tr:last-child {
-            border-bottom: none;
         }
 
         .peminjaman-table tbody tr:hover {
-            background: rgba(67, 97, 238, 0.05);
-            transform: translateX(4px);
+            background: rgba(107, 76, 122, 0.04);
         }
 
         .peminjaman-table td {
-            padding: 20px 16px;
+            padding: 14px 16px;
             color: var(--dark);
-            font-size: 14px;
+            font-size: 13px;
             vertical-align: middle;
         }
 
@@ -446,156 +427,73 @@
         .status-badge {
             display: inline-flex;
             align-items: center;
-            padding: 6px 12px;
+            gap: 6px;
+            padding: 4px 10px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
         }
 
         .status-dipinjam {
-            background: linear-gradient(135deg, rgba(248, 150, 30, 0.15), rgba(248, 150, 30, 0.05));
-            color: var(--warning);
-            border: 2px solid rgba(248, 150, 30, 0.2);
-        }
-
-        .status-dikembalikan {
-            background: linear-gradient(135deg, rgba(76, 201, 240, 0.15), rgba(76, 201, 240, 0.05));
-            color: var(--success);
-            border: 2px solid rgba(76, 201, 240, 0.2);
-        }
-
-        .status-menunggu {
-            background: linear-gradient(135deg, rgba(108, 117, 125, 0.15), rgba(108, 117, 125, 0.05));
-            color: var(--gray);
-            border: 2px solid rgba(108, 117, 125, 0.2);
+            background: rgba(233, 196, 106, 0.2);
+            color: #b8860b;
         }
 
         .status-terlambat {
-            background: linear-gradient(135deg, rgba(249, 65, 68, 0.15), rgba(249, 65, 68, 0.05));
+            background: rgba(201, 123, 94, 0.2);
             color: var(--danger);
-            border: 2px solid rgba(249, 65, 68, 0.2);
         }
 
-        /* Action Buttons */
         .btn-kembalikan {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: linear-gradient(135deg, var(--success), #0ea5e9);
+            background: linear-gradient(135deg, var(--success), #3a6b5e);
             color: white;
-            padding: 10px 20px;
-            border-radius: var(--radius-sm);
+            padding: 8px 16px;
+            border-radius: 8px;
             font-weight: 600;
             font-size: 12px;
             border: none;
             cursor: pointer;
             transition: var(--transition);
-            white-space: nowrap;
         }
 
         .btn-kembalikan:hover {
             transform: translateY(-2px);
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 2px 8px rgba(74, 124, 111, 0.3);
+            gap: 8px;
         }
 
-        /* Alert Message */
+        /* Alert */
         .alert {
-            padding: 16px 24px;
+            padding: 14px 20px;
             border-radius: var(--radius-md);
             margin-bottom: 24px;
-            font-weight: 500;
             display: flex;
             align-items: center;
             gap: 12px;
-            animation: slideIn 0.5s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            border-left: 4px solid;
+            animation: slideIn 0.3s ease;
         }
 
         .alert-success {
-            background: linear-gradient(135deg, rgba(76, 201, 240, 0.15), rgba(76, 201, 240, 0.05));
-            color: var(--success);
-            border: 2px solid rgba(76, 201, 240, 0.2);
-        }
-
-        .alert-success i {
+            background: rgba(74, 124, 111, 0.1);
+            border-left-color: var(--success);
             color: var(--success);
         }
 
         .alert-danger {
-            background: linear-gradient(135deg, rgba(249, 65, 68, 0.15), rgba(249, 65, 68, 0.05));
-            color: var(--danger);
-            border: 2px solid rgba(249, 65, 68, 0.2);
-        }
-
-        .alert-danger i {
+            background: rgba(201, 123, 94, 0.1);
+            border-left-color: var(--danger);
             color: var(--danger);
         }
 
-        /* Pagination */
-        .pagination-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid var(--gray-light);
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
-        .pagination {
-            display: flex;
-            gap: 8px;
-            list-style: none;
-            flex-wrap: wrap;
-        }
-
-        .pagination li {
-            display: inline-flex;
-        }
-
-        .pagination a, .pagination span {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 40px;
-            height: 40px;
-            padding: 0 12px;
-            border-radius: var(--radius-sm);
-            background: white;
-            color: var(--dark);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            border: 2px solid var(--gray-light);
-            transition: var(--transition);
-        }
-
-        .pagination a:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            transform: translateY(-2px);
-        }
-
-        .pagination .active span {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            border-color: var(--primary);
-        }
-
-        /* Empty State */
         .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -604,23 +502,38 @@
 
         .empty-icon {
             font-size: 64px;
-            color: var(--gray-light);
-            margin-bottom: 20px;
+            color: #d4a373;
+            margin-bottom: 16px;
         }
 
         .empty-state h3 {
-            font-size: 20px;
-            margin-bottom: 10px;
+            font-size: 18px;
+            margin-bottom: 8px;
             color: var(--dark);
         }
 
-        .empty-state p {
-            font-size: 14px;
-            max-width: 400px;
-            margin: 0 auto 20px;
+        /* Image Thumbnail */
+        .book-cover {
+            width: 60px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
 
-        /* Sidebar Toggle Button untuk Mobile */
+        .no-image {
+            width: 60px;
+            height: 70px;
+            background: #e8e2d5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 10px;
+            color: var(--gray);
+        }
+
+        /* Sidebar Toggle */
         .sidebar-toggle {
             display: none;
             position: fixed;
@@ -629,18 +542,39 @@
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border: none;
-            width: 48px;
-            height: 48px;
-            border-radius: var(--radius-sm);
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
             font-size: 20px;
             cursor: pointer;
             z-index: 1000;
             box-shadow: var(--shadow-md);
-            transition: var(--transition);
         }
 
-        .sidebar-toggle:hover {
-            transform: scale(1.1);
+        /* Toast */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            box-shadow: var(--shadow-lg);
+            z-index: 1100;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideInBottom 0.3s ease;
+        }
+
+        @keyframes slideInBottom {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideOutBottom {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(50px); }
         }
 
         /* Responsive */
@@ -649,120 +583,89 @@
                 margin-left: 0;
                 width: 100%;
             }
-            
             .sidebar-toggle {
                 display: flex;
                 align-items: center;
                 justify-content: center;
             }
-            
-            .search-bar {
-                width: 240px;
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
         @media (max-width: 768px) {
             .header {
                 padding: 0 20px;
-                height: 70px;
+                height: 64px;
             }
-            
             .content-wrapper {
                 padding: 20px;
             }
-            
             .dashboard-card {
-                padding: 24px;
+                padding: 20px;
             }
-            
-            .search-bar {
+            .search-wrapper {
                 display: none;
             }
-            
             .stats-container {
                 grid-template-columns: 1fr;
             }
-            
-            .card-header {
+            .welcome-section {
                 flex-direction: column;
-                gap: 16px;
-                align-items: flex-start;
-            }
-            
-            .peminjaman-table {
-                font-size: 12px;
-            }
-            
-            .peminjaman-table th,
-            .peminjaman-table td {
-                padding: 12px;
+                text-align: center;
             }
         }
 
         @media (max-width: 480px) {
             .header-title {
-                font-size: 22px;
-            }
-            
-            .card-title {
                 font-size: 18px;
             }
-            
-            .pagination {
-                flex-wrap: wrap;
-                justify-content: center;
+            .user-menu span {
+                display: none;
             }
         }
     </style>
 </head>
-<body class="font-sans antialiased">
-    <!-- Sidebar Toggle Button -->
+<body>
     <button class="sidebar-toggle" id="sidebarToggle">
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- App Container -->
     <div class="app-container" id="appContainer">
-        <!-- Include Sidebar Peminjam -->
         @include('layouts.sidebarpeminjam')
 
-        <!-- Main Content -->
         <main class="main-content" id="mainContent">
-            <!-- Glass Header -->
             <header class="header">
-                <h1 class="header-title animate__animated animate__fadeIn">Pengembalian Alat</h1>
+                <h1 class="header-title">Pengembalian Buku</h1>
                 <div class="header-actions">
-                    <div class="search-bar" id="globalSearchBar">
+                    <div class="search-wrapper">
                         <i class="fas fa-search search-icon"></i>
-                        <input type="text" class="search-input" placeholder="Cari alat yang dipinjam...">
+                        <input type="text" class="search-input" id="searchInput" placeholder="Cari buku...">
+                        <span class="search-shortcut">⌘K</span>
                     </div>
                     <button class="notification-btn" id="notificationBtn">
                         <i class="fas fa-bell"></i>
                         @php
                             $totalPeminjamanAktif = auth()->check() ? auth()->user()->peminjaman()->where('status', 'dipinjam')->count() : 0;
                         @endphp
-                        <span class="notification-badge" id="notificationCount">{{ $totalPeminjamanAktif }}</span>
+                        <span class="notification-badge">{{ $totalPeminjamanAktif }}</span>
                     </button>
-                    <div class="user-menu">
+                    <div class="user-menu" id="userMenu">
                         <div class="user-menu-avatar">
-                            @auth
-                                {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
-                            @else
-                                PE
-                            @endauth
+                            @auth {{ strtoupper(substr(Auth::user()->name, 0, 2)) }} @else PE @endauth
                         </div>
+                        <span>{{ Auth::user()->name ?? 'Peminjam' }}</span>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                 </div>
             </header>
 
-            <!-- Content -->
             <div class="content-wrapper">
                 <!-- Welcome Section -->
-                <div class="welcome-section animate__animated animate__fadeIn">
+                <div class="welcome-section">
                     <div class="welcome-text">
-                        <h2>Pengembalian Alat, {{ Auth::user()->name ?? 'Peminjam' }}!</h2>
-                        <p>Kembalikan alat yang sedang Anda pinjam di sini. Pastikan alat dalam kondisi baik</p>
+                        <h2>Kembalikan Buku, {{ Auth::user()->name ?? 'Peminjam' }}! 📚</h2>
+                        <p>Kembalikan buku yang sedang Anda pinjam di sini. Pastikan buku dalam kondisi baik</p>
                     </div>
                 </div>
 
@@ -778,10 +681,8 @@
                         $totalPeminjaman = auth()->check() ? auth()->user()->peminjaman()->count() : 0;
                     @endphp
                     
-                    <div class="stat-card animate__animated animate__fadeInUp">
-                        <div class="stat-icon icon-warning">
-                            <i class="fas fa-clock"></i>
-                        </div>
+                    <div class="stat-card" onclick="scrollToSection('activeLoans')">
+                        <div class="stat-icon icon-warning"><i class="fas fa-book-open"></i></div>
                         <div class="stat-info">
                             <h3>Sedang Dipinjam</h3>
                             <div class="number">{{ $totalDipinjam }}</div>
@@ -789,10 +690,8 @@
                         </div>
                     </div>
 
-                    <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s">
-                        <div class="stat-icon icon-danger">
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </div>
+                    <div class="stat-card" onclick="scrollToSection('activeLoans')">
+                        <div class="stat-icon icon-danger"><i class="fas fa-exclamation-triangle"></i></div>
                         <div class="stat-info">
                             <h3>Terlambat</h3>
                             <div class="number">{{ $totalTerlambat }}</div>
@@ -800,10 +699,8 @@
                         </div>
                     </div>
 
-                    <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
-                        <div class="stat-icon icon-success">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-success"><i class="fas fa-check-circle"></i></div>
                         <div class="stat-info">
                             <h3>Sudah Dikembalikan</h3>
                             <div class="number">{{ $totalDikembalikan }}</div>
@@ -811,10 +708,8 @@
                         </div>
                     </div>
 
-                    <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s">
-                        <div class="stat-icon icon-primary">
-                            <i class="fas fa-history"></i>
-                        </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-primary"><i class="fas fa-history"></i></div>
                         <div class="stat-info">
                             <h3>Total Peminjaman</h3>
                             <div class="number">{{ $totalPeminjaman }}</div>
@@ -823,17 +718,21 @@
                     </div>
                 </div>
 
-                <!-- Success Message -->
+                <!-- Alert Messages -->
                 @if(session('success'))
-                    <div class="alert alert-success animate__animated animate__fadeIn">
-                        <i class="fas fa-check-circle"></i>
-                        {{ session('success') }}
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i> {{ session('success') }}
                     </div>
                 @endif
 
-                <!-- Error Messages -->
+                @if(session('error'))
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i> {{ session('error') }}
+                    </div>
+                @endif
+
                 @if($errors->any())
-                    <div class="alert alert-danger animate__animated animate__fadeIn">
+                    <div class="alert alert-danger">
                         <i class="fas fa-exclamation-triangle"></i>
                         <div>
                             <strong>Terjadi kesalahan:</strong>
@@ -847,16 +746,11 @@
                 @endif
 
                 <!-- Peminjaman Aktif untuk Dikembalikan -->
-                <div class="dashboard-card animate__animated animate__fadeInUp">
+                <div class="dashboard-card" id="activeLoans">
                     <div class="card-header">
-                        <h3 class="card-title">
-                            <i class="fas fa-tools"></i>
-                            Alat yang Sedang Dipinjam
-                        </h3>
-                        <div class="action-buttons">
-                            <span class="text-sm text-gray-600">
-                                {{ $totalDipinjam }} alat perlu dikembalikan
-                            </span>
+                        <h3 class="card-title"><i class="fas fa-book"></i> Buku yang Sedang Dipinjam</h3>
+                        <div class="card-info">
+                            <span style="font-size: 13px; color: var(--gray);">{{ $totalDipinjam }} buku perlu dikembalikan</span>
                         </div>
                     </div>
 
@@ -872,318 +766,232 @@
                         @endphp
                         
                         @if($peminjamanAktif->count() > 0)
-                            <table class="peminjaman-table" aria-label="Alat yang Sedang Dipinjam">
+                            <table class="peminjaman-table">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Nama Alat</th>
-                                        <th scope="col">Tanggal Pinjam</th>
-                                        <th scope="col">Rencana Kembali</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col" style="width: 150px;">Aksi</th>
+                                        <th>Judul Buku</th>
+                                        <th>Cover</th>
+                                        <th>Tanggal Pinjam</th>
+                                        <th>Rencana Kembali</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    @foreach($peminjamanAktif as $r)
+                                <tbody id="tableBody">
+                                    @foreach($peminjamanAktif as $loan)
                                     @php
-                                        // Hitung hari tersisa atau terlambat
                                         $today = now();
-                                        $rencanaKembali = \Carbon\Carbon::parse($r->tanggal_kembali);
+                                        $rencanaKembali = \Carbon\Carbon::parse($loan->tanggal_kembali);
                                         $daysLeft = $today->diffInDays($rencanaKembali, false);
-                                        
-                                        // Tentukan status dan warna
                                         $isLate = $daysLeft < 0;
                                         $statusClass = $isLate ? 'status-terlambat' : 'status-dipinjam';
+                                        $statusText = $isLate ? 'Terlambat' : 'Dipinjam';
                                     @endphp
-                                    <tr class="animate__animated animate__fadeIn" style="animation-delay: {{ $loop->index * 0.05 }}s">
+                                    <tr data-search="{{ $loan->alat->nama_alat ?? '' }} {{ $loan->id_peminjaman }}">
+                                        <td><strong>{{ $loan->alat->nama_alat ?? '-' }}</strong><br><small style="color: var(--gray);">{{ $loan->alat->kategori->nama_kategori ?? '' }}</small></td>
                                         <td>
-                                            <div style="font-weight: 600; color: var(--dark);">
-                                                {{ $r->alat->nama_alat ?? '-' }}
-                                            </div>
-                                            @if($r->alat && $r->alat->kategori)
-                                                <div style="font-size: 12px; color: var(--gray); margin-top: 4px;">
-                                                    {{ $r->alat->kategori->nama_kategori }}
-                                                </div>
-                                            @endif
-                                        </td>
-                                        
-                                        <td>
-                                            <div style="font-weight: 600; color: var(--dark);">
-                                                {{ \Carbon\Carbon::parse($r->tanggal_pinjam)->format('d M Y') }}
-                                            </div>
-                                        </td>
-                                        
-                                        <td>
-                                            <div style="font-weight: 600; color: var(--dark);">
-                                                {{ \Carbon\Carbon::parse($r->tanggal_kembali)->format('d M Y') }}
-                                            </div>
-                                            @if($daysLeft > 0)
-                                                <div style="font-size: 12px; color: var(--success);">
-                                                    <i class="fas fa-clock"></i>
-                                                    {{ $daysLeft }} hari lagi
-                                                </div>
-                                            @elseif($daysLeft == 0)
-                                                <div style="font-size: 12px; color: var(--warning);">
-                                                    <i class="fas fa-exclamation-circle"></i>
-                                                    Hari ini
-                                                </div>
+                                            @if($loan->alat && $loan->alat->gambar)
+                                                <img src="{{ asset('storage/' . $loan->alat->gambar) }}" class="book-cover" alt="Cover">
                                             @else
-                                                <div style="font-size: 12px; color: var(--danger);">
-                                                    <i class="fas fa-exclamation-triangle"></i>
-                                                    {{ abs($daysLeft) }} hari terlambat
-                                                </div>
+                                                <div class="no-image"><i class="fas fa-book"></i></div>
                                             @endif
-                                        </td>
-                                        
+                                        </div>
+                                        <td>{{ \Carbon\Carbon::parse($loan->tanggal_pinjam)->format('d/m/Y') }}</div>
                                         <td>
-                                            <span class="status-badge {{ $statusClass }}">
-                                                @if($statusClass == 'status-dipinjam')
-                                                    <i class="fas fa-clock"></i>
-                                                    Dipinjam
-                                                @else
-                                                    <i class="fas fa-exclamation-triangle"></i>
-                                                    Terlambat
-                                                @endif
-                                            </span>
-                                        </td>
-                                        
+                                            <div><strong>{{ \Carbon\Carbon::parse($loan->tanggal_kembali)->format('d/m/Y') }}</strong></div>
+                                            @if($daysLeft > 0)
+                                                <small style="color: var(--success);">{{ $daysLeft }} hari lagi</small>
+                                            @elseif($daysLeft == 0)
+                                                <small style="color: var(--warning);"><i class="fas fa-exclamation-circle"></i> Hari ini</small>
+                                            @else
+                                                <small style="color: var(--danger);"><i class="fas fa-exclamation-triangle"></i> {{ abs($daysLeft) }} hari terlambat</small>
+                                            @endif
+                                        </div>
+                                        <td><span class="status-badge {{ $statusClass }}"><i class="fas {{ $isLate ? 'fa-exclamation-triangle' : 'fa-clock' }}"></i> {{ $statusText }}</span></td>
                                         <td>
-                                            <form method="POST" 
-                                                action="{{ route('peminjam.pengembalian.kembalikan', $r->id_peminjaman) }}"
-                                                onsubmit="return confirm('Apakah Anda yakin ingin mengembalikan alat ini?\n\nAlat: {{ addslashes($r->alat->nama_alat ?? '-') }}\nPastikan alat dalam kondisi baik sebelum dikembalikan.')">
+                                            <form method="POST" action="{{ route('peminjam.pengembalian.kembalikan', $loan->id_peminjaman) }}" class="return-form">
                                                 @csrf
                                                 <button type="submit" class="btn-kembalikan">
-                                                    <i class="fas fa-undo"></i>
-                                                    Kembalikan
+                                                    <i class="fas fa-undo-alt"></i> Kembalikan
                                                 </button>
                                             </form>
-                                        </td>
+                                        </div>
                                     </tr>
                                     @endforeach
                                 </tbody>
-                            </table>
+                             </div>
                         @else
                             <div class="empty-state">
-                                <div class="empty-icon">
-                                    <i class="fas fa-check-circle"></i>
-                                </div>
-                                <h3>Tidak ada alat yang dipinjam</h3>
-                                <p>Anda tidak memiliki alat yang sedang dipinjam saat ini.</p>
+                                <div class="empty-icon"><i class="fas fa-check-circle"></i></div>
+                                <h3>Tidak ada buku yang dipinjam</h3>
+                                <p>Anda tidak memiliki buku yang sedang dipinjam saat ini.</p>
                             </div>
                         @endif
                     </div>
                 </div>
-
-                <!-- Riwayat Pengembalian -->
+            </div>
+        </main>
+    </div>
 
     <script>
-        // Toggle sidebar untuk mobile
+        // Toggle sidebar
         const sidebarToggle = document.getElementById('sidebarToggle');
         const appContainer = document.getElementById('appContainer');
-
         if (sidebarToggle) {
             sidebarToggle.addEventListener('click', function() {
                 appContainer.classList.toggle('sidebar-collapsed');
-                
-                // Update icon toggle
-                const icon = this.querySelector('i');
-                if (appContainer.classList.contains('sidebar-collapsed')) {
-                    icon.className = 'fas fa-bars';
-                } else {
-                    icon.className = 'fas fa-times';
-                }
             });
+        }
+
+        // Scroll to section
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         }
 
         // Search functionality
-        const searchInput = document.querySelector('#globalSearchBar .search-input');
-        
-        function performSearch(searchTerm) {
-            if (searchTerm) {
-                const tableRows = document.querySelectorAll('.peminjaman-table tbody tr');
-                let found = false;
-                
-                tableRows.forEach(row => {
-                    const text = row.textContent.toLowerCase();
-                    if (text.includes(searchTerm.toLowerCase())) {
-                        row.style.display = '';
-                        if (!found) {
-                            row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            found = true;
-                        }
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-                
-                if (!found) {
-                    showToast(`Tidak ditemukan dengan kata kunci: "${searchTerm}"`, 'warning');
-                }
-            } else {
-                // Reset all rows
-                const allRows = document.querySelectorAll('.peminjaman-table tbody tr');
-                allRows.forEach(row => {
-                    row.style.display = '';
-                });
-            }
-        }
-
+        const searchInput = document.getElementById('searchInput');
         if (searchInput) {
-            searchInput.addEventListener('keyup', function(e) {
-                if (e.key === 'Enter') {
-                    performSearch(this.value.trim());
-                }
-            });
-            
-            // Add search button
-            const searchBar = document.querySelector('#globalSearchBar');
-            const searchBtn = document.createElement('button');
-            searchBtn.innerHTML = '<i class="fas fa-search"></i>';
-            searchBtn.style.cssText = `
-                position: absolute;
-                right: 10px;
-                top: 50%;
-                transform: translateY(-50%);
-                background: none;
-                border: none;
-                color: var(--primary);
-                font-size: 16px;
-                cursor: pointer;
-                padding: 8px;
-                transition: var(--transition);
-            `;
-            
-            searchBar.appendChild(searchBtn);
-            
-            searchBtn.addEventListener('click', () => performSearch(searchInput.value.trim()));
-        }
-
-        // Notification button click
-        const notificationBtn = document.getElementById('notificationBtn');
-        if (notificationBtn) {
-            notificationBtn.addEventListener('click', function() {
-                // Scroll to peminjaman aktif
-                const peminjamanSection = document.querySelectorAll('.dashboard-card')[0];
-                if (peminjamanSection) {
-                    peminjamanSection.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'start' 
+            let searchTimeout;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    const term = this.value.toLowerCase();
+                    const rows = document.querySelectorAll('#tableBody tr');
+                    let visibleCount = 0;
+                    
+                    rows.forEach(row => {
+                        const text = row.dataset.search?.toLowerCase() || row.textContent.toLowerCase();
+                        if (term === '' || text.includes(term)) {
+                            row.style.display = '';
+                            visibleCount++;
+                        } else {
+                            row.style.display = 'none';
+                        }
                     });
                     
-                    showToast('Dialihkan ke alat yang perlu dikembalikan', 'info');
-                }
+                    if (term && visibleCount === 0) {
+                        showToast(`Tidak ditemukan dengan kata "${term}"`, 'warning');
+                    }
+                }, 300);
             });
         }
 
-        // Toast notification function
+        // Return form confirmation with SweetAlert
+        const returnForms = document.querySelectorAll('.return-form');
+        returnForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const bookName = this.closest('tr')?.querySelector('td:first-child strong')?.textContent || 'Buku';
+                
+                Swal.fire({
+                    title: '<i class="fas fa-undo-alt"></i> Konfirmasi Pengembalian',
+                    html: `
+                        <div style="text-align: center;">
+                            <div style="background: linear-gradient(135deg, #4a7c6f, #3a6b5e); width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                                <i class="fas fa-book" style="font-size: 30px; color: white;"></i>
+                            </div>
+                            <p>Anda akan mengembalikan buku</p>
+                            <p style="font-weight: 800; font-size: 18px; margin: 10px 0;">"${bookName}"</p>
+                            <p style="color: #8a9aa8;">Pastikan buku dalam kondisi baik sebelum dikembalikan.</p>
+                        </div>
+                    `,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="fas fa-check"></i> Ya, Kembalikan!',
+                    cancelButtonText: '<i class="fas fa-times"></i> Batal',
+                    confirmButtonColor: '#4a7c6f',
+                    cancelButtonColor: '#8a9aa8',
+                    background: '#fefaf0'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+
+        // Toast notification
         function showToast(message, type = 'info') {
+            const existing = document.querySelector('.toast-notification');
+            if (existing) existing.remove();
+            
             const toast = document.createElement('div');
-            toast.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: ${type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--danger)' : type === 'warning' ? 'var(--warning)' : 'var(--primary)'};
-                color: white;
-                padding: 16px 24px;
-                border-radius: var(--radius-md);
-                font-weight: 600;
-                box-shadow: var(--shadow-lg);
-                z-index: 9999;
-                animation: slideInRight 0.3s ease;
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                max-width: 400px;
-            `;
-            
-            const icon = type === 'success' ? 'fas fa-check-circle' : type === 'error' ? 'fas fa-times-circle' : type === 'warning' ? 'fas fa-exclamation-triangle' : 'fas fa-info-circle';
-            toast.innerHTML = `
-                <i class="${icon}"></i>
-                <span>${message}</span>
-            `;
-            
+            toast.className = 'toast-notification';
+            toast.style.background = type === 'success' ? '#4a7c6f' : type === 'error' ? '#c97b5e' : type === 'warning' ? '#e9c46a' : '#3b6e8c';
+            toast.style.color = type === 'warning' ? '#2d3e50' : 'white';
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-times-circle' : type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'}"></i><span>${message}</span>`;
             document.body.appendChild(toast);
             
-            // Auto remove after 3 seconds
             setTimeout(() => {
-                toast.style.animation = 'slideOutRight 0.3s ease';
-                setTimeout(() => {
-                    toast.remove();
-                }, 300);
+                toast.style.animation = 'slideOutBottom 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
 
-        // Handle window resize
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 1200) {
-                appContainer.classList.remove('sidebar-collapsed');
-                if (sidebarToggle) {
-                    sidebarToggle.querySelector('i').className = 'fas fa-bars';
-                }
+        // Notification button
+        const notificationBtn = document.getElementById('notificationBtn');
+        if (notificationBtn) {
+            notificationBtn.addEventListener('click', function() {
+                scrollToSection('activeLoans');
+            });
+        }
+
+        // User menu
+        const userMenu = document.getElementById('userMenu');
+        if (userMenu) {
+            userMenu.addEventListener('click', function() {
+                Swal.fire({
+                    title: '<i class="fas fa-user-circle"></i> Akun Saya',
+                    html: `
+                        <div style="text-align: center;">
+                            <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #3b6e8c, #8b5e7e); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                                <i class="fas fa-user" style="font-size: 40px; color: white;"></i>
+                            </div>
+                            <h3 style="font-weight: 800;">{{ Auth::user()->name ?? 'Peminjam' }}</h3>
+                            <p style="color: #8a9aa8;">{{ Auth::user()->email ?? 'peminjam@libtrack.com' }}</p>
+                        </div>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="fas fa-sign-out-alt"></i> Logout',
+                    cancelButtonText: '<i class="fas fa-times"></i> Tutup',
+                    confirmButtonColor: '#c97b5e',
+                    cancelButtonColor: '#8a9aa8',
+                    background: '#fefaf0'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '{{ route("logout") }}';
+                    }
+                });
+            });
+        }
+
+        // Keyboard shortcut Ctrl+K
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                if (searchInput) searchInput.focus();
             }
         });
 
-        // Add custom animations
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideInRight {
-                from {
-                    opacity: 0;
-                    transform: translateX(100%);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateX(0);
-                }
-            }
-            
-            @keyframes slideOutRight {
-                from {
-                    opacity: 1;
-                    transform: translateX(0);
-                }
-                to {
-                    opacity: 0;
-                    transform: translateX(100%);
-                }
-            }
-        `;
-        document.head.appendChild(style);
-        
-        // Add hover effect to table rows
-        document.addEventListener('DOMContentLoaded', function() {
-            const tableRows = document.querySelectorAll('.peminjaman-table tbody tr');
-            tableRows.forEach(row => {
-                row.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateX(4px)';
-                });
-                
-                row.addEventListener('mouseleave', function() {
-                    this.style.transform = '';
-                });
-            });
-            
-            // Auto-refresh notification badge
-            function updateNotificationBadge() {
-                const overdueItems = document.querySelectorAll('.status-badge.status-terlambat').length;
-                const activeItems = document.querySelectorAll('.status-badge.status-dipinjam').length;
-                const totalCount = overdueItems + activeItems;
-                
-                const badge = document.getElementById('notificationCount');
-                if (badge) {
-                    badge.textContent = totalCount;
-                    
-                    // Change color based on count
-                    if (overdueItems > 0) {
-                        badge.style.background = 'linear-gradient(135deg, var(--danger), var(--accent))';
-                    } else if (activeItems > 0) {
-                        badge.style.background = 'linear-gradient(135deg, var(--warning), var(--accent))';
-                    }
-                }
-            }
-            
-            // Update notification badge on page load
-            updateNotificationBadge();
+        // Success message with SweetAlert
+        @if(session('success'))
+        Swal.fire({
+            title: '<i class="fas fa-check-circle"></i> Berhasil!',
+            text: '{{ session('success') }}',
+            icon: 'success',
+            confirmButtonColor: '#4a7c6f',
+            timer: 3000,
+            timerProgressBar: true,
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            background: '#fefaf0'
         });
+        @endif
     </script>
 </body>
 </html>
