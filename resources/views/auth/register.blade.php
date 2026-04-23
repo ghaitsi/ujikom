@@ -4,29 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Forent - Register | Smart Tool Rental Management</title>
+    <title>LibSpace - Register | Digital Library & Book Borrowing Platform</title>
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --primary: #4361ee;
-            --primary-dark: #3a56d4;
-            --primary-light: #4895ef;
-            --secondary: #7209b7;
-            --accent: #f72585;
-            --success: #4cc9f0;
-            --warning: #f8961e;
-            --danger: #f94144;
-            --dark: #1a1a2e;
-            --darker: #16213e;
-            --light: #f8f9fa;
-            --gray: #6c757d;
-            --gray-light: #e9ecef;
+            --primary: #8B5CF6;
+            --primary-dark: #7C3AED;
+            --primary-light: #A78BFA;
+            --secondary: #F59E0B;
+            --accent: #EC4899;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --dark: #1E1B4B;
+            --darker: #0F172A;
+            --light: #F8FAFC;
+            --gray: #64748B;
+            --gray-light: #E2E8F0;
             --card-bg: rgba(255, 255, 255, 0.98);
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
             --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
@@ -45,7 +46,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            background: linear-gradient(135deg, #F8FAFC 0%, #E0E7FF 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -55,7 +56,7 @@
             overflow-x: hidden;
         }
 
-        /* Animated Background Elements */
+        /* Animated Background Elements - Book Themed */
         .bg-elements {
             position: fixed;
             top: 0;
@@ -74,11 +75,25 @@
             animation: float 20s infinite linear;
         }
 
+        .floating-book-icon {
+            position: absolute;
+            opacity: 0.06;
+            font-size: 100px;
+            animation: floatBook 25s infinite linear;
+        }
+
         @keyframes float {
             0%, 100% { transform: translate(0, 0) rotate(0deg); }
             25% { transform: translate(100px, 50px) rotate(90deg); }
             50% { transform: translate(50px, 100px) rotate(180deg); }
             75% { transform: translate(-50px, 50px) rotate(270deg); }
+        }
+
+        @keyframes floatBook {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(80px, 60px) rotate(5deg); }
+            50% { transform: translate(40px, 120px) rotate(-3deg); }
+            75% { transform: translate(-60px, 40px) rotate(8deg); }
         }
 
         @keyframes fadeInUp {
@@ -106,7 +121,7 @@
         /* Register Container */
         .register-container {
             width: 100%;
-            max-width: 500px;
+            max-width: 520px;
             position: relative;
             z-index: 10;
             animation: fadeInUp 0.6s ease-out;
@@ -120,17 +135,17 @@
             overflow: hidden;
             box-shadow: var(--shadow-lg);
             transition: var(--transition);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(139, 92, 246, 0.2);
         }
 
         .register-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.15);
         }
 
-        /* Header */
+        /* Header - Book Themed */
         .register-header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
             padding: 32px 24px;
             text-align: center;
             position: relative;
@@ -144,16 +159,26 @@
             right: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
             animation: pulse 8s ease-in-out infinite;
+        }
+
+        .register-header::after {
+            content: '📖';
+            position: absolute;
+            bottom: -20px;
+            left: -20px;
+            font-size: 80px;
+            opacity: 0.1;
+            transform: rotate(-15deg);
         }
 
         .logo-wrapper {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 70px;
-            height: 70px;
+            width: 75px;
+            height: 75px;
             background: rgba(255, 255, 255, 0.2);
             border-radius: 20px;
             backdrop-filter: blur(8px);
@@ -162,25 +187,28 @@
         }
 
         .logo-wrapper:hover {
-            transform: scale(1.05);
+            transform: scale(1.05) rotate(5deg);
             background: rgba(255, 255, 255, 0.25);
         }
 
         .logo-wrapper i {
-            font-size: 36px;
+            font-size: 38px;
             color: white;
         }
 
         .register-header h1 {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 800;
             color: white;
             margin-bottom: 8px;
+            font-family: 'Playfair Display', serif;
+            letter-spacing: -0.5px;
         }
 
         .register-header p {
             font-size: 14px;
             color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
         }
 
         /* Form Area */
@@ -241,7 +269,7 @@
 
         .form-input:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
         }
 
         .form-input:focus + .input-icon {
@@ -299,10 +327,6 @@
             transition: var(--transition);
         }
 
-        .strength-bar.active {
-            background: var(--danger);
-        }
-
         .strength-bar.active.weak {
             background: var(--danger);
         }
@@ -318,7 +342,7 @@
         .strength-text {
             font-size: 11px;
             color: var(--gray);
-            min-width: 60px;
+            min-width: 70px;
         }
 
         /* Register Button */
@@ -342,7 +366,7 @@
 
         .register-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.35);
         }
 
         .register-btn:active {
@@ -395,12 +419,16 @@
 
         .terms input {
             margin-top: 2px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
         }
 
         .terms label {
             font-size: 12px;
             color: var(--gray);
             line-height: 1.4;
+            cursor: pointer;
         }
 
         .terms a {
@@ -415,20 +443,20 @@
         /* Dark Mode Support */
         @media (prefers-color-scheme: dark) {
             body {
-                background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+                background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 100%);
             }
             
             :root {
-                --card-bg: rgba(31, 41, 55, 0.98);
-                --gray-light: #374151;
-                --gray: #9ca3af;
-                --dark: #f3f4f6;
+                --card-bg: rgba(30, 27, 75, 0.98);
+                --gray-light: #334155;
+                --gray: #94A3B8;
+                --dark: #F3E8FF;
             }
             
             .form-input {
-                background: #1f2937;
-                border-color: #374151;
-                color: #f3f4f6;
+                background: #1E1B4B;
+                border-color: #334155;
+                color: #F3E8FF;
             }
             
             .form-input:focus {
@@ -447,33 +475,33 @@
             }
             
             .register-header h1 {
-                font-size: 24px;
+                font-size: 26px;
             }
             
             .logo-wrapper {
-                width: 60px;
-                height: 60px;
+                width: 65px;
+                height: 65px;
             }
             
             .logo-wrapper i {
-                font-size: 28px;
+                font-size: 32px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Animated Background -->
+    <!-- Animated Background - Book Themed -->
     <div class="bg-elements" id="bgElements"></div>
 
     <div class="register-container">
         <div class="register-card">
-            <!-- Header -->
+            <!-- Header - Book Theme -->
             <div class="register-header">
                 <div class="logo-wrapper">
-                    <i class="fas fa-user-plus"></i>
+                    <i class="fas fa-book-reader"></i>
                 </div>
-                <h1>Create Account</h1>
-                <p>Join Forent and start managing your tools</p>
+                <h1>Join LibSpace</h1>
+                <p>Become a member and start your reading journey</p>
             </div>
 
             <!-- Form Area -->
@@ -506,7 +534,7 @@
                         </label>
                         <div class="input-wrapper">
                             <i class="fas fa-envelope input-icon"></i>
-                            <input type="email" name="email" id="email" class="form-input" value="{{ old('email') }}" required placeholder="admin@forent.com">
+                            <input type="email" name="email" id="email" class="form-input" value="{{ old('email') }}" required placeholder="reader@libspace.com">
                         </div>
                         @error('email')
                         <div class="error-message">
@@ -532,7 +560,7 @@
                             <div class="strength-bar" id="strength1"></div>
                             <div class="strength-bar" id="strength2"></div>
                             <div class="strength-bar" id="strength3"></div>
-                            <div class="strength-text" id="strengthText">Weak</div>
+                            <div class="strength-text" id="strengthText"></div>
                         </div>
                         @error('password')
                         <div class="error-message">
@@ -568,21 +596,21 @@
                     <div class="terms">
                         <input type="checkbox" name="terms" id="terms" required>
                         <label for="terms">
-                            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                            I agree to the <a href="#">Library Terms of Service</a> and <a href="#">Privacy Policy</a>
                         </label>
                     </div>
 
                     <!-- Register Button -->
                     <button type="submit" class="register-btn" id="registerBtn">
-                        <i class="fas fa-user-plus"></i>
-                        Create Account
+                        <i class="fas fa-book-open"></i>
+                        Create Library Account
                     </button>
                 </form>
 
                 <!-- Login Link -->
                 <div class="login-link">
-                    <p>Already have an account? 
-                        <a href="{{ route('login') }}">Sign In <i class="fas fa-arrow-right"></i></a>
+                    <p>Already have a library account? 
+                        <a href="{{ route('login') }}">Sign In to LibSpace <i class="fas fa-arrow-right"></i></a>
                     </p>
                 </div>
             </div>
@@ -590,18 +618,19 @@
 
         <!-- Footer -->
         <div class="register-footer">
-            <p><i class="fas fa-shield-alt"></i> Secure registration • Your data is protected</p>
-            <p style="margin-top: 8px;">© {{ date('Y') }} Forent. All rights reserved.</p>
+            <p><i class="fas fa-shield-alt"></i> Secure registration • Join thousands of happy readers</p>
+            <p style="margin-top: 8px;">© {{ date('Y') }} LibSpace. Read, Learn, Grow.</p>
         </div>
     </div>
 
     <script>
-        // Create animated background elements
+        // Create animated background elements with book icons
         function createBackgroundElements() {
             const container = document.getElementById('bgElements');
             if (!container) return;
             
-            for (let i = 0; i < 12; i++) {
+            // Create floating circles
+            for (let i = 0; i < 10; i++) {
                 const circle = document.createElement('div');
                 circle.className = 'bg-circle';
                 
@@ -619,6 +648,30 @@
                 circle.style.animationDelay = `${delay}s`;
                 
                 container.appendChild(circle);
+            }
+            
+            // Create floating book icons
+            const bookIcons = ['📚', '📖', '📘', '📙', '📕', '📗', '🌟', '✨'];
+            for (let i = 0; i < 6; i++) {
+                const book = document.createElement('div');
+                book.className = 'floating-book-icon';
+                book.innerHTML = bookIcons[Math.floor(Math.random() * bookIcons.length)];
+                
+                const size = Math.random() * 60 + 40;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                const duration = Math.random() * 20 + 20;
+                const delay = Math.random() * 10;
+                
+                book.style.fontSize = `${size}px`;
+                book.style.left = `${posX}%`;
+                book.style.top = `${posY}%`;
+                book.style.animationDuration = `${duration}s`;
+                book.style.animationDelay = `${delay}s`;
+                book.style.animation = `floatBook ${duration}s infinite linear`;
+                book.style.opacity = '0.05';
+                
+                container.appendChild(book);
             }
         }
         
@@ -699,26 +752,21 @@
             }
             
             let text = '';
-            let colorClass = '';
             
             if (strength === 0 || strength === 1) {
                 text = 'Weak';
-                colorClass = 'weak';
                 bars[0].classList.add('active', 'weak');
             } else if (strength === 2) {
                 text = 'Medium';
-                colorClass = 'medium';
                 bars[0].classList.add('active', 'medium');
                 bars[1].classList.add('active', 'medium');
             } else if (strength === 3) {
                 text = 'Strong';
-                colorClass = 'strong';
                 bars[0].classList.add('active', 'strong');
                 bars[1].classList.add('active', 'strong');
                 bars[2].classList.add('active', 'strong');
             } else if (strength >= 4) {
                 text = 'Very Strong';
-                colorClass = 'strong';
                 bars.forEach(bar => bar.classList.add('active', 'strong'));
             }
             
@@ -753,7 +801,6 @@
 
         // Form validation
         const registerForm = document.getElementById('registerForm');
-        const registerBtn = document.getElementById('registerBtn');
         
         if (registerForm) {
             registerForm.addEventListener('submit', function(e) {
@@ -797,7 +844,7 @@
                 }
                 
                 if (!terms) {
-                    alert('Please agree to the Terms of Service and Privacy Policy');
+                    alert('Please agree to the Library Terms of Service and Privacy Policy');
                     hasError = true;
                 }
                 

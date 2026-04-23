@@ -4,12 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>Forent - Edit Alat</title>
+    <link rel="icon" href="{{ asset('favicon.ico') }}">
+    <title>LibTrack - Edit Buku</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700|playfair:400,500,600,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Animate CSS -->
@@ -17,21 +17,21 @@
 
     <style>
         :root {
-            --primary: #4361ee;
-            --primary-dark: #3a56d4;
-            --primary-light: #4895ef;
-            --secondary: #7209b7;
-            --accent: #f72585;
-            --success: #4cc9f0;
-            --warning: #f8961e;
-            --danger: #f94144;
-            --dark: #1a1a2e;
-            --darker: #16213e;
-            --light: #f8f9fa;
-            --gray: #6c757d;
-            --gray-light: #e9ecef;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --sidebar-bg: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            --primary: #2c3e50;
+            --primary-dark: #1a252f;
+            --primary-light: #34495e;
+            --secondary: #8e44ad;
+            --accent: #e67e22;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --dark: #2c3e50;
+            --darker: #1a252f;
+            --light: #fdf6e3;
+            --gray: #7f8c8d;
+            --gray-light: #ecf0f1;
+            --card-bg: rgba(253, 246, 227, 0.95);
+            --sidebar-bg: linear-gradient(180deg, #2c3e50 0%, #1a252f 100%);
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
             --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.12);
             --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.15);
@@ -45,14 +45,14 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            background: linear-gradient(135deg, #f5e6ca 0%, #e8d5b7 100%);
             color: var(--dark);
             min-height: 100vh;
             overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
         }
 
         /* Layout Container */
@@ -62,10 +62,10 @@
             position: relative;
         }
 
-        /* Main Content dengan margin untuk sidebar */
+        /* Main Content */
         .main-content {
             flex: 1;
-            margin-left: 280px; /* Sama dengan lebar sidebar */
+            margin-left: 280px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -73,7 +73,6 @@
             width: calc(100% - 280px);
         }
 
-        /* Responsive: jika sidebar disembunyikan */
         .sidebar-collapsed .main-content {
             margin-left: 0;
             width: 100%;
@@ -81,14 +80,14 @@
 
         /* Glass Header */
         .header {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(253, 246, 227, 0.95);
             backdrop-filter: blur(20px);
             padding: 0 40px;
             height: 80px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 2px solid #d4a373;
             box-shadow: var(--shadow-sm);
             position: sticky;
             top: 0;
@@ -98,6 +97,7 @@
         .header-title {
             font-size: 28px;
             font-weight: 700;
+            font-family: 'Playfair', serif;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             background-clip: text;
@@ -107,15 +107,12 @@
         }
 
         .header-title::before {
-            content: '';
+            content: '📚';
             position: absolute;
-            left: 0;
+            left: -10px;
             top: 50%;
             transform: translateY(-50%);
-            width: 6px;
-            height: 30px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 3px;
+            font-size: 28px;
         }
 
         .header-actions {
@@ -132,8 +129,8 @@
         .search-input {
             width: 100%;
             padding: 14px 20px 14px 48px;
-            background: rgba(248, 249, 250, 0.8);
-            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #d4a373;
             border-radius: var(--radius-lg);
             font-size: 15px;
             color: var(--dark);
@@ -143,9 +140,9 @@
 
         .search-input:focus {
             outline: none;
-            border-color: var(--primary);
+            border-color: var(--secondary);
             background: white;
-            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+            box-shadow: 0 0 0 4px rgba(142, 68, 173, 0.1);
         }
 
         .search-icon {
@@ -159,13 +156,13 @@
         }
 
         .search-input:focus + .search-icon {
-            color: var(--primary);
+            color: var(--secondary);
         }
 
         .notification-btn {
             position: relative;
-            background: rgba(248, 249, 250, 0.8);
-            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #d4a373;
             color: var(--gray);
             width: 48px;
             height: 48px;
@@ -180,8 +177,8 @@
 
         .notification-btn:hover {
             background: white;
-            color: var(--primary);
-            border-color: var(--primary-light);
+            color: var(--secondary);
+            border-color: var(--secondary);
             transform: rotate(15deg) scale(1.1);
             box-shadow: var(--shadow-md);
         }
@@ -200,7 +197,7 @@
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            box-shadow: 0 2px 8px rgba(247, 37, 133, 0.4);
+            box-shadow: 0 2px 8px rgba(230, 126, 34, 0.4);
         }
 
         .user-menu {
@@ -210,14 +207,14 @@
             cursor: pointer;
             padding: 8px 16px;
             border-radius: var(--radius-lg);
-            background: rgba(248, 249, 250, 0.8);
-            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #d4a373;
             transition: var(--transition);
         }
 
         .user-menu:hover {
             background: white;
-            border-color: var(--primary-light);
+            border-color: var(--secondary);
             transform: translateY(-2px);
             box-shadow: var(--shadow-md);
         }
@@ -233,7 +230,7 @@
             color: white;
             font-weight: 700;
             font-size: 16px;
-            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+            box-shadow: 0 4px 8px rgba(44, 62, 80, 0.3);
         }
 
         /* Content */
@@ -249,9 +246,10 @@
             gap: 12px;
             margin-bottom: 32px;
             padding: 16px 24px;
-            background: white;
+            background: rgba(253, 246, 227, 0.95);
             border-radius: var(--radius-md);
             box-shadow: var(--shadow-sm);
+            border-left: 4px solid var(--secondary);
         }
 
         .breadcrumb-item {
@@ -265,7 +263,7 @@
         }
 
         .breadcrumb-item:hover {
-            color: var(--primary);
+            color: var(--secondary);
         }
 
         .breadcrumb-separator {
@@ -273,23 +271,34 @@
         }
 
         .breadcrumb-item.active {
-            color: var(--primary);
+            color: var(--secondary);
             font-weight: 600;
         }
 
-        /* Premium Card Container */
+        /* Dashboard Card */
         .dashboard-card {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
             padding: 32px;
             box-shadow: var(--shadow-md);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid #d4a373;
             transition: var(--transition);
-            backdrop-filter: blur(10px);
             animation: cardEntrance 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
             opacity: 0;
             transform: translateY(20px);
             margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card::before {
+            content: '📖';
+            position: absolute;
+            bottom: -20px;
+            right: -20px;
+            font-size: 120px;
+            opacity: 0.05;
+            pointer-events: none;
         }
 
         @keyframes cardEntrance {
@@ -306,7 +315,7 @@
         .dashboard-card:hover {
             box-shadow: var(--shadow-lg);
             transform: translateY(-8px);
-            border-color: var(--primary-light);
+            border-color: var(--secondary);
         }
 
         .card-header {
@@ -315,7 +324,7 @@
             align-items: center;
             margin-bottom: 32px;
             padding-bottom: 20px;
-            border-bottom: 2px solid rgba(67, 97, 238, 0.1);
+            border-bottom: 2px solid rgba(142, 68, 173, 0.2);
         }
 
         .card-title {
@@ -325,14 +334,12 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            font-family: 'Playfair', serif;
         }
 
         .card-title::before {
-            content: '';
-            width: 8px;
-            height: 24px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 4px;
+            content: '📚';
+            font-size: 28px;
         }
 
         /* Current Image Display */
@@ -344,7 +351,7 @@
             background: rgba(248, 249, 250, 0.8);
             border-radius: var(--radius-md);
             margin-bottom: 20px;
-            border: 2px dashed var(--gray-light);
+            border: 2px dashed #d4a373;
         }
 
         .current-image-label {
@@ -377,7 +384,7 @@
         }
 
         .remove-image-btn {
-            background: linear-gradient(135deg, var(--danger), #e53e3e);
+            background: linear-gradient(135deg, var(--danger), #c0392b);
             color: white;
             border: none;
             padding: 8px 16px;
@@ -393,10 +400,10 @@
 
         .remove-image-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(249, 65, 68, 0.3);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
         }
 
-        /* Premium Form Styling */
+        /* Form Styling */
         .form-container {
             max-width: 800px;
             margin: 0 auto;
@@ -419,14 +426,14 @@
         }
 
         .form-label i {
-            color: var(--primary);
+            color: var(--secondary);
             font-size: 16px;
         }
 
         .form-control {
             width: 100%;
             padding: 16px 20px;
-            border: 2px solid var(--gray-light);
+            border: 2px solid #d4a373;
             border-radius: var(--radius-md);
             font-size: 15px;
             color: var(--dark);
@@ -437,8 +444,8 @@
 
         .form-control:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 4px rgba(142, 68, 173, 0.1);
             transform: translateY(-2px);
         }
 
@@ -455,7 +462,7 @@
 
         select.form-control {
             appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%234361ee' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238e44ad' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 20px center;
             background-size: 16px;
@@ -476,11 +483,11 @@
             font-size: 12px;
         }
 
-        /* File Upload Styling */
+        /* File Upload */
         .file-upload-container {
             position: relative;
             overflow: hidden;
-            border: 2px dashed var(--gray-light);
+            border: 2px dashed #d4a373;
             border-radius: var(--radius-md);
             padding: 40px;
             text-align: center;
@@ -490,19 +497,19 @@
         }
 
         .file-upload-container:hover {
-            border-color: var(--primary);
-            background: rgba(67, 97, 238, 0.02);
+            border-color: var(--secondary);
+            background: rgba(142, 68, 173, 0.02);
             transform: translateY(-4px);
         }
 
         .file-upload-container.dragover {
-            border-color: var(--primary);
-            background: rgba(67, 97, 238, 0.05);
+            border-color: var(--secondary);
+            background: rgba(142, 68, 173, 0.05);
         }
 
         .file-upload-icon {
             font-size: 48px;
-            color: var(--primary-light);
+            color: var(--secondary);
             margin-bottom: 16px;
         }
 
@@ -532,11 +539,12 @@
             transition: var(--transition);
             border: none;
             cursor: pointer;
+            pointer-events: auto;
         }
 
         .file-upload-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+            box-shadow: 0 4px 12px rgba(142, 68, 173, 0.3);
         }
 
         .file-upload-input {
@@ -547,11 +555,13 @@
             height: 100%;
             opacity: 0;
             cursor: pointer;
+            z-index: 2;
         }
 
         .file-preview {
             margin-top: 20px;
             display: none;
+            text-align: center;
         }
 
         .file-preview img {
@@ -559,7 +569,7 @@
             max-height: 200px;
             border-radius: var(--radius-sm);
             box-shadow: var(--shadow-sm);
-            border: 2px solid var(--gray-light);
+            border: 2px solid #d4a373;
         }
 
         /* Form Actions */
@@ -568,7 +578,7 @@
             gap: 16px;
             margin-top: 40px;
             padding-top: 24px;
-            border-top: 2px solid rgba(67, 97, 238, 0.1);
+            border-top: 2px solid rgba(142, 68, 173, 0.2);
         }
 
         .btn {
@@ -590,19 +600,19 @@
         .btn-primary {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+            box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
         }
 
         .btn-primary:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+            box-shadow: 0 8px 20px rgba(142, 68, 173, 0.4);
             gap: 15px;
         }
 
         .btn-secondary {
             background: white;
             color: var(--dark);
-            border: 2px solid var(--gray-light);
+            border: 2px solid #d4a373;
             box-shadow: var(--shadow-sm);
         }
 
@@ -610,20 +620,21 @@
             background: var(--gray-light);
             transform: translateY(-2px);
             box-shadow: var(--shadow-md);
+            border-color: var(--secondary);
         }
 
         .btn-warning {
             background: linear-gradient(135deg, var(--warning), #e67e22);
             color: white;
-            box-shadow: 0 4px 12px rgba(248, 150, 30, 0.3);
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
         }
 
         .btn-warning:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(248, 150, 30, 0.4);
+            box-shadow: 0 8px 20px rgba(243, 156, 18, 0.4);
         }
 
-        /* Alert Message */
+        /* Alert */
         .alert {
             padding: 16px 24px;
             border-radius: var(--radius-md);
@@ -633,6 +644,8 @@
             align-items: center;
             gap: 12px;
             animation: slideIn 0.5s ease;
+            background: rgba(231, 76, 60, 0.1);
+            border-left: 4px solid var(--danger);
         }
 
         @keyframes slideIn {
@@ -647,16 +660,15 @@
         }
 
         .alert-danger {
-            background: linear-gradient(135deg, rgba(249, 65, 68, 0.15), rgba(249, 65, 68, 0.05));
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.15), rgba(231, 76, 60, 0.05));
             color: var(--danger);
-            border: 2px solid rgba(249, 65, 68, 0.2);
+            border: 2px solid rgba(231, 76, 60, 0.2);
         }
 
         .alert-danger i {
             color: var(--danger);
         }
 
-        /* Error Messages */
         .error-message {
             color: var(--danger);
             font-size: 13px;
@@ -672,10 +684,10 @@
 
         .form-control.error {
             border-color: var(--danger);
-            background: rgba(249, 65, 68, 0.05);
+            background: rgba(231, 76, 60, 0.05);
         }
 
-        /* Sidebar Toggle Button untuk Mobile */
+        /* Sidebar Toggle */
         .sidebar-toggle {
             display: none;
             position: fixed;
@@ -698,19 +710,28 @@
             transform: scale(1.1);
         }
 
+        /* Book Decoration */
+        .book-decoration {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 60px;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: 1;
+        }
+
         /* Responsive */
         @media (max-width: 1200px) {
             .main-content {
                 margin-left: 0;
                 width: 100%;
             }
-            
             .sidebar-toggle {
                 display: flex;
                 align-items: center;
                 justify-content: center;
             }
-            
             .search-bar {
                 width: 240px;
             }
@@ -721,38 +742,30 @@
                 padding: 0 20px;
                 height: 70px;
             }
-            
             .content-wrapper {
                 padding: 20px;
             }
-            
             .dashboard-card {
                 padding: 24px;
             }
-            
             .search-bar {
                 display: none;
             }
-            
             .form-actions {
                 flex-direction: column;
             }
-            
             .btn {
                 width: 100%;
                 justify-content: center;
             }
-            
             .breadcrumb {
                 flex-wrap: wrap;
             }
-            
             .current-image-container {
                 flex-direction: column;
                 text-align: center;
                 gap: 16px;
             }
-            
             .current-image-label {
                 min-width: auto;
             }
@@ -764,11 +777,9 @@
                 gap: 16px;
                 align-items: flex-start;
             }
-            
             .file-upload-container {
                 padding: 24px;
             }
-            
             .form-control {
                 padding: 14px 16px;
             }
@@ -776,6 +787,11 @@
     </style>
 </head>
 <body class="font-sans antialiased">
+    <!-- Decorative Book Element -->
+    <div class="book-decoration">
+        <i class="fas fa-book-open"></i>
+    </div>
+
     <!-- Sidebar Toggle Button -->
     <button class="sidebar-toggle" id="sidebarToggle">
         <i class="fas fa-bars"></i>
@@ -783,18 +799,17 @@
 
     <!-- App Container -->
     <div class="app-container" id="appContainer">
-        <!-- Include Sidebar -->
         @include('layouts.sidebar')
 
         <!-- Main Content -->
         <main class="main-content" id="mainContent">
             <!-- Glass Header -->
             <header class="header">
-                <h1 class="header-title animate__animated animate__fadeIn">Edit Alat</h1>
+                <h1 class="header-title animate__animated animate__fadeIn">Edit Buku</h1>
                 <div class="header-actions">
                     <div class="search-bar">
                         <i class="fas fa-search search-icon"></i>
-                        <input type="text" class="search-input" placeholder="Cari alat...">
+                        <input type="text" class="search-input" placeholder="Cari buku...">
                     </div>
                     <button class="notification-btn">
                         <i class="fas fa-bell"></i>
@@ -825,15 +840,15 @@
                         <i class="fas fa-chevron-right"></i>
                     </span>
                     <a href="{{ route('admin.alat.index') }}" class="breadcrumb-item">
-                        <i class="fas fa-tools"></i>
-                        Daftar Alat
+                        <i class="fas fa-book"></i>
+                        Koleksi Buku
                     </a>
                     <span class="breadcrumb-separator">
                         <i class="fas fa-chevron-right"></i>
                     </span>
                     <span class="breadcrumb-item active">
                         <i class="fas fa-edit"></i>
-                        Edit Alat: {{ $alat->nama_alat }}
+                        Edit Buku: {{ $alat->nama_alat }}
                     </span>
                 </nav>
 
@@ -852,42 +867,41 @@
                     </div>
                 @endif
 
-                <!-- Premium Card Container -->
+                <!-- Dashboard Card -->
                 <div class="dashboard-card animate__animated animate__fadeInUp">
                     <div class="card-header">
                         <h3 class="card-title">
-                            <i class="fas fa-edit"></i>
-                            Edit Data Alat
+                            Edit Data Buku
                         </h3>
                         <div class="card-info">
                             <span style="color: var(--gray); font-size: 14px;">
                                 <i class="fas fa-hashtag"></i>
-                                ID: {{ $alat->id_alat }}
+                                ID Buku: {{ $alat->id_alat }}
                             </span>
                         </div>
                     </div>
 
-                    <!-- Current Image Display -->
+                    <!-- Current Cover Display -->
                     <div class="current-image-container">
                         <div class="current-image-label">
                             <i class="fas fa-image"></i>
-                            Gambar Saat Ini:
+                            Cover Saat Ini:
                         </div>
                         @if($alat->gambar)
                             <img src="{{ asset('storage/'.$alat->gambar) }}" 
                                  class="current-image" 
                                  alt="{{ $alat->nama_alat }}"
-                                 onerror="this.onerror=null; this.src='https://via.placeholder.com/120?text=Error+Loading';">
+                                 onerror="this.onerror=null; this.src='https://via.placeholder.com/120?text=No+Cover';">
                             <button type="button" 
                                     class="remove-image-btn"
                                     onclick="confirmRemoveImage()">
                                 <i class="fas fa-trash"></i>
-                                Hapus Gambar
+                                Hapus Cover
                             </button>
                         @else
                             <div class="no-image">
-                                <i class="fas fa-image"></i>
-                                Tidak ada gambar
+                                <i class="fas fa-book"></i>
+                                Belum ada cover buku
                             </div>
                         @endif
                     </div>
@@ -902,16 +916,16 @@
                             @csrf
                             @method('PUT')
 
-                            <!-- Nama Alat -->
+                            <!-- Judul Buku -->
                             <div class="form-group">
                                 <label class="form-label">
-                                    <i class="fas fa-tag"></i>
-                                    Nama Alat
+                                    <i class="fas fa-book"></i>
+                                    Judul Buku
                                 </label>
                                 <input type="text" 
                                        name="nama_alat" 
                                        class="form-control @error('nama_alat') error @enderror"
-                                       placeholder="Masukkan nama alat"
+                                       placeholder="Masukkan judul buku"
                                        value="{{ old('nama_alat', $alat->nama_alat) }}"
                                        required>
                                 @error('nama_alat')
@@ -922,7 +936,78 @@
                                 @enderror
                                 <div class="form-text">
                                     <i class="fas fa-lightbulb"></i>
-                                    Masukkan nama alat yang jelas dan mudah dipahami
+                                    Masukkan judul buku yang lengkap dan jelas
+                                </div>
+                            </div>
+
+                            <!-- Penulis -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-user-edit"></i>
+                                    Nama Penulis
+                                </label>
+                                <input type="text" 
+                                    name="penulis" 
+                                    class="form-control @error('penulis') error @enderror"
+                                    placeholder="Masukkan nama penulis"
+                                    value="{{ old('penulis', $alat->penulis) }}"
+                                    required>
+                                @error('penulis')
+                                    <div class="error-message">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                                <div class="form-text">
+                                    <i class="fas fa-lightbulb"></i>
+                                    Nama lengkap penulis atau editor buku
+                                </div>
+                            </div>                    
+                                    
+                            <!-- Tanggal Terbit -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Tanggal Terbit
+                                </label>
+                                <input type="date" 
+                                    name="tanggal_terbit" 
+                                    class="form-control @error('tanggal_terbit') error @enderror"
+                                    value="{{ old('tanggal_terbit', $alat->tanggal_terbit) }}"
+                                    required>
+                                @error('tanggal_terbit')
+                                    <div class="error-message">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                                <div class="form-text">
+                                    <i class="fas fa-lightbulb"></i>
+                                    Tanggal pertama kali buku diterbitkan
+                                </div>
+                            </div>
+
+                            <!-- Tempat Terbit -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Tempat Terbit
+                                </label>
+                                <input type="text" 
+                                    name="tempat_terbit" 
+                                    class="form-control @error('tempat_terbit') error @enderror"
+                                    placeholder="Masukkan tempat terbit"
+                                    value="{{ old('tempat_terbit', $alat->tempat_terbit ?? '') }}"
+                                    required>
+                                @error('tempat_terbit')
+                                    <div class="error-message">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                                <div class="form-text">
+                                    <i class="fas fa-lightbulb"></i>
+                                    Contoh: Jakarta, Bandung, Yogyakarta
                                 </div>
                             </div>
 
@@ -930,16 +1015,16 @@
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-tags"></i>
-                                    Kategori
+                                    Genre / Kategori
                                 </label>
                                 <select name="id_kategori" 
                                         class="form-control @error('id_kategori') error @enderror"
                                         required>
-                                    <option value="">Pilih Kategori</option>
+                                    <option value="">Pilih Genre Buku</option>
                                     @foreach($kategori as $k)
                                         <option value="{{ $k->id_kategori }}" 
                                                 {{ old('id_kategori', $alat->id_kategori) == $k->id_kategori ? 'selected' : '' }}>
-                                            {{ $k->nama_kategori }} (ID: #{{ $k->id_kategori }})
+                                            {{ $k->nama_kategori }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -951,20 +1036,20 @@
                                 @enderror
                                 <div class="form-text">
                                     <i class="fas fa-lightbulb"></i>
-                                    Pilih kategori untuk alat ini
+                                    Pilih genre atau kategori buku
                                 </div>
                             </div>
 
                             <!-- Stok -->
                             <div class="form-group">
                                 <label class="form-label">
-                                    <i class="fas fa-boxes"></i>
-                                    Stok
+                                    <i class="fas fa-copy"></i>
+                                    Jumlah Eksemplar
                                 </label>
                                 <input type="number" 
                                        name="stok" 
                                        class="form-control @error('stok') error @enderror"
-                                       placeholder="Masukkan jumlah stok"
+                                       placeholder="Masukkan jumlah buku tersedia"
                                        value="{{ old('stok', $alat->stok) }}"
                                        min="0"
                                        required>
@@ -976,19 +1061,19 @@
                                 @enderror
                                 <div class="form-text">
                                     <i class="fas fa-lightbulb"></i>
-                                    Masukkan jumlah stok yang tersedia
+                                    Jumlah eksemplar buku yang tersedia
                                 </div>
                             </div>
 
-                            <!-- Deskripsi -->
+                            <!-- Sinopsis -->
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-align-left"></i>
-                                    Deskripsi
+                                    Sinopsis Buku
                                 </label>
                                 <textarea name="deskripsi" 
                                           class="form-control @error('deskripsi') error @enderror"
-                                          placeholder="Masukkan deskripsi alat"
+                                          placeholder="Tulis sinopsis atau ringkasan buku"
                                           rows="4">{{ old('deskripsi', $alat->deskripsi) }}</textarea>
                                 @error('deskripsi')
                                     <div class="error-message">
@@ -998,24 +1083,24 @@
                                 @enderror
                                 <div class="form-text">
                                     <i class="fas fa-lightbulb"></i>
-                                    Jelaskan spesifikasi dan kegunaan alat
+                                    Ringkasan singkat tentang isi buku
                                 </div>
                             </div>
 
-                            <!-- Kondisi -->
+                            <!-- Kondisi Buku -->
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-check-circle"></i>
-                                    Kondisi
+                                    Kondisi Buku
                                 </label>
                                 <select name="kondisi" 
                                         class="form-control @error('kondisi') error @enderror"
                                         required>
-                                    <option value="">Pilih Kondisi</option>
-                                    <option value="Baik" {{ old('kondisi', $alat->kondisi) == 'Baik' ? 'selected' : '' }}>Baik</option>
-                                    <option value="Rusak Ringan" {{ old('kondisi', $alat->kondisi) == 'Rusak Ringan' ? 'selected' : '' }}>Rusak Ringan</option>
-                                    <option value="Rusak Berat" {{ old('kondisi', $alat->kondisi) == 'Rusak Berat' ? 'selected' : '' }}>Rusak Berat</option>
-                                    <option value="Perlu Perbaikan" {{ old('kondisi', $alat->kondisi) == 'Perlu Perbaikan' ? 'selected' : '' }}>Perlu Perbaikan</option>
+                                    <option value="">Pilih Kondisi Buku</option>
+                                    <option value="Baik" {{ old('kondisi', $alat->kondisi) == 'Baik' ? 'selected' : '' }}>Baik (Seperti Baru)</option>
+                                    <option value="Rusak Ringan" {{ old('kondisi', $alat->kondisi) == 'Rusak Ringan' ? 'selected' : '' }}>Rusak Ringan (Lecet kecil)</option>
+                                    <option value="Rusak Berat" {{ old('kondisi', $alat->kondisi) == 'Rusak Berat' ? 'selected' : '' }}>Rusak Berat (Halaman rusak)</option>
+                                    <option value="Perlu Perbaikan" {{ old('kondisi', $alat->kondisi) == 'Perlu Perbaikan' ? 'selected' : '' }}>Perlu Perbaikan (Jilid lepas)</option>
                                 </select>
                                 @error('kondisi')
                                     <div class="error-message">
@@ -1025,7 +1110,7 @@
                                 @enderror
                                 <div class="form-text">
                                     <i class="fas fa-lightbulb"></i>
-                                    Pilih kondisi alat saat ini
+                                    Kondisi fisik buku saat ini
                                 </div>
                             </div>
 
@@ -1033,15 +1118,15 @@
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-toggle-on"></i>
-                                    Status
+                                    Status Ketersediaan
                                 </label>
                                 <select name="status" 
                                         class="form-control @error('status') error @enderror"
                                         required>
                                     <option value="">Pilih Status</option>
-                                    <option value="tersedia" {{ old('status', $alat->status) == 'tersedia' ? 'selected' : '' }}>Tersedia</option>
-                                    <option value="dipinjam" {{ old('status', $alat->status) == 'dipinjam' ? 'selected' : '' }}>Dipinjam</option>
-                                    <option value="perbaikan" {{ old('status', $alat->status) == 'perbaikan' ? 'selected' : '' }}>Perbaikan</option>
+                                    <option value="tersedia" {{ old('status', $alat->status) == 'tersedia' ? 'selected' : '' }}>Tersedia untuk Dipinjam</option>
+                                    <option value="dipinjam" {{ old('status', $alat->status) == 'dipinjam' ? 'selected' : '' }}>Sedang Dipinjam</option>
+                                    <option value="perbaikan" {{ old('status', $alat->status) == 'perbaikan' ? 'selected' : '' }}>Dalam Perbaikan</option>
                                 </select>
                                 @error('status')
                                     <div class="error-message">
@@ -1051,15 +1136,15 @@
                                 @enderror
                                 <div class="form-text">
                                     <i class="fas fa-lightbulb"></i>
-                                    Pilih status ketersediaan alat
+                                    Status ketersediaan buku untuk dipinjam
                                 </div>
                             </div>
 
-                            <!-- Gambar Baru -->
+                            <!-- Cover Baru -->
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-image"></i>
-                                    Ganti Gambar (Opsional)
+                                    Ganti Cover (Opsional)
                                 </label>
                                 
                                 <div class="file-upload-container" id="fileUploadContainer">
@@ -1067,28 +1152,27 @@
                                         <i class="fas fa-cloud-upload-alt"></i>
                                     </div>
                                     <div class="file-upload-text">
-                                        Upload Gambar Baru
+                                        Upload Cover Baru
                                     </div>
                                     <div class="file-upload-subtext">
                                         PNG, JPG, JPEG maks. 2MB
                                     </div>
-                                    <button type="button" class="file-upload-btn">
+                                    <button type="button" class="file-upload-btn" id="fileUploadBtn">
                                         <i class="fas fa-folder-open"></i>
                                         Pilih File
                                     </button>
                                     <input type="file" 
                                            name="gambar" 
                                            id="gambar"
-                                           class="file-upload-input @error('gambar') error @enderror"
+                                           class="file-upload-input"
                                            accept="image/*">
                                 </div>
                                 
                                 <div class="file-preview" id="filePreview">
-                                    <img id="previewImage" src="" alt="Preview">
+                                    <img id="previewImage" src="" alt="Preview Cover Baru">
                                     <button type="button" 
                                             class="remove-image-btn"
-                                            onclick="removePreview()"
-                                            style="margin-top: 10px;">
+                                            id="removeImageBtn">
                                         <i class="fas fa-times"></i>
                                         Batalkan
                                     </button>
@@ -1102,7 +1186,7 @@
                                 @enderror
                                 <div class="form-text">
                                     <i class="fas fa-lightbulb"></i>
-                                    Upload gambar baru untuk mengganti gambar saat ini (kosongkan jika tidak ingin mengganti)
+                                    Upload cover baru untuk mengganti cover saat ini (kosongkan jika tidak ingin mengganti)
                                 </div>
                             </div>
 
@@ -1110,7 +1194,7 @@
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-save"></i>
-                                    Update Alat
+                                    Update Buku
                                 </button>
                                 <a href="{{ route('admin.alat.index') }}" class="btn btn-secondary">
                                     <i class="fas fa-times"></i>
@@ -1120,7 +1204,7 @@
                                         class="btn btn-warning"
                                         onclick="confirmDelete()">
                                     <i class="fas fa-trash"></i>
-                                    Hapus Alat
+                                    Hapus Buku
                                 </button>
                             </div>
                         </form>
@@ -1130,7 +1214,7 @@
         </main>
     </div>
 
-    <!-- Delete Confirmation Form (Hidden) -->
+    <!-- Delete Confirmation Form -->
     <form action="{{ route('admin.alat.destroy', $alat->id_alat) }}" 
           method="POST" 
           id="deleteForm"
@@ -1148,7 +1232,6 @@
             sidebarToggle.addEventListener('click', function() {
                 appContainer.classList.toggle('sidebar-collapsed');
                 
-                // Update icon toggle
                 const icon = this.querySelector('i');
                 if (appContainer.classList.contains('sidebar-collapsed')) {
                     icon.className = 'fas fa-bars';
@@ -1158,56 +1241,25 @@
             });
         }
 
-        // File upload dengan drag & drop
+        // File upload dengan perbaikan
         const fileUploadContainer = document.getElementById('fileUploadContainer');
         const fileInput = document.getElementById('gambar');
         const filePreview = document.getElementById('filePreview');
         const previewImage = document.getElementById('previewImage');
+        const fileUploadBtn = document.getElementById('fileUploadBtn');
+        const removeImageBtn = document.getElementById('removeImageBtn');
 
-        if (fileUploadContainer && fileInput) {
-            // Click event
-            fileUploadContainer.addEventListener('click', function() {
-                fileInput.click();
-            });
-
-            // Drag & drop events
-            fileUploadContainer.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                this.classList.add('dragover');
-            });
-
-            fileUploadContainer.addEventListener('dragleave', function() {
-                this.classList.remove('dragover');
-            });
-
-            fileUploadContainer.addEventListener('drop', function(e) {
-                e.preventDefault();
-                this.classList.remove('dragover');
-                
-                if (e.dataTransfer.files.length) {
-                    fileInput.files = e.dataTransfer.files;
-                    previewFile(e.dataTransfer.files[0]);
-                }
-            });
-
-            // File change event
-            fileInput.addEventListener('change', function() {
-                if (this.files && this.files[0]) {
-                    previewFile(this.files[0]);
-                }
-            });
-        }
-
-        // Preview image function
         function previewFile(file) {
             if (!file.type.match('image.*')) {
                 alert('Hanya file gambar yang diperbolehkan!');
-                return;
+                fileInput.value = '';
+                return false;
             }
 
             if (file.size > 2 * 1024 * 1024) {
                 alert('Ukuran file maksimal 2MB!');
-                return;
+                fileInput.value = '';
+                return false;
             }
 
             const reader = new FileReader();
@@ -1217,19 +1269,70 @@
                 fileUploadContainer.style.display = 'none';
             };
             reader.readAsDataURL(file);
+            return true;
         }
 
-        // Remove preview function
-        function removePreview() {
+        function resetUpload() {
             fileInput.value = '';
             filePreview.style.display = 'none';
             fileUploadContainer.style.display = 'block';
+            previewImage.src = '';
         }
 
-        // Confirm remove current image
+        if (fileUploadBtn) {
+            fileUploadBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                fileInput.click();
+            });
+        }
+
+        if (fileUploadContainer) {
+            fileUploadContainer.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+
+            fileUploadContainer.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+            });
+
+            fileUploadContainer.addEventListener('drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.classList.remove('dragover');
+                
+                if (e.dataTransfer.files && e.dataTransfer.files.length) {
+                    const file = e.dataTransfer.files[0];
+                    if (previewFile(file)) {
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        fileInput.files = dataTransfer.files;
+                    }
+                }
+            });
+        }
+
+        if (fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                e.stopPropagation();
+                if (this.files && this.files[0]) {
+                    previewFile(this.files[0]);
+                }
+            });
+        }
+
+        if (removeImageBtn) {
+            removeImageBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                resetUpload();
+            });
+        }
+
+        // Confirm remove current cover
         function confirmRemoveImage() {
-            if (confirm('Apakah Anda yakin ingin menghapus gambar ini?\nGambar akan dihapus permanen.')) {
-                // Add a hidden input to indicate image removal
+            if (confirm('Apakah Anda yakin ingin menghapus cover buku ini?\nCover akan dihapus permanen.')) {
                 const form = document.getElementById('alatForm');
                 const hiddenInput = document.createElement('input');
                 hiddenInput.type = 'hidden';
@@ -1237,17 +1340,14 @@
                 hiddenInput.value = '1';
                 form.appendChild(hiddenInput);
                 
-                // Hide the current image display
                 document.querySelector('.current-image-container').style.display = 'none';
-                
-                // Show success message
-                alert('Gambar akan dihapus saat Anda menyimpan perubahan.');
+                alert('Cover akan dihapus saat Anda menyimpan perubahan.');
             }
         }
 
-        // Confirm delete alat
+        // Confirm delete buku
         function confirmDelete() {
-            if (confirm('Apakah Anda yakin ingin menghapus alat ini?\nTindakan ini tidak dapat dibatalkan.')) {
+            if (confirm('Apakah Anda yakin ingin menghapus buku ini?\nTindakan ini tidak dapat dibatalkan.')) {
                 document.getElementById('deleteForm').submit();
             }
         }
@@ -1264,9 +1364,9 @@
                         isValid = false;
                         field.classList.add('error');
                         
-                        // Create error message if not exists
-                        if (!field.nextElementSibling || !field.nextElementSibling.classList.contains('error-message')) {
-                            const errorDiv = document.createElement('div');
+                        let errorDiv = field.parentNode.querySelector('.error-message:not(.server-error)');
+                        if (!errorDiv) {
+                            errorDiv = document.createElement('div');
                             errorDiv.className = 'error-message';
                             errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> Field ini wajib diisi`;
                             field.parentNode.insertBefore(errorDiv, field.nextElementSibling);
@@ -1274,9 +1374,9 @@
                     } else {
                         field.classList.remove('error');
                         
-                        // Remove error message if exists
-                        if (field.nextElementSibling && field.nextElementSibling.classList.contains('error-message')) {
-                            field.nextElementSibling.remove();
+                        const errorDiv = field.parentNode.querySelector('.error-message:not(.server-error)');
+                        if (errorDiv && !errorDiv.classList.contains('server-error')) {
+                            errorDiv.remove();
                         }
                     }
                 });
@@ -1288,7 +1388,6 @@
             });
         }
 
-        // Handle window resize
         window.addEventListener('resize', function() {
             if (window.innerWidth > 1200) {
                 appContainer.classList.remove('sidebar-collapsed');
@@ -1298,24 +1397,12 @@
             }
         });
 
-        // Auto-focus first field
         document.addEventListener('DOMContentLoaded', function() {
-            const firstField = document.querySelector('input, select, textarea');
+            const firstField = document.querySelector('input:not([type="file"]), select, textarea');
             if (firstField) {
                 firstField.focus();
             }
         });
-
-        // Show current image URL in console for debugging
-        console.log('Current Image URL:', '{{ $alat->gambar ? asset('storage/'.$alat->gambar) : 'No image' }}');
-        
-        // Show selected kategori info
-        const kategoriSelect = document.querySelector('select[name="id_kategori"]');
-        if (kategoriSelect) {
-            kategoriSelect.addEventListener('change', function() {
-                console.log('Selected Category ID:', this.value);
-            });
-        }
     </script>
 </body>
 </html>

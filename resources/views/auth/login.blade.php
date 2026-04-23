@@ -4,29 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Forent - Login | Smart Tool Rental Management</title>
+    <title>LibSpace - Login | Digital Library & Book Borrowing Platform</title>
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --primary: #4361ee;
-            --primary-dark: #3a56d4;
-            --primary-light: #4895ef;
-            --secondary: #7209b7;
-            --accent: #f72585;
-            --success: #4cc9f0;
-            --warning: #f8961e;
-            --danger: #f94144;
-            --dark: #1a1a2e;
-            --darker: #16213e;
-            --light: #f8f9fa;
-            --gray: #6c757d;
-            --gray-light: #e9ecef;
+            --primary: #8B5CF6;
+            --primary-dark: #7C3AED;
+            --primary-light: #A78BFA;
+            --secondary: #F59E0B;
+            --accent: #EC4899;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --dark: #1E1B4B;
+            --darker: #0F172A;
+            --light: #F8FAFC;
+            --gray: #64748B;
+            --gray-light: #E2E8F0;
             --card-bg: rgba(255, 255, 255, 0.98);
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
             --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
@@ -45,7 +46,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            background: linear-gradient(135deg, #F8FAFC 0%, #E0E7FF 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -55,7 +56,7 @@
             overflow-x: hidden;
         }
 
-        /* Animated Background Elements */
+        /* Animated Background Elements - Book Themed */
         .bg-elements {
             position: fixed;
             top: 0;
@@ -74,11 +75,25 @@
             animation: float 20s infinite linear;
         }
 
+        .floating-book-icon {
+            position: absolute;
+            opacity: 0.06;
+            font-size: 100px;
+            animation: floatBook 25s infinite linear;
+        }
+
         @keyframes float {
             0%, 100% { transform: translate(0, 0) rotate(0deg); }
             25% { transform: translate(100px, 50px) rotate(90deg); }
             50% { transform: translate(50px, 100px) rotate(180deg); }
             75% { transform: translate(-50px, 50px) rotate(270deg); }
+        }
+
+        @keyframes floatBook {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(80px, 60px) rotate(5deg); }
+            50% { transform: translate(40px, 120px) rotate(-3deg); }
+            75% { transform: translate(-60px, 40px) rotate(8deg); }
         }
 
         @keyframes fadeInUp {
@@ -95,6 +110,11 @@
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
+        }
+
+        @keyframes pageFlip {
+            0% { transform: perspective(400px) rotateY(0deg); }
+            100% { transform: perspective(400px) rotateY(-180deg); }
         }
 
         /* Login Container */
@@ -114,17 +134,17 @@
             overflow: hidden;
             box-shadow: var(--shadow-lg);
             transition: var(--transition);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(139, 92, 246, 0.2);
         }
 
         .login-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.15);
         }
 
-        /* Header */
+        /* Header - Book Themed */
         .login-header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
             padding: 32px 24px;
             text-align: center;
             position: relative;
@@ -138,16 +158,26 @@
             right: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
             animation: pulse 8s ease-in-out infinite;
+        }
+
+        .login-header::after {
+            content: '📖';
+            position: absolute;
+            bottom: -20px;
+            left: -20px;
+            font-size: 80px;
+            opacity: 0.1;
+            transform: rotate(-15deg);
         }
 
         .logo-wrapper {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 70px;
-            height: 70px;
+            width: 75px;
+            height: 75px;
             background: rgba(255, 255, 255, 0.2);
             border-radius: 20px;
             backdrop-filter: blur(8px);
@@ -156,25 +186,28 @@
         }
 
         .logo-wrapper:hover {
-            transform: scale(1.05);
+            transform: scale(1.05) rotate(5deg);
             background: rgba(255, 255, 255, 0.25);
         }
 
         .logo-wrapper i {
-            font-size: 36px;
+            font-size: 38px;
             color: white;
         }
 
         .login-header h1 {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 800;
             color: white;
             margin-bottom: 8px;
+            font-family: 'Playfair Display', serif;
+            letter-spacing: -0.5px;
         }
 
         .login-header p {
             font-size: 14px;
             color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
         }
 
         /* Form Area */
@@ -184,7 +217,7 @@
 
         /* Session Status */
         .session-status {
-            background: linear-gradient(135deg, rgba(76, 201, 240, 0.1), rgba(76, 201, 240, 0.05));
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
             border-left: 3px solid var(--success);
             padding: 12px 16px;
             border-radius: var(--radius-sm);
@@ -243,7 +276,7 @@
 
         .form-input:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
         }
 
         .form-input:focus + .input-icon {
@@ -364,20 +397,20 @@
 
         .login-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.35);
         }
 
         .login-btn:active {
             transform: translateY(0);
         }
 
-        /* Demo Credentials */
+        /* Demo Credentials - Book Themed */
         .demo-credentials {
             margin-top: 24px;
             padding: 16px;
-            background: linear-gradient(135deg, rgba(67, 97, 238, 0.05), rgba(114, 9, 183, 0.05));
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(245, 158, 11, 0.05));
             border-radius: var(--radius-sm);
-            border: 1px solid rgba(67, 97, 238, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.15);
         }
 
         .demo-title {
@@ -388,6 +421,10 @@
             display: flex;
             align-items: center;
             gap: 6px;
+        }
+
+        .demo-title i {
+            font-size: 12px;
         }
 
         .demo-content {
@@ -448,20 +485,20 @@
         /* Dark Mode Support */
         @media (prefers-color-scheme: dark) {
             body {
-                background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+                background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 100%);
             }
             
             :root {
-                --card-bg: rgba(31, 41, 55, 0.98);
-                --gray-light: #374151;
-                --gray: #9ca3af;
-                --dark: #f3f4f6;
+                --card-bg: rgba(30, 27, 75, 0.98);
+                --gray-light: #334155;
+                --gray: #94A3B8;
+                --dark: #F3E8FF;
             }
             
             .form-input {
-                background: #1f2937;
-                border-color: #374151;
-                color: #f3f4f6;
+                background: #1E1B4B;
+                border-color: #334155;
+                color: #F3E8FF;
             }
             
             .form-input:focus {
@@ -469,12 +506,13 @@
             }
             
             .custom-checkbox {
-                background: #1f2937;
-                border-color: #374151;
+                background: #1E1B4B;
+                border-color: #334155;
             }
             
             .demo-credentials {
-                background: rgba(67, 97, 238, 0.1);
+                background: rgba(139, 92, 246, 0.12);
+                border-color: rgba(139, 92, 246, 0.25);
             }
         }
 
@@ -489,33 +527,33 @@
             }
             
             .login-header h1 {
-                font-size: 24px;
+                font-size: 26px;
             }
             
             .logo-wrapper {
-                width: 60px;
-                height: 60px;
+                width: 65px;
+                height: 65px;
             }
             
             .logo-wrapper i {
-                font-size: 28px;
+                font-size: 32px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Animated Background -->
+    <!-- Animated Background - Book Themed -->
     <div class="bg-elements" id="bgElements"></div>
 
     <div class="login-container">
         <div class="login-card">
-            <!-- Header -->
+            <!-- Header - Book Theme -->
             <div class="login-header">
                 <div class="logo-wrapper">
-                    <i class="fas fa-tools"></i>
+                    <i class="fas fa-book-open"></i>
                 </div>
-                <h1>Forent</h1>
-                <p>Smart Tool Rental Management</p>
+                <h1>LibSpace</h1>
+                <p>Digital Library & Book Borrowing Platform</p>
             </div>
 
             <!-- Form Area -->
@@ -537,7 +575,7 @@
                         </label>
                         <div class="input-wrapper">
                             <i class="fas fa-envelope input-icon"></i>
-                            <input type="email" name="email" class="form-input" value="{{ old('email') }}" required autofocus placeholder="admin@forent.com">
+                            <input type="email" name="email" class="form-input" value="{{ old('email') }}" required autofocus placeholder="reader@libspace.com">
                         </div>
                         @error('email')
                         <div class="error-message">
@@ -581,27 +619,30 @@
 
                     <!-- Login Button -->
                     <button type="submit" class="login-btn">
-                        <i class="fas fa-arrow-right-to-bracket"></i>
-                        Sign In
+                        <i class="fas fa-book-reader"></i>
+                        Sign In to Library
                     </button>
                 </form>
 
-                <!-- Demo Credentials -->
+                <!-- Demo Credentials - Book Themed -->
                 <div class="demo-credentials">
                     <div class="demo-title">
-                        <i class="fas fa-flask"></i> Demo Credentials
+                        <i class="fas fa-graduation-cap"></i> Demo Credentials
                     </div>
                     <div class="demo-content">
-                        <p><i class="fas fa-envelope"></i> Email: admin@forent.com</p>
+                        <p><i class="fas fa-envelope"></i> Email: reader@libspace.com</p>
                         <p><i class="fas fa-lock"></i> Password: password</p>
+                        <p style="margin-top: 6px; font-size: 11px; color: var(--primary);">
+                            <i class="fas fa-info-circle"></i> Try borrowing your first book!
+                        </p>
                     </div>
                 </div>
 
                 <!-- Register Link -->
                 <div class="register-link">
-                    <p>Don't have an account? 
+                    <p>Don't have a library account? 
                         @if (Route::has('register'))
-                        <a href="{{ route('register') }}">Create Account <i class="fas fa-arrow-right"></i></a>
+                        <a href="{{ route('register') }}">Join LibSpace <i class="fas fa-arrow-right"></i></a>
                         @endif
                     </p>
                 </div>
@@ -610,18 +651,19 @@
 
         <!-- Footer -->
         <div class="login-footer">
-            <p><i class="fas fa-shield-alt"></i> Secure login powered by Forent</p>
-            <p style="margin-top: 8px;">© {{ date('Y') }} Forent. All rights reserved.</p>
+            <p><i class="fas fa-shield-alt"></i> Secure library access powered by LibSpace</p>
+            <p style="margin-top: 8px;">© {{ date('Y') }} LibSpace. Read, Learn, Grow.</p>
         </div>
     </div>
 
     <script>
-        // Create animated background elements
+        // Create animated background elements with book icons
         function createBackgroundElements() {
             const container = document.getElementById('bgElements');
             if (!container) return;
             
-            for (let i = 0; i < 12; i++) {
+            // Create floating circles
+            for (let i = 0; i < 10; i++) {
                 const circle = document.createElement('div');
                 circle.className = 'bg-circle';
                 
@@ -639,6 +681,30 @@
                 circle.style.animationDelay = `${delay}s`;
                 
                 container.appendChild(circle);
+            }
+            
+            // Create floating book icons
+            const bookIcons = ['📚', '📖', '📘', '📙', '📕', '📗', '🌟'];
+            for (let i = 0; i < 6; i++) {
+                const book = document.createElement('div');
+                book.className = 'floating-book-icon';
+                book.innerHTML = bookIcons[Math.floor(Math.random() * bookIcons.length)];
+                
+                const size = Math.random() * 60 + 40;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                const duration = Math.random() * 20 + 20;
+                const delay = Math.random() * 10;
+                
+                book.style.fontSize = `${size}px`;
+                book.style.left = `${posX}%`;
+                book.style.top = `${posY}%`;
+                book.style.animationDuration = `${duration}s`;
+                book.style.animationDelay = `${delay}s`;
+                book.style.animation = `floatBook ${duration}s infinite linear`;
+                book.style.opacity = '0.05';
+                
+                container.appendChild(book);
             }
         }
         

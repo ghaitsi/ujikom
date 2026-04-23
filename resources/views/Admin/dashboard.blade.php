@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Forent - {{ __('Dashboard') }}</title>
+    <title>LibTrack - {{ __('Dashboard Perpustakaan') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800|playfair:400,500,600,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Chart.js untuk grafik -->
@@ -20,21 +20,21 @@
 
     <style>
         :root {
-            --primary: #4361ee;
-            --primary-dark: #3a56d4;
-            --primary-light: #4895ef;
-            --secondary: #7209b7;
-            --accent: #f72585;
-            --success: #4cc9f0;
-            --warning: #f8961e;
-            --danger: #f94144;
-            --dark: #1a1a2e;
-            --darker: #16213e;
-            --light: #f8f9fa;
-            --gray: #6c757d;
-            --gray-light: #e9ecef;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --sidebar-bg: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            --primary: #2c3e50;
+            --primary-dark: #1a252f;
+            --primary-light: #34495e;
+            --secondary: #8e44ad;
+            --accent: #e67e22;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --dark: #2c3e50;
+            --darker: #1a252f;
+            --light: #fdf6e3;
+            --gray: #7f8c8d;
+            --gray-light: #ecf0f1;
+            --card-bg: rgba(253, 246, 227, 0.95);
+            --sidebar-bg: linear-gradient(180deg, #2c3e50 0%, #1a252f 100%);
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
             --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.12);
             --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.15);
@@ -48,14 +48,14 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            background: linear-gradient(135deg, #f5e6ca 0%, #e8d5b7 100%);
             color: var(--dark);
             min-height: 100vh;
             overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
         }
 
         /* Layout Container */
@@ -79,8 +79,8 @@
         .bg-circle {
             position: absolute;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-light), transparent);
-            opacity: 0.1;
+            background: linear-gradient(135deg, var(--secondary), transparent);
+            opacity: 0.08;
             animation: float 20s infinite linear;
         }
 
@@ -91,17 +91,12 @@
             75% { transform: translate(-50px, 50px) rotate(270deg); }
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-4px); }
         }
 
-        /* Main Content dengan margin untuk sidebar */
+        /* Main Content */
         .main-content {
             flex: 1;
             margin-left: 280px;
@@ -112,7 +107,6 @@
             width: calc(100% - 280px);
         }
 
-        /* Responsive: jika sidebar disembunyikan */
         .sidebar-collapsed .main-content {
             margin-left: 0;
             width: 100%;
@@ -120,14 +114,14 @@
 
         /* Glass Header */
         .header {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(253, 246, 227, 0.95);
             backdrop-filter: blur(20px);
             padding: 0 40px;
             height: 80px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 2px solid #d4a373;
             box-shadow: var(--shadow-sm);
             position: sticky;
             top: 0;
@@ -137,6 +131,7 @@
         .header-title {
             font-size: 28px;
             font-weight: 800;
+            font-family: 'Playfair', serif;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             background-clip: text;
@@ -146,15 +141,12 @@
         }
 
         .header-title::before {
-            content: '';
+            content: '📚';
             position: absolute;
-            left: 0;
+            left: -10px;
             top: 50%;
             transform: translateY(-50%);
-            width: 6px;
-            height: 30px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 3px;
+            font-size: 28px;
         }
 
         .header-actions {
@@ -171,8 +163,8 @@
         .search-input {
             width: 100%;
             padding: 14px 20px 14px 48px;
-            background: rgba(248, 249, 250, 0.8);
-            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #d4a373;
             border-radius: var(--radius-lg);
             font-size: 15px;
             color: var(--dark);
@@ -182,9 +174,9 @@
 
         .search-input:focus {
             outline: none;
-            border-color: var(--primary);
+            border-color: var(--secondary);
             background: white;
-            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+            box-shadow: 0 0 0 4px rgba(142, 68, 173, 0.1);
         }
 
         .search-icon {
@@ -198,13 +190,13 @@
         }
 
         .search-input:focus + .search-icon {
-            color: var(--primary);
+            color: var(--secondary);
         }
 
         .notification-btn {
             position: relative;
-            background: rgba(248, 249, 250, 0.8);
-            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #d4a373;
             color: var(--gray);
             width: 48px;
             height: 48px;
@@ -219,8 +211,8 @@
 
         .notification-btn:hover {
             background: white;
-            color: var(--primary);
-            border-color: var(--primary-light);
+            color: var(--secondary);
+            border-color: var(--secondary);
             transform: rotate(15deg) scale(1.1);
             box-shadow: var(--shadow-md);
         }
@@ -239,7 +231,7 @@
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            box-shadow: 0 2px 8px rgba(247, 37, 133, 0.4);
+            box-shadow: 0 2px 8px rgba(230, 126, 34, 0.4);
             animation: bounce 2s infinite;
         }
 
@@ -250,14 +242,14 @@
             cursor: pointer;
             padding: 8px 16px;
             border-radius: var(--radius-lg);
-            background: rgba(248, 249, 250, 0.8);
-            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #d4a373;
             transition: var(--transition);
         }
 
         .user-menu:hover {
             background: white;
-            border-color: var(--primary-light);
+            border-color: var(--secondary);
             transform: translateY(-2px);
             box-shadow: var(--shadow-md);
         }
@@ -273,7 +265,7 @@
             color: white;
             font-weight: 700;
             font-size: 16px;
-            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+            box-shadow: 0 4px 8px rgba(44, 62, 80, 0.3);
         }
 
         /* Content */
@@ -307,13 +299,13 @@
         }
 
         .welcome-card::before {
-            content: '';
+            content: '📖';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent), var(--success), var(--primary-light));
+            bottom: -30px;
+            right: -30px;
+            font-size: 200px;
+            opacity: 0.08;
+            pointer-events: none;
         }
 
         .welcome-content h1 {
@@ -321,6 +313,7 @@
             font-weight: 800;
             margin-bottom: 12px;
             line-height: 1.2;
+            font-family: 'Playfair', serif;
         }
 
         .welcome-content p {
@@ -386,32 +379,37 @@
             font-weight: 800;
         }
 
-        /* Dashboard Grid */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-
-        /* Chart Container Premium */
+        /* Chart Container */
         .chart-container {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
             padding: 28px;
             box-shadow: var(--shadow-md);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid #d4a373;
             transition: var(--transition);
             backdrop-filter: blur(10px);
             animation: cardEntrance 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
             opacity: 0;
             transform: translateY(20px);
-            animation-delay: 0.15s;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-container::before {
+            content: '📊';
+            position: absolute;
+            bottom: -20px;
+            right: -20px;
+            font-size: 100px;
+            opacity: 0.03;
+            pointer-events: none;
         }
 
         .chart-container:hover {
             box-shadow: var(--shadow-lg);
             transform: translateY(-4px);
+            border-color: var(--secondary);
         }
 
         .chart-header {
@@ -420,7 +418,7 @@
             align-items: center;
             margin-bottom: 24px;
             padding-bottom: 16px;
-            border-bottom: 2px solid rgba(67, 97, 238, 0.1);
+            border-bottom: 2px solid rgba(142, 68, 173, 0.2);
         }
 
         .chart-title {
@@ -430,10 +428,11 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            font-family: 'Playfair', serif;
         }
 
         .chart-title i {
-            color: var(--primary);
+            color: var(--secondary);
             font-size: 22px;
         }
 
@@ -450,20 +449,21 @@
             cursor: pointer;
             transition: var(--transition);
             background: rgba(248, 249, 250, 0.8);
-            border: 1px solid transparent;
+            border: 1px solid #d4a373;
             color: var(--gray);
         }
 
         .period-btn.active {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
+            border-color: transparent;
             box-shadow: var(--shadow-sm);
         }
 
         .period-btn:hover:not(.active) {
-            background: rgba(67, 97, 238, 0.1);
-            color: var(--primary);
-            border-color: var(--primary-light);
+            background: rgba(142, 68, 173, 0.1);
+            color: var(--secondary);
+            border-color: var(--secondary);
         }
 
         .chart-wrapper {
@@ -477,7 +477,6 @@
             width: 100% !important;
         }
 
-        /* Chart Stats Summary */
         .chart-stats {
             display: flex;
             justify-content: space-around;
@@ -502,26 +501,41 @@
             color: var(--dark);
         }
 
-        .chart-stat-value i {
-            font-size: 14px;
-            margin-right: 4px;
-        }
-
         .trend-up { color: var(--success); }
         .trend-down { color: var(--danger); }
 
-        /* Premium Dashboard Card */
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        /* Dashboard Card */
         .dashboard-card {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
             padding: 28px;
             box-shadow: var(--shadow-md);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid #d4a373;
             transition: var(--transition);
             backdrop-filter: blur(10px);
             animation: cardEntrance 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
             opacity: 0;
             transform: translateY(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card::before {
+            content: '📚';
+            position: absolute;
+            bottom: -15px;
+            right: -15px;
+            font-size: 80px;
+            opacity: 0.03;
+            pointer-events: none;
         }
 
         .dashboard-card:nth-child(1) { animation-delay: 0.2s; }
@@ -530,7 +544,7 @@
         .dashboard-card:hover {
             box-shadow: var(--shadow-lg);
             transform: translateY(-4px);
-            border-color: var(--primary-light);
+            border-color: var(--secondary);
         }
 
         .card-header {
@@ -539,7 +553,7 @@
             align-items: center;
             margin-bottom: 24px;
             padding-bottom: 16px;
-            border-bottom: 2px solid rgba(67, 97, 238, 0.1);
+            border-bottom: 2px solid rgba(142, 68, 173, 0.2);
         }
 
         .card-title {
@@ -549,18 +563,16 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            font-family: 'Playfair', serif;
         }
 
         .card-title::before {
-            content: '';
-            width: 6px;
-            height: 20px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 3px;
+            content: '📖';
+            font-size: 20px;
         }
 
         .card-action {
-            color: var(--primary);
+            color: var(--secondary);
             font-size: 13px;
             font-weight: 600;
             text-decoration: none;
@@ -571,7 +583,7 @@
         }
 
         .card-action:hover {
-            color: var(--secondary);
+            color: var(--accent);
             gap: 10px;
         }
 
@@ -601,7 +613,7 @@
 
         .activity-item:hover {
             background: white;
-            border-color: var(--primary-light);
+            border-color: var(--secondary);
             transform: translateX(6px);
             box-shadow: var(--shadow-sm);
         }
@@ -618,10 +630,10 @@
             flex-shrink: 0;
         }
 
-        .activity-icon.return { background: linear-gradient(135deg, var(--success), #38b2ac); }
-        .activity-icon.overdue { background: linear-gradient(135deg, var(--danger), #e53e3e); }
-        .activity-icon.new { background: linear-gradient(135deg, var(--accent), #d53f8c); }
-        .activity-icon.rent { background: linear-gradient(135deg, var(--primary), #4299e1); }
+        .activity-icon.return { background: linear-gradient(135deg, var(--success), #219653); }
+        .activity-icon.overdue { background: linear-gradient(135deg, var(--danger), #c0392b); }
+        .activity-icon.new { background: linear-gradient(135deg, var(--secondary), #6c3483); }
+        .activity-icon.borrow { background: linear-gradient(135deg, var(--primary), #1a252f); }
 
         .activity-content {
             flex: 1;
@@ -642,7 +654,7 @@
 
         .activity-time {
             font-size: 11px;
-            color: var(--primary);
+            color: var(--secondary);
             font-weight: 500;
         }
 
@@ -659,7 +671,7 @@
             padding: 20px;
             text-align: center;
             transition: var(--transition);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            border: 1px solid #d4a373;
             position: relative;
             overflow: hidden;
         }
@@ -678,12 +690,13 @@
             transform: translateY(-4px);
             box-shadow: var(--shadow-md);
             background: white;
+            border-color: var(--secondary);
         }
 
         .stat-card-icon {
             width: 48px;
             height: 48px;
-            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-radius: var(--radius-sm);
             display: flex;
             align-items: center;
@@ -715,20 +728,20 @@
             font-weight: 500;
         }
 
-        /* Tools Grid */
-        .tools-grid {
+        /* Books Grid */
+        .books-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 20px;
         }
 
-        .tool-card {
+        .book-card {
             background: linear-gradient(135deg, rgba(248, 249, 250, 0.9), white);
             border-radius: var(--radius-md);
             padding: 20px;
             text-align: center;
             transition: var(--transition);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            border: 1px solid #d4a373;
             position: relative;
             overflow: hidden;
             cursor: pointer;
@@ -741,20 +754,20 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .tool-card:nth-child(1) { animation-delay: 0.3s; }
-        .tool-card:nth-child(2) { animation-delay: 0.35s; }
-        .tool-card:nth-child(3) { animation-delay: 0.4s; }
-        .tool-card:nth-child(4) { animation-delay: 0.45s; }
-        .tool-card:nth-child(5) { animation-delay: 0.5s; }
-        .tool-card:nth-child(6) { animation-delay: 0.55s; }
+        .book-card:nth-child(1) { animation-delay: 0.3s; }
+        .book-card:nth-child(2) { animation-delay: 0.35s; }
+        .book-card:nth-child(3) { animation-delay: 0.4s; }
+        .book-card:nth-child(4) { animation-delay: 0.45s; }
+        .book-card:nth-child(5) { animation-delay: 0.5s; }
+        .book-card:nth-child(6) { animation-delay: 0.55s; }
 
-        .tool-card:hover {
+        .book-card:hover {
             transform: translateY(-6px);
             box-shadow: var(--shadow-md);
-            border-color: var(--primary-light);
+            border-color: var(--secondary);
         }
 
-        .tool-card::before {
+        .book-card::before {
             content: '';
             position: absolute;
             top: 0;
@@ -767,11 +780,11 @@
             transition: transform 0.3s ease;
         }
 
-        .tool-card:hover::before {
+        .book-card:hover::before {
             transform: scaleX(1);
         }
 
-        .tool-icon {
+        .book-icon {
             width: 56px;
             height: 56px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
@@ -783,21 +796,21 @@
             font-size: 24px;
             margin: 0 auto 16px;
             transition: var(--transition);
-            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+            box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
         }
 
-        .tool-card:hover .tool-icon {
+        .book-card:hover .book-icon {
             transform: scale(1.05) rotate(5deg);
         }
 
-        .tool-name {
+        .book-title {
             font-size: 16px;
             font-weight: 700;
             color: var(--dark);
             margin-bottom: 10px;
         }
 
-        .tool-status {
+        .book-status {
             font-size: 12px;
             padding: 6px 12px;
             border-radius: 20px;
@@ -806,24 +819,24 @@
         }
 
         .status-available {
-            background: rgba(76, 201, 240, 0.15);
+            background: rgba(39, 174, 96, 0.15);
             color: var(--success);
-            border: 1px solid rgba(76, 201, 240, 0.2);
+            border: 1px solid rgba(39, 174, 96, 0.2);
         }
 
-        .status-rented {
-            background: rgba(249, 65, 68, 0.15);
+        .status-borrowed {
+            background: rgba(231, 76, 60, 0.15);
             color: var(--danger);
-            border: 1px solid rgba(249, 65, 68, 0.2);
+            border: 1px solid rgba(231, 76, 60, 0.2);
         }
 
-        .status-maintenance {
-            background: rgba(248, 150, 30, 0.15);
+        .status-repair {
+            background: rgba(243, 156, 18, 0.15);
             color: var(--warning);
-            border: 1px solid rgba(248, 150, 30, 0.2);
+            border: 1px solid rgba(243, 156, 18, 0.2);
         }
 
-        /* Sidebar Toggle Button untuk Mobile */
+        /* Sidebar Toggle */
         .sidebar-toggle {
             display: none;
             position: fixed;
@@ -846,23 +859,31 @@
             transform: scale(1.1);
         }
 
+        /* Book Decoration */
+        .book-decoration {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 60px;
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: 1;
+        }
+
         /* Responsive */
         @media (max-width: 1200px) {
             .main-content {
                 margin-left: 0;
                 width: 100%;
             }
-            
             .sidebar-toggle {
                 display: flex;
                 align-items: center;
                 justify-content: center;
             }
-            
             .search-bar {
                 width: 240px;
             }
-            
             .dashboard-grid {
                 grid-template-columns: 1fr;
             }
@@ -873,33 +894,26 @@
                 padding: 0 20px;
                 height: 70px;
             }
-            
             .content-wrapper {
                 padding: 20px;
             }
-            
             .welcome-card {
                 padding: 32px 24px;
             }
-            
             .welcome-content h1 {
                 font-size: 28px;
             }
-            
             .search-bar {
                 display: none;
             }
-            
             .chart-wrapper {
                 height: 260px;
             }
-            
             .chart-stats {
                 flex-wrap: wrap;
                 gap: 12px;
             }
-            
-            .tools-grid {
+            .books-grid {
                 grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
                 gap: 16px;
             }
@@ -909,15 +923,12 @@
             .welcome-stats {
                 flex-direction: column;
             }
-            
             .welcome-stat {
                 width: 100%;
             }
-            
             .stats-grid {
                 grid-template-columns: 1fr;
             }
-            
             .chart-period {
                 flex-wrap: wrap;
             }
@@ -925,6 +936,11 @@
     </style>
 </head>
 <body class="font-sans antialiased">
+    <!-- Decorative Book Element -->
+    <div class="book-decoration">
+        <i class="fas fa-book-open"></i>
+    </div>
+
     <!-- Background Elements -->
     <div class="bg-elements" id="bgElements"></div>
 
@@ -942,11 +958,11 @@
         <main class="main-content" id="mainContent">
             <!-- Glass Header -->
             <header class="header">
-                <h1 class="header-title animate__animated animate__fadeIn">Dashboard</h1>
+                <h1 class="header-title animate__animated animate__fadeIn">Dashboard Perpustakaan</h1>
                 <div class="header-actions">
                     <div class="search-bar">
                         <i class="fas fa-search search-icon"></i>
-                        <input type="text" class="search-input" placeholder="Cari alat, pelanggan, atau transaksi...">
+                        <input type="text" class="search-input" placeholder="Cari buku, anggota, atau transaksi...">
                     </div>
                     <button class="notification-btn">
                         <i class="fas fa-bell"></i>
@@ -972,31 +988,31 @@
                     <div class="welcome-content">
                         <h1 class="animate__animated animate__fadeInDown">
                             @auth
-                                Selamat Datang, {{ Auth::user()->name }}
+                                Selamat Membaca, {{ Auth::user()->name }}! 📖
                             @else
-                                Selamat Datang di Forent! 👋
+                                Selamat Datang di LibTrack! 📚
                             @endauth
                         </h1>
                         <p class="animate__animated animate__fadeIn animate__delay-1s">
-                            Kelola peminjaman alat dengan mudah dan efisien di Forent Dashboard
+                            Kelola koleksi buku dan peminjaman perpustakaan dengan mudah dan efisien
                         </p>
                         <div class="welcome-stats animate__animated animate__fadeInUp animate__delay-2s">
                             <div class="welcome-stat">
                                 <div class="stat-icon">
-                                    <i class="fas fa-tools"></i>
+                                    <i class="fas fa-book"></i>
                                 </div>
                                 <div class="stat-info">
-                                    <h3>Total Alat</h3>
-                                    <div class="stat-value" id="totalAlat">48</div>
+                                    <h3>Total Buku</h3>
+                                    <div class="stat-value" id="totalBuku">0</div>
                                 </div>
                             </div>
                             <div class="welcome-stat">
                                 <div class="stat-icon">
-                                    <i class="fas fa-handshake"></i>
+                                    <i class="fas fa-hand-peace"></i>
                                 </div>
                                 <div class="stat-info">
                                     <h3>Sedang Dipinjam</h3>
-                                    <div class="stat-value" id="sedangDipinjam">12</div>
+                                    <div class="stat-value" id="sedangDipinjam">0</div>
                                 </div>
                             </div>
                             <div class="welcome-stat">
@@ -1004,20 +1020,20 @@
                                     <i class="fas fa-users"></i>
                                 </div>
                                 <div class="stat-info">
-                                    <h3>Pelanggan Aktif</h3>
-                                    <div class="stat-value" id="pelangganAktif">86</div>
+                                    <h3>Anggota Aktif</h3>
+                                    <div class="stat-value" id="anggotaAktif">0</div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Grafik Peminjaman Premium -->
+                <!-- Grafik Peminjaman -->
                 <div class="chart-container">
                     <div class="chart-header">
                         <div class="chart-title">
                             <i class="fas fa-chart-line"></i>
-                            Statistik Peminjaman
+                            Statistik Peminjaman Buku
                         </div>
                         <div class="chart-period">
                             <button class="period-btn active" data-period="week">Minggu Ini</button>
@@ -1074,10 +1090,10 @@
                     </div>
                 </div>
 
-                <!-- Alat Tersedia -->
+                <!-- Koleksi Buku -->
                 <div class="dashboard-card" style="margin-bottom: 0;">
                     <div class="card-header">
-                        <h3 class="card-title">Alat Tersedia</h3>
+                        <h3 class="card-title">Koleksi Buku Terbaru</h3>
                         <a href="{{ url('/alat') }}" class="card-action">
                             Lihat semua
                             <i class="fas fa-arrow-right"></i>
@@ -1088,29 +1104,32 @@
                         $alatList = $alat ?? \App\Models\Alat::latest()->take(6)->get();
                     @endphp
 
-                    <div class="tools-grid" id="toolsGrid">
+                    <div class="books-grid" id="booksGrid">
                         @forelse($alatList as $a)
-                        <div class="tool-card" data-tool-id="{{ $a->id_alat }}">
-                            <div class="tool-icon">
-                                <i class="fas fa-tools"></i>
+                        <div class="book-card" data-book-id="{{ $a->id_alat }}">
+                            <div class="book-icon">
+                                <i class="fas fa-book"></i>
                             </div>
-                            <div class="tool-name">
-                                {{ $a->nama_alat }}
+                            <div class="book-title">
+                                {{ Str::limit($a->nama_alat, 30) }}
                             </div>
                             @php
                                 $statusClass = 'status-available';
+                                $statusText = 'Tersedia';
                                 if($a->status == 'dipinjam'){
-                                    $statusClass = 'status-rented';
+                                    $statusClass = 'status-borrowed';
+                                    $statusText = 'Dipinjam';
                                 } elseif($a->status == 'perbaikan'){
-                                    $statusClass = 'status-maintenance';
+                                    $statusClass = 'status-repair';
+                                    $statusText = 'Perbaikan';
                                 }
                             @endphp
-                            <div class="tool-status {{ $statusClass }}">
-                                {{ ucfirst($a->status) }}
+                            <div class="book-status {{ $statusClass }}">
+                                {{ $statusText }}
                             </div>
                         </div>
                         @empty
-                            <p style="padding: 20px;">Tidak ada data alat</p>
+                            <p style="padding: 20px;">Tidak ada data buku</p>
                         @endforelse
                     </div>
                 </div>
@@ -1119,7 +1138,7 @@
     </div>
 
     <script>
-        // Data peminjaman untuk grafik (contoh data - nanti bisa dari database)
+        // Data peminjaman untuk grafik
         const chartData = {
             week: {
                 labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
@@ -1159,17 +1178,17 @@
                     datasets: [{
                         label: 'Jumlah Peminjaman',
                         data: data.data,
-                        borderColor: 'rgb(67, 97, 238)',
-                        backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                        borderColor: '#8e44ad',
+                        backgroundColor: 'rgba(142, 68, 173, 0.1)',
                         borderWidth: 3,
                         fill: true,
                         tension: 0.4,
-                        pointBackgroundColor: 'rgb(67, 97, 238)',
+                        pointBackgroundColor: '#8e44ad',
                         pointBorderColor: 'white',
                         pointBorderWidth: 2,
                         pointRadius: 5,
                         pointHoverRadius: 7,
-                        pointHoverBackgroundColor: 'rgb(114, 9, 183)'
+                        pointHoverBackgroundColor: '#2c3e50'
                     }]
                 },
                 options: {
@@ -1180,10 +1199,10 @@
                             display: false
                         },
                         tooltip: {
-                            backgroundColor: 'rgba(26, 26, 46, 0.9)',
-                            titleColor: '#fff',
-                            bodyColor: '#e2e8f0',
-                            borderColor: '#4361ee',
+                            backgroundColor: 'rgba(44, 62, 80, 0.95)',
+                            titleColor: '#fdf6e3',
+                            bodyColor: '#ecf0f1',
+                            borderColor: '#8e44ad',
                             borderWidth: 1,
                             callbacks: {
                                 label: function(context) {
@@ -1218,7 +1237,6 @@
             updateChartStats(data);
         }
 
-        // Update statistik grafik
         function updateChartStats(data) {
             document.getElementById('totalLoans').textContent = data.total;
             document.getElementById('avgPerDay').textContent = data.avg;
@@ -1231,7 +1249,6 @@
             `;
         }
 
-        // Ganti periode grafik
         function changePeriod(period) {
             currentPeriod = period;
             const data = chartData[period];
@@ -1243,7 +1260,6 @@
                 updateChartStats(data);
             }
             
-            // Update active button style
             document.querySelectorAll('.period-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if (btn.getAttribute('data-period') === period) {
@@ -1252,23 +1268,22 @@
             });
         }
 
-        // Data aktivitas
+        // Data aktivitas (tema buku)
         const activities = [
-            { type: 'return', title: 'Pengembalian Alat', desc: 'Budi mengembalikan Bor Listrik', time: '10 menit lalu', icon: 'fa-undo' },
-            { type: 'overdue', title: 'Peminjaman Terlambat', desc: 'Gerinda Tangan - 2 hari terlambat', time: '1 jam lalu', icon: 'fa-exclamation-triangle' },
-            { type: 'new', title: 'Alat Baru Ditambahkan', desc: 'Kompresor Angin 2PK', time: '2 jam lalu', icon: 'fa-plus-circle' },
-            { type: 'rent', title: 'Peminjaman Baru', desc: 'Siti meminjam Tangga Alumunium', time: '3 jam lalu', icon: 'fa-handshake' }
+            { type: 'return', title: 'Pengembalian Buku', desc: 'Andi mengembalikan "Laskar Pelangi"', time: '10 menit lalu', icon: 'fa-undo' },
+            { type: 'overdue', title: 'Peminjaman Terlambat', desc: '"Bumi Manusia" - 2 hari terlambat', time: '1 jam lalu', icon: 'fa-exclamation-triangle' },
+            { type: 'new', title: 'Buku Baru Ditambahkan', desc: '"Atomic Habits" - James Clear', time: '2 jam lalu', icon: 'fa-plus-circle' },
+            { type: 'borrow', title: 'Peminjaman Baru', desc: 'Siti meminjam "Filosofi Teras"', time: '3 jam lalu', icon: 'fa-hand-peace' }
         ];
 
         // Data statistik
         const stats = [
-            { icon: 'fa-check-circle', value: '36', label: 'Alat Tersedia', color: 'success' },
-            { icon: 'fa-clock', value: '8', label: 'Akan Kembali', color: 'warning' },
-            { icon: 'fa-tools', value: '4', label: 'Perbaikan', color: 'danger' },
-            { icon: 'fa-chart-line', value: '+23%', label: 'Pertumbuhan', color: 'primary' }
+            { icon: 'fa-book', value: '156', label: 'Total Buku', color: 'primary' },
+            { icon: 'fa-clock', value: '23', label: 'Akan Kembali', color: 'warning' },
+            { icon: 'fa-tools', value: '5', label: 'Perbaikan', color: 'danger' },
+            { icon: 'fa-chart-line', value: '+18%', label: 'Pertumbuhan', color: 'success' }
         ];
 
-        // Render aktivitas
         function renderActivities() {
             const container = document.getElementById('activityList');
             container.innerHTML = activities.map(act => `
@@ -1285,7 +1300,6 @@
             `).join('');
         }
 
-        // Render statistik
         function renderStats() {
             const container = document.getElementById('statsGrid');
             container.innerHTML = stats.map(stat => `
@@ -1299,7 +1313,6 @@
             `).join('');
         }
 
-        // Animasi angka pada welcome stats
         function animateNumber(element, target, duration = 1000) {
             const start = 0;
             const increment = target / (duration / 16);
@@ -1316,28 +1329,24 @@
             }, 16);
         }
 
-        // Update real-time data
         function updateRealTimeData() {
-            // Simulasi update data real-time
-            const randomAvailable = Math.floor(Math.random() * 10) + 32;
-            const randomRented = Math.floor(Math.random() * 8) + 8;
-            const randomUsers = Math.floor(Math.random() * 20) + 70;
+            const randomTotal = Math.floor(Math.random() * 30) + 140;
+            const randomBorrowed = Math.floor(Math.random() * 15) + 15;
+            const randomMembers = Math.floor(Math.random() * 30) + 70;
             
-            animateNumber(document.getElementById('totalAlat'), randomAvailable);
-            animateNumber(document.getElementById('sedangDipinjam'), randomRented);
-            animateNumber(document.getElementById('pelangganAktif'), randomUsers);
+            animateNumber(document.getElementById('totalBuku'), randomTotal);
+            animateNumber(document.getElementById('sedangDipinjam'), randomBorrowed);
+            animateNumber(document.getElementById('anggotaAktif'), randomMembers);
         }
 
-        // Tool card click effect
-        function initToolCards() {
-            document.querySelectorAll('.tool-card').forEach(card => {
+        function initBookCards() {
+            document.querySelectorAll('.book-card').forEach(card => {
                 card.addEventListener('click', function() {
-                    const toolName = this.querySelector('.tool-name').textContent;
-                    const status = this.querySelector('.tool-status').textContent;
+                    const bookTitle = this.querySelector('.book-title').textContent;
+                    const status = this.querySelector('.book-status').textContent;
                     
-                    // Create toast notification
                     const toast = document.createElement('div');
-                    toast.textContent = `${toolName} - ${status}`;
+                    toast.innerHTML = `<i class="fas fa-book"></i> ${bookTitle} - ${status}`;
                     toast.style.cssText = `
                         position: fixed;
                         bottom: 30px;
@@ -1350,6 +1359,9 @@
                         z-index: 1000;
                         animation: slideInRight 0.3s ease;
                         box-shadow: var(--shadow-lg);
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
                     `;
                     
                     document.body.appendChild(toast);
@@ -1362,7 +1374,6 @@
             });
         }
 
-        // Create animated background elements
         function createBackgroundElements() {
             const container = document.getElementById('bgElements');
             for (let i = 0; i < 12; i++) {
@@ -1386,32 +1397,29 @@
             }
         }
 
-        // Initialize all
+        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             createBackgroundElements();
             initChart();
             renderActivities();
             renderStats();
-            initToolCards();
+            initBookCards();
             
-            // Set interval untuk update data real-time
-            setInterval(updateRealTimeData, 15000);
-            
-            // Animasi awal untuk welcome stats
             setTimeout(() => {
                 updateRealTimeData();
             }, 500);
+            
+            setInterval(updateRealTimeData, 15000);
         });
 
         // Period button event listeners
         document.querySelectorAll('.period-btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                const period = this.getAttribute('data-period');
-                changePeriod(period);
+                changePeriod(this.getAttribute('data-period'));
             });
         });
 
-        // Toggle sidebar untuk mobile
+        // Toggle sidebar
         const sidebarToggle = document.getElementById('sidebarToggle');
         const appContainer = document.getElementById('appContainer');
 
@@ -1428,11 +1436,11 @@
         if (searchInput) {
             searchInput.addEventListener('input', function() {
                 const searchTerm = this.value.toLowerCase();
-                const toolCards = document.querySelectorAll('.tool-card');
+                const bookCards = document.querySelectorAll('.book-card');
                 
-                toolCards.forEach(card => {
-                    const toolName = card.querySelector('.tool-name').textContent.toLowerCase();
-                    if (toolName.includes(searchTerm)) {
+                bookCards.forEach(card => {
+                    const bookTitle = card.querySelector('.book-title').textContent.toLowerCase();
+                    if (bookTitle.includes(searchTerm)) {
                         card.style.display = '';
                         card.style.animation = 'fadeInUp 0.3s ease forwards';
                     } else {
@@ -1446,7 +1454,7 @@
         const userMenu = document.querySelector('.user-menu');
         if (userMenu) {
             userMenu.addEventListener('click', function() {
-                alert('Fitur user menu akan ditampilkan di sini');
+                alert('Menu profil akan ditampilkan di sini');
             });
         }
 
@@ -1454,11 +1462,11 @@
         const notificationBtn = document.querySelector('.notification-btn');
         if (notificationBtn) {
             notificationBtn.addEventListener('click', function() {
-                alert('Notifikasi akan ditampilkan di sini');
+                alert('Notifikasi peminjaman akan ditampilkan di sini');
             });
         }
 
-        // Keyboard shortcut
+        // Keyboard shortcut (Ctrl+K)
         document.addEventListener('keydown', function(e) {
             if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
                 e.preventDefault();

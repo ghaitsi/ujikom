@@ -1273,7 +1273,7 @@
                                     <tr>
                                         <th scope="col">ID</th>
                                         <th scope="col">User</th>
-                                        <th scope="col">Alat</th>
+                                        <th scope="col">buku</th>
                                         <th scope="col">Tanggal Pinjam</th>
                                         <th scope="col">Rencana Kembali</th>
                                         <th scope="col">Sisa Waktu</th>

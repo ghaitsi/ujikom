@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Forent - Daftar Alat</title>
+    <title>Forent - Daftar buku</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -1173,7 +1173,7 @@
             </div>
             <div class="loading-tips" id="loadingTip">
                 <i class="fas fa-lightbulb"></i>
-                <span>Tips: Gunakan Ctrl+K untuk mencari alat</span>
+                <span>Tips: Gunakan Ctrl+K untuk mencari Buku</span>
             </div>
         </div>
     </div>
@@ -1195,11 +1195,11 @@
         <main class="main-content" id="mainContent">
             <!-- Glass Header -->
             <header class="header">
-                <h1 class="header-title animate__animated animate__fadeIn">Daftar Alat</h1>
+                <h1 class="header-title animate__animated animate__fadeIn">Daftar Buku</h1>
                 <div class="header-actions">
                     <div class="search-bar">
                         <i class="fas fa-search search-icon"></i>
-                        <input type="text" class="search-input" id="searchInput" placeholder="Cari nama alat...">
+                        <input type="text" class="search-input" id="searchInput" placeholder="Cari nama Buku...">
                         <span class="search-shortcut">⌘K</span>
                     </div>
                     <button class="notification-btn" id="notificationBtn">
@@ -1234,7 +1234,7 @@
                 <!-- Add Button -->
                 <a href="{{ route('admin.alat.create') }}" class="btn-add animate__animated animate__fadeIn" id="addToolBtn">
                     <i class="fas fa-plus"></i>
-                    Tambah Alat Baru
+                    Tambah Buku Baru
                 </a>
 
                 <!-- Premium Card Container -->
@@ -1242,11 +1242,11 @@
                     <div class="card-header">
                         <h3 class="card-title">
                             <i class="fas fa-tools"></i>
-                            Daftar Semua Alat
+                            Daftar Semua Buku
                         </h3>
                         <div class="card-info">
                             <i class="fas fa-database"></i>
-                            <span>Total: {{ $alat->total() }} alat</span>
+                            <span>Total: {{ $alat->total() }} Buku</span>
                         </div>
                     </div>
 
@@ -1258,12 +1258,14 @@
                                     <tr>
                                         <th>ID Alat</th>
                                         <th>Nama Alat</th>
-                                        <th>ID Kategori</th>
+                                        <th>Penulis</th>
+                                        <th>Tanggal Terbit</th>
+                                        <th>Tempat Terbit</th>
                                         <th>Kategori</th>
                                         <th>Stok</th>
                                         <th>Status</th>
                                         <th>Kondisi</th>
-                                        <th>Gambar</th>
+                                        <th>Cover</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -1276,19 +1278,35 @@
                                                     {{ $a->id_alat }}
                                                 </span>
                                             </td>
+
                                             <td>
                                                 <strong style="color: var(--dark); font-weight: 700;">{{ $a->nama_alat }}</strong>
                                             </td>
-                                            <td>
-                                                @if($a->kategori)
-                                                    <span class="id-badge" style="background: rgba(114, 9, 183, 0.1); color: var(--secondary); border-color: rgba(114, 9, 183, 0.2);">
-                                                        <i class="fas fa-tag"></i>
-                                                        #{{ $a->kategori->id_kategori }}
-                                                    </span>
+
+                                               <td>
+                                                <span style="font-weight: 600; color: var(--secondary);">
+                                                    <i class="fas fa-user-edit"></i> {{ $a->penulis ?? '-' }}
+                                                </span>
+                                            </td>
+                                            
+                                                <td>
+                                                    @if($a->tanggal_terbit)
+                                                        <span style="color: var(--gray); font-weight: 500;">
+                                                            <i class="fas fa-calendar-alt"></i> {{ \Carbon\Carbon::parse($a->tanggal_terbit)->format('d M Y') }}
+                                                        </span>
+                                                    @else
+                                                        <span style="color: var(--gray); font-weight: 500;">-</span>
+                                                    @endif
+                                                </td>
+
+                                                 <td>
+                                                @if($a->tempat_terbit)
+                                                    <span style="font-weight: 600; color: var(--dark);">{{ $a->tempat_terbit }}</span>
                                                 @else
-                                                    <span style="color: var(--gray); font-weight: 500;">-</span>
+                                                    <span style="color: var(--gray); font-weight: 500;">Tidak ada tempat terbit</span>
                                                 @endif
                                               </td>
+
                                             <td>
                                                 @if($a->kategori)
                                                     <span style="font-weight: 600; color: var(--dark);">{{ $a->kategori->nama_kategori }}</span>
@@ -1620,15 +1638,15 @@
             addToolBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 Swal.fire({
-                    title: '<i class="fas fa-plus-circle"></i> Tambah Alat Baru',
+                    title: '<i class="fas fa-plus-circle"></i> Tambah Buku Baru',
                     html: `
                         <div style="text-align: center; padding: 10px;">
                             <div style="background: linear-gradient(135deg, #4361ee, #7209b7); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; animation: pulseGlow 2s infinite;">
                                 <i class="fas fa-tools" style="font-size: 40px; color: white;"></i>
                             </div>
-                            <p style="color: #6c757d; margin-bottom: 10px; font-weight: 500;">Anda akan menambahkan alat baru ke dalam sistem.</p>
+                            <p style="color: #6c757d; margin-bottom: 10px; font-weight: 500;">Anda akan menambahkan Buku baru ke dalam sistem.</p>
                             <p style="color: #4361ee; font-weight: 600; background: rgba(67,97,238,0.1); padding: 10px; border-radius: 12px;">
-                                <i class="fas fa-info-circle"></i> Lengkapi informasi alat pada halaman berikutnya
+                                <i class="fas fa-info-circle"></i> Lengkapi informasi Buku pada halaman berikutnya
                             </p>
                         </div>
                     `,
@@ -1643,7 +1661,7 @@
                     }
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        showLoading('Mengarahkan ke halaman tambah alat');
+                        showLoading('Mengarahkan ke halaman tambah Buku');
                         window.location.href = addToolBtn.getAttribute('href');
                     }
                 });

@@ -3,68 +3,78 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'Forent') }} — Smart Tool Rental Platform</title>
+    <title>{{ config('app.name', 'LibSpace') }} — Digital Library & Book Borrowing Platform</title>
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <style>
         :root {
-            --primary: #4361ee;
-            --primary-dark: #3a56d4;
-            --primary-light: #4895ef;
-            --secondary: #7209b7;
-            --accent: #f72585;
-            --success: #4cc9f0;
-            --warning: #f8961e;
-            --danger: #f94144;
-            --dark: #1a1a2e;
-            --darker: #16213e;
-            --light: #f8f9fa;
-            --gray: #6c757d;
-            --gray-light: #e9ecef;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --bg-gradient-start: #f5f7fa;
-            --bg-gradient-end: #e4e8f0;
-            --text-primary: #1a1a2e;
-            --text-secondary: #6c757d;
-            --border-color: rgba(67, 97, 238, 0.1);
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.12);
-            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.15);
-            --radius-sm: 10px;
-            --radius-md: 16px;
-            --radius-lg: 24px;
+            --primary: #8B5CF6;
+            --primary-dark: #7C3AED;
+            --primary-light: #A78BFA;
+            --secondary: #F59E0B;
+            --accent: #EC4899;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --dark: #1E1B4B;
+            --darker: #0F172A;
+            --light: #F8FAFC;
+            --gray: #64748B;
+            --gray-light: #E2E8F0;
+            --card-bg: rgba(255, 255, 255, 0.98);
+            --bg-gradient-start: #F8FAFC;
+            --bg-gradient-end: #E0E7FF;
+            --text-primary: #1E1B4B;
+            --text-secondary: #64748B;
+            --border-color: rgba(139, 92, 246, 0.15);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12);
+            --radius-sm: 12px;
+            --radius-md: 20px;
+            --radius-lg: 28px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            /* Footer variables */
+            --footer-bg: #0F172A;
+            --footer-text: rgba(255, 255, 255, 0.9);
+            --footer-text-muted: rgba(255, 255, 255, 0.6);
+            --footer-border: rgba(255, 255, 255, 0.1);
         }
 
-        /* Dark Theme Variables */
         [data-theme="dark"] {
-            --primary: #5f7ef2;
-            --primary-dark: #4a6ae0;
-            --primary-light: #6c8df5;
-            --secondary: #8b5cf6;
-            --accent: #f43f8e;
-            --success: #5fd9ff;
-            --warning: #faa543;
-            --danger: #fc5a5e;
-            --dark: #e5e7eb;
-            --darker: #f3f4f6;
-            --light: #1f2937;
-            --gray: #9ca3af;
-            --gray-light: #374151;
-            --card-bg: rgba(31, 41, 55, 0.95);
-            --bg-gradient-start: #0f0f1a;
-            --bg-gradient-end: #1a1a2e;
-            --text-primary: #f3f4f6;
-            --text-secondary: #9ca3af;
-            --border-color: rgba(95, 126, 242, 0.2);
+            --primary: #A78BFA;
+            --primary-dark: #8B5CF6;
+            --primary-light: #C4B5FD;
+            --secondary: #FBBF24;
+            --accent: #F472B6;
+            --success: #34D399;
+            --warning: #FBBF24;
+            --danger: #F87171;
+            --dark: #F3E8FF;
+            --darker: #E9D5FF;
+            --light: #1E1B4B;
+            --gray: #94A3B8;
+            --gray-light: #334155;
+            --card-bg: rgba(30, 27, 75, 0.95);
+            --bg-gradient-start: #0F172A;
+            --bg-gradient-end: #1E1B4B;
+            --text-primary: #F3E8FF;
+            --text-secondary: #C4B5FD;
+            --border-color: rgba(139, 92, 246, 0.25);
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
             --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
             --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.5);
+            /* Footer dark theme */
+            --footer-bg: #0B0F19;
+            --footer-text: #F3E8FF;
+            --footer-text-muted: #A78BFA;
+            --footer-border: rgba(139, 92, 246, 0.2);
         }
 
         * {
@@ -82,7 +92,7 @@
             transition: var(--transition);
         }
 
-        /* Animated Background Elements */
+        /* Animated Books Background */
         .bg-elements {
             position: fixed;
             top: 0;
@@ -93,33 +103,26 @@
             overflow: hidden;
         }
 
-        .bg-circle {
+        .floating-book {
             position: absolute;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-light), transparent);
-            opacity: 0.1;
-            animation: float 20s infinite linear;
+            opacity: 0.06;
+            animation: floatBook 25s infinite linear;
         }
 
-        @keyframes float {
+        @keyframes floatBook {
             0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(100px, 50px) rotate(90deg); }
-            50% { transform: translate(50px, 100px) rotate(180deg); }
-            75% { transform: translate(-50px, 50px) rotate(270deg); }
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-4px); }
+            25% { transform: translate(80px, 60px) rotate(5deg); }
+            50% { transform: translate(40px, 120px) rotate(-3deg); }
+            75% { transform: translate(-60px, 40px) rotate(8deg); }
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(40px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes cardEntrance {
-            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            from { opacity: 0; transform: translateY(50px) scale(0.95); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
@@ -132,14 +135,14 @@
 
         /* Glass Header */
         .header {
-            background: rgba(255, 255, 255, 0.92);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
             padding: 0 48px;
             height: 80px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 2px solid var(--border-color);
             box-shadow: var(--shadow-sm);
             position: sticky;
             top: 0;
@@ -148,7 +151,7 @@
         }
 
         [data-theme="dark"] .header {
-            background: rgba(31, 41, 55, 0.92);
+            background: rgba(30, 27, 75, 0.95);
         }
 
         .logo {
@@ -158,8 +161,8 @@
         }
 
         .logo-icon {
-            width: 42px;
-            height: 42px;
+            width: 45px;
+            height: 45px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-radius: var(--radius-sm);
             display: flex;
@@ -168,16 +171,17 @@
             color: white;
             font-size: 22px;
             font-weight: 700;
-            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+            box-shadow: 0 6px 15px rgba(139, 92, 246, 0.3);
         }
 
         .logo-text {
-            font-size: 26px;
+            font-size: 28px;
             font-weight: 800;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            font-family: 'Playfair Display', serif;
         }
 
         .header-actions {
@@ -205,7 +209,7 @@
 
         .nav-link:hover {
             color: var(--primary);
-            background: rgba(67, 97, 238, 0.08);
+            background: rgba(139, 92, 246, 0.1);
         }
 
         .btn-login {
@@ -223,20 +227,19 @@
         .btn-register {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
         }
 
         .btn-register:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
         }
 
-        /* Theme Toggle Button */
         .theme-toggle {
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: rgba(67, 97, 238, 0.1);
+            background: rgba(139, 92, 246, 0.1);
             border: 1px solid var(--border-color);
             cursor: pointer;
             display: flex;
@@ -249,10 +252,9 @@
 
         .theme-toggle:hover {
             transform: rotate(15deg);
-            background: rgba(67, 97, 238, 0.2);
+            background: rgba(139, 92, 246, 0.2);
         }
 
-        /* Content */
         .content-wrapper {
             max-width: 1400px;
             margin: 0 auto;
@@ -260,7 +262,7 @@
             width: 100%;
         }
 
-        /* Premium Hero Section */
+        /* Hero Section - Book Themed */
         .hero-section {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -278,27 +280,25 @@
         .hero-badge {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(67, 97, 238, 0.1);
-            padding: 8px 20px;
-            border-radius: 40px;
+            gap: 10px;
+            background: rgba(139, 92, 246, 0.12);
+            padding: 10px 22px;
+            border-radius: 50px;
             width: fit-content;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
             font-size: 14px;
             font-weight: 600;
             color: var(--primary);
-        }
-
-        .hero-badge i {
-            font-size: 14px;
+            backdrop-filter: blur(10px);
         }
 
         .hero-title {
-            font-size: 52px;
+            font-size: 56px;
             font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 24px;
+            line-height: 1.15;
+            margin-bottom: 28px;
             color: var(--text-primary);
+            font-family: 'Playfair Display', serif;
         }
 
         .hero-title-gradient {
@@ -310,16 +310,16 @@
 
         .hero-description {
             font-size: 18px;
-            line-height: 1.6;
+            line-height: 1.7;
             color: var(--text-secondary);
-            margin-bottom: 32px;
+            margin-bottom: 36px;
             max-width: 90%;
         }
 
         .hero-stats {
             display: flex;
-            gap: 32px;
-            margin-bottom: 40px;
+            gap: 40px;
+            margin-bottom: 45px;
         }
 
         .hero-stat {
@@ -327,7 +327,7 @@
         }
 
         .hero-stat-number {
-            font-size: 36px;
+            font-size: 38px;
             font-weight: 800;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
@@ -345,42 +345,42 @@
 
         .hero-buttons {
             display: flex;
-            gap: 16px;
+            gap: 18px;
             flex-wrap: wrap;
         }
 
         .btn-primary {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            padding: 14px 32px;
+            gap: 12px;
+            padding: 15px 36px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             text-decoration: none;
-            border-radius: 50px;
-            font-weight: 600;
+            border-radius: 60px;
+            font-weight: 700;
             font-size: 16px;
             transition: var(--transition);
-            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.35);
             border: none;
             cursor: pointer;
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(67, 97, 238, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(139, 92, 246, 0.45);
         }
 
         .btn-outline {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            padding: 14px 32px;
+            gap: 12px;
+            padding: 15px 36px;
             background: transparent;
             color: var(--primary);
             text-decoration: none;
-            border-radius: 50px;
-            font-weight: 600;
+            border-radius: 60px;
+            font-weight: 700;
             font-size: 16px;
             transition: var(--transition);
             border: 2px solid var(--primary-light);
@@ -390,14 +390,14 @@
             background: var(--primary);
             color: white;
             border-color: var(--primary);
-            transform: translateY(-3px);
+            transform: translateY(-4px);
         }
 
-        /* Hero Visual */
+        /* Book Visual Card */
         .hero-visual {
-            background: linear-gradient(135deg, rgba(67, 97, 238, 0.05), rgba(114, 9, 183, 0.05));
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.06), rgba(245, 158, 11, 0.06));
             border-radius: var(--radius-lg);
-            padding: 40px;
+            padding: 30px;
             position: relative;
             overflow: hidden;
             display: flex;
@@ -406,33 +406,74 @@
             animation: cardEntrance 0.8s ease;
         }
 
-        .visual-card {
+        .book-visual-card {
             background: var(--card-bg);
-            border-radius: var(--radius-md);
-            padding: 32px;
+            border-radius: 20px;
+            padding: 30px;
             box-shadow: var(--shadow-lg);
             width: 100%;
             max-width: 380px;
-            border: 1px solid rgba(255,255,255,0.3);
-            backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            position: relative;
             transition: var(--transition);
         }
 
-        .forent-logo-big {
-            text-align: center;
-            margin-bottom: 24px;
+        .book-visual-card::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            bottom: 20px;
+            width: 4px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+            opacity: 0.6;
         }
 
-        .forent-logo-big span {
-            font-size: 32px;
+        .libspace-logo-big {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .libspace-logo-big span {
+            font-size: 34px;
             font-weight: 800;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            font-family: 'Playfair Display', serif;
         }
 
-        .tool-stats-mini {
+        .book-cover-preview {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            margin: 20px 0;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-cover-preview i {
+            font-size: 48px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .book-cover-preview h4 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .book-cover-preview p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .book-stats-mini {
             display: flex;
             justify-content: space-between;
             margin: 20px 0;
@@ -441,11 +482,11 @@
             border-bottom: 1px solid var(--border-color);
         }
 
-        .tool-stats-mini div {
+        .book-stats-mini div {
             text-align: center;
         }
 
-        .tool-stats-mini .number {
+        .book-stats-mini .number {
             font-size: 24px;
             font-weight: 800;
             color: var(--primary);
@@ -480,30 +521,10 @@
             background: var(--warning);
         }
 
-        /* Dashboard Cards Grid */
-        .section-title {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 32px;
-            position: relative;
-            display: inline-block;
-            color: var(--text-primary);
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            width: 60px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            border-radius: 2px;
-        }
-
+        /* Dashboard Cards */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 30px;
             margin-bottom: 60px;
         }
@@ -514,12 +535,12 @@
             padding: 28px;
             box-shadow: var(--shadow-md);
             transition: var(--transition);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(139, 92, 246, 0.15);
             backdrop-filter: blur(10px);
         }
 
         .dashboard-card:hover {
-            transform: translateY(-6px);
+            transform: translateY(-8px);
             box-shadow: var(--shadow-lg);
             border-color: var(--primary-light);
         }
@@ -538,13 +559,13 @@
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             color: var(--text-primary);
         }
 
         .card-title i {
             color: var(--primary);
-            font-size: 22px;
+            font-size: 24px;
         }
 
         .card-action {
@@ -557,7 +578,7 @@
 
         .card-action:hover {
             color: var(--secondary);
-            transform: translateX(4px);
+            transform: translateX(5px);
         }
 
         /* Activity List */
@@ -574,33 +595,29 @@
             padding: 12px;
             border-radius: var(--radius-sm);
             transition: var(--transition);
-            background: rgba(248, 249, 250, 0.6);
-        }
-
-        [data-theme="dark"] .activity-item {
-            background: rgba(55, 65, 81, 0.6);
+            background: rgba(139, 92, 246, 0.04);
         }
 
         .activity-item:hover {
-            background: var(--card-bg);
-            transform: translateX(4px);
+            background: rgba(139, 92, 246, 0.08);
+            transform: translateX(5px);
         }
 
         .activity-icon {
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             border-radius: var(--radius-sm);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 16px;
+            font-size: 18px;
             flex-shrink: 0;
         }
 
-        .activity-icon.return { background: linear-gradient(135deg, var(--success), #2c9c8c); }
-        .activity-icon.overdue { background: linear-gradient(135deg, var(--warning), #e67e22); }
-        .activity-icon.rent { background: linear-gradient(135deg, var(--primary), var(--secondary)); }
+        .activity-icon.return { background: linear-gradient(135deg, var(--success), #059669); }
+        .activity-icon.overdue { background: linear-gradient(135deg, var(--warning), #D97706); }
+        .activity-icon.borrow { background: linear-gradient(135deg, var(--primary), var(--secondary)); }
 
         .activity-content {
             flex: 1;
@@ -608,21 +625,21 @@
 
         .activity-title {
             font-weight: 700;
-            font-size: 14px;
-            margin-bottom: 4px;
+            font-size: 15px;
+            margin-bottom: 5px;
             color: var(--text-primary);
         }
 
         .activity-desc {
             font-size: 13px;
             color: var(--text-secondary);
-            margin-bottom: 4px;
+            margin-bottom: 5px;
         }
 
         .activity-time {
             font-size: 11px;
             color: var(--primary);
-            font-weight: 500;
+            font-weight: 600;
         }
 
         /* Stats Grid */
@@ -633,21 +650,16 @@
         }
 
         .stat-card {
-            background: rgba(248, 249, 250, 0.8);
+            background: rgba(139, 92, 246, 0.05);
             border-radius: var(--radius-md);
             padding: 20px;
             text-align: center;
             transition: var(--transition);
         }
 
-        [data-theme="dark"] .stat-card {
-            background: rgba(55, 65, 81, 0.6);
-        }
-
         .stat-card:hover {
             transform: translateY(-4px);
-            background: var(--card-bg);
-            box-shadow: var(--shadow-sm);
+            background: rgba(139, 92, 246, 0.1);
         }
 
         .stat-card-value {
@@ -663,56 +675,61 @@
             font-size: 13px;
             color: var(--text-secondary);
             margin-top: 8px;
+            font-weight: 500;
         }
 
-        /* Tools Grid Preview */
-        .tools-grid {
+        /* Books Grid */
+        .books-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 16px;
         }
 
-        .tool-card {
-            background: rgba(248, 249, 250, 0.6);
+        .book-card {
+            background: rgba(139, 92, 246, 0.05);
             border-radius: var(--radius-md);
             padding: 20px;
             text-align: center;
             transition: var(--transition);
             cursor: pointer;
+            position: relative;
         }
 
-        [data-theme="dark"] .tool-card {
-            background: rgba(55, 65, 81, 0.6);
+        .book-card:hover {
+            transform: translateY(-6px);
+            background: rgba(139, 92, 246, 0.1);
+            box-shadow: var(--shadow-md);
         }
 
-        .tool-card:hover {
-            transform: translateY(-4px);
-            background: var(--card-bg);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .tool-icon {
-            width: 48px;
-            height: 48px;
+        .book-cover-mini {
+            width: 70px;
+            height: 90px;
             background: linear-gradient(135deg, var(--primary-light), var(--primary));
-            border-radius: var(--radius-sm);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 20px;
+            font-size: 28px;
             margin: 0 auto 12px;
+            box-shadow: var(--shadow-sm);
         }
 
-        .tool-name {
+        .book-name {
             font-weight: 700;
             font-size: 14px;
             margin-bottom: 8px;
             color: var(--text-primary);
         }
 
-        .tool-status {
-            font-size: 12px;
+        .book-author {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        .book-status {
+            font-size: 11px;
             padding: 4px 12px;
             border-radius: 20px;
             display: inline-block;
@@ -720,16 +737,16 @@
         }
 
         .status-available {
-            background: rgba(76, 201, 240, 0.15);
+            background: rgba(16, 185, 129, 0.15);
             color: var(--success);
         }
 
-        .status-rented {
-            background: rgba(249, 65, 68, 0.15);
+        .status-borrowed {
+            background: rgba(239, 68, 68, 0.15);
             color: var(--danger);
         }
 
-        /* Feature Section */
+        /* Features Section */
         .features-section {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -740,53 +757,120 @@
         .feature-card {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
-            padding: 32px;
+            padding: 35px 30px;
             text-align: center;
             transition: var(--transition);
             backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 92, 246, 0.1);
         }
 
         .feature-card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-10px);
             box-shadow: var(--shadow-lg);
+            border-color: var(--primary-light);
         }
 
         .feature-icon {
-            width: 70px;
-            height: 70px;
+            width: 75px;
+            height: 75px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: var(--radius-md);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 28px;
-            margin: 0 auto 20px;
+            font-size: 32px;
+            margin: 0 auto 22px;
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
         }
 
         .feature-title {
             font-size: 20px;
             font-weight: 700;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             color: var(--text-primary);
         }
 
         .feature-desc {
             color: var(--text-secondary);
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
-        /* Footer */
+        /* Book Categories Section */
+        .categories-section {
+            margin: 60px 0 40px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            position: relative;
+            display: inline-block;
+            color: var(--text-primary);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 70px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .category-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-md);
+            padding: 25px 20px;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            border: 1px solid rgba(139, 92, 246, 0.1);
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            background: rgba(139, 92, 246, 0.08);
+            border-color: var(--primary-light);
+        }
+
+        .category-icon {
+            font-size: 40px;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .category-name {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--text-primary);
+        }
+
+        .category-count {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+        }
+
+        /* Footer - FIXED for dark mode */
         .footer {
-            background: var(--darker);
-            color: white;
-            padding: 48px 40px 32px;
+            background: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 50px 40px 35px;
             margin-top: 60px;
             transition: var(--transition);
-        }
-
-        [data-theme="dark"] .footer {
-            background: #111827;
+            border-top: 1px solid var(--footer-border);
         }
 
         .footer-content {
@@ -799,27 +883,42 @@
             gap: 24px;
         }
 
+        .footer .logo-text {
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .footer .logo-icon {
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+
         .footer-links {
             display: flex;
-            gap: 32px;
+            gap: 35px;
+            flex-wrap: wrap;
         }
 
         .footer-links a {
-            color: rgba(255,255,255,0.7);
+            color: var(--footer-text-muted);
             text-decoration: none;
             transition: var(--transition);
+            font-weight: 500;
         }
 
         .footer-links a:hover {
             color: var(--primary-light);
+            transform: translateY(-2px);
         }
 
         .copyright {
             text-align: center;
-            margin-top: 40px;
-            padding-top: 24px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.5);
+            margin-top: 45px;
+            padding-top: 28px;
+            border-top: 1px solid var(--footer-border);
+            color: var(--footer-text-muted);
             font-size: 13px;
         }
 
@@ -827,7 +926,7 @@
         @media (max-width: 1024px) {
             .hero-section {
                 grid-template-columns: 1fr;
-                gap: 40px;
+                gap: 50px;
             }
             .hero-title {
                 font-size: 42px;
@@ -849,7 +948,7 @@
             }
             .hero-stats {
                 flex-wrap: wrap;
-                gap: 20px;
+                gap: 25px;
             }
             .nav-links {
                 display: none;
@@ -865,8 +964,10 @@
                 text-align: center;
             }
             .footer-links {
-                flex-wrap: wrap;
                 justify-content: center;
+            }
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
@@ -874,30 +975,31 @@
 <body>
 
 <div class="bg-elements">
-    <div class="bg-circle" style="width: 300px; height: 300px; top: -100px; right: -100px;"></div>
-    <div class="bg-circle" style="width: 500px; height: 500px; bottom: -200px; left: -150px; animation-duration: 25s;"></div>
-    <div class="bg-circle" style="width: 200px; height: 200px; top: 40%; left: 20%; animation-duration: 18s;"></div>
+    <i class="fas fa-book floating-book" style="font-size: 120px; top: 10%; left: -30px; animation-duration: 20s;"></i>
+    <i class="fas fa-book-open floating-book" style="font-size: 90px; bottom: 15%; right: -20px; animation-duration: 25s;"></i>
+    <i class="fas fa-graduation-cap floating-book" style="font-size: 100px; top: 40%; left: 80%; animation-duration: 22s;"></i>
+    <i class="fas fa-library floating-book" style="font-size: 130px; bottom: 5%; left: 10%; animation-duration: 28s;"></i>
 </div>
 
 <div class="app-container">
-    <!-- Header with Login/Register & Theme Toggle -->
     <header class="header">
         <div class="logo">
-            <div class="logo-icon">F</div>
-            <div class="logo-text">Forent</div>
+            <div class="logo-icon"><i class="fas fa-book-open"></i></div>
+            <div class="logo-text">LibSpace</div>
         </div>
         <div class="header-actions">
             <div class="nav-links">
-                <a href="#" class="nav-link">Features</a>
-                <a href="#" class="nav-link">How it works</a>
-                <a href="#" class="nav-link">Pricing</a>
+                <a href="#" class="nav-link">Catalog</a>
+                <a href="#" class="nav-link">Genres</a>
+                <a href="#" class="nav-link">Best Sellers</a>
+                <a href="#" class="nav-link">About</a>
             </div>
-            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+            <button class="theme-toggle" id="themeToggle">
                 <i class="fas fa-moon"></i>
             </button>
             @if (Route::has('login'))
                 @auth
-                    <a href="{{ url('/dashboard') }}" class="nav-link btn-register" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;">Dashboard</a>
+                    <a href="{{ url('/dashboard') }}" class="nav-link btn-register">Dashboard</a>
                 @else
                     <a href="{{ route('login') }}" class="nav-link btn-login">Log in</a>
                     @if (Route::has('register'))
@@ -913,90 +1015,94 @@
         <div class="hero-section">
             <div class="hero-content">
                 <div class="hero-badge">
-                    <i class="fas fa-bolt"></i>
-                    <span>Smart Rental Management Platform</span>
+                    <i class="fas fa-feather-alt"></i>
+                    <span>Discover Your Next Adventure</span>
                 </div>
                 <h1 class="hero-title">
-                    Kelola Peminjaman Alat<br>
-                    <span class="hero-title-gradient">dengan Mudah & Efisien</span>
+                    Digital Library<br>
+                    <span class="hero-title-gradient">Borrow Books Instantly</span>
                 </h1>
                 <p class="hero-description">
-                    Forent membantu Anda mengelola inventaris alat, melacak peminjaman, 
-                    dan memantau pengembalian secara real-time. Solusi lengkap untuk bisnis rental modern.
+                    LibSpace is your gateway to thousands of books. Borrow, read, and return with ease. 
+                    Modern library management for the digital age.
                 </p>
                 <div class="hero-stats">
                     <div class="hero-stat">
-                        <div class="hero-stat-number">36+</div>
-                        <div class="hero-stat-label">Alat Tersedia</div>
+                        <div class="hero-stat-number">5,000+</div>
+                        <div class="hero-stat-label">Books Available</div>
                     </div>
                     <div class="hero-stat">
-                        <div class="hero-stat-number">8</div>
-                        <div class="hero-stat-label">Akan Kembali</div>
+                        <div class="hero-stat-number">1,284</div>
+                        <div class="hero-stat-label">Active Members</div>
                     </div>
                     <div class="hero-stat">
-                        <div class="hero-stat-number">24/7</div>
-                        <div class="hero-stat-label">Monitoring</div>
+                        <div class="hero-stat-number">156</div>
+                        <div class="hero-stat-label">Borrowed Now</div>
                     </div>
                 </div>
                 <div class="hero-buttons">
                     @if (Route::has('register'))
                         <a href="{{ route('register') }}" class="btn-primary">
-                            <i class="fas fa-rocket"></i> Mulai Sekarang
+                            <i class="fas fa-book-reader"></i> Start Reading
                         </a>
                     @endif
                     @if (Route::has('login'))
                         <a href="{{ route('login') }}" class="btn-outline">
-                            <i class="fas fa-chart-line"></i> Lihat Dashboard
+                            <i class="fas fa-search"></i> Explore Books
                         </a>
                     @endif
                 </div>
             </div>
             <div class="hero-visual">
-                <div class="visual-card">
-                    <div class="forent-logo-big">
-                        <span>FORENT</span>
-                        <p style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Rental Management</p>
+                <div class="book-visual-card">
+                    <div class="libspace-logo-big">
+                        <span>LIBSPACE</span>
+                        <p style="font-size: 11px; color: var(--text-secondary); margin-top: 6px;">Digital Library</p>
                     </div>
-                    <div class="tool-stats-mini">
+                    <div class="book-cover-preview">
+                        <i class="fas fa-book"></i>
+                        <h4>"The Great Gatsby"</h4>
+                        <p>F. Scott Fitzgerald</p>
+                    </div>
+                    <div class="book-stats-mini">
                         <div>
-                            <div class="number">36</div>
-                            <div style="font-size: 11px;">Alat Tersedia</div>
+                            <div class="number">5,000+</div>
+                            <div style="font-size: 11px;">Total Books</div>
                         </div>
                         <div>
-                            <div class="number">8</div>
-                            <div style="font-size: 11px;">Akan Kembali</div>
+                            <div class="number">48</div>
+                            <div style="font-size: 11px;">Due This Week</div>
                         </div>
                         <div>
                             <div class="number">24</div>
-                            <div style="font-size: 11px;">Active</div>
+                            <div style="font-size: 11px;">New Arrivals</div>
                         </div>
                     </div>
                     <div class="activity-preview">
                         <div class="activity-preview-item">
                             <div class="activity-dot"></div>
-                            <span><strong>Budi</strong> mengembalikan Bor Listrik</span>
-                            <span style="margin-left: auto; font-size: 10px;">10 menit lalu</span>
+                            <span><strong>Emma Watson</strong> returned "Becoming"</span>
+                            <span style="margin-left: auto; font-size: 10px;">5 min ago</span>
                         </div>
                         <div class="activity-preview-item">
                             <div class="activity-dot warning"></div>
-                            <span><strong>Gerinda Tangan</strong> - 2 hari terlambat</span>
-                            <span style="margin-left: auto; font-size: 10px;">1 jam lalu</span>
+                            <span><strong>"1984"</strong> - overdue by 2 days</span>
+                            <span style="margin-left: auto; font-size: 10px;">1 hour ago</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Dashboard Preview Cards -->
+        <!-- Dashboard Cards -->
         <div class="dashboard-grid">
-            <!-- Aktivitas Terbaru Card -->
             <div class="dashboard-card">
                 <div class="card-header">
                     <div class="card-title">
-                        <i class="fas fa-clock"></i>
-                        Aktivitas Terbaru
+                        <i class="fas fa-history"></i>
+                        Recent Activity
                     </div>
-                    <a href="{{ route('login') }}" class="card-action">Lihat semua <i class="fas fa-arrow-right"></i></a>
+                    <a href="{{ route('login') }}" class="card-action">View All <i class="fas fa-arrow-right"></i></a>
                 </div>
                 <div class="activity-list">
                     <div class="activity-item">
@@ -1004,9 +1110,9 @@
                             <i class="fas fa-undo-alt"></i>
                         </div>
                         <div class="activity-content">
-                            <div class="activity-title">Pengembalian Alat</div>
-                            <div class="activity-desc">Budi mengembalikan Bor Listrik</div>
-                            <div class="activity-time">10 menit yang lalu</div>
+                            <div class="activity-title">Book Returned</div>
+                            <div class="activity-desc">Emma returned "Atomic Habits"</div>
+                            <div class="activity-time">10 minutes ago</div>
                         </div>
                     </div>
                     <div class="activity-item">
@@ -1014,78 +1120,116 @@
                             <i class="fas fa-exclamation-triangle"></i>
                         </div>
                         <div class="activity-content">
-                            <div class="activity-title">Peminjaman Terlambat</div>
-                            <div class="activity-desc">Gerinda Tangan - 2 hari terlambat</div>
-                            <div class="activity-time">1 jam yang lalu</div>
+                            <div class="activity-title">Overdue Notice</div>
+                            <div class="activity-desc">"The Midnight Library" - 2 days late</div>
+                            <div class="activity-time">1 hour ago</div>
                         </div>
                     </div>
                     <div class="activity-item">
-                        <div class="activity-icon rent">
-                            <i class="fas fa-hand-holding"></i>
+                        <div class="activity-icon borrow">
+                            <i class="fas fa-hand-holding-heart"></i>
                         </div>
                         <div class="activity-content">
-                            <div class="activity-title">Peminjaman Baru</div>
-                            <div class="activity-desc">Mesin Bor - dipinjam oleh Ani</div>
-                            <div class="activity-time">3 jam yang lalu</div>
+                            <div class="activity-title">New Borrowing</div>
+                            <div class="activity-desc">Michael borrowed "Deep Work"</div>
+                            <div class="activity-time">3 hours ago</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Statistik Cepat Card -->
             <div class="dashboard-card">
                 <div class="card-header">
                     <div class="card-title">
-                        <i class="fas fa-chart-pie"></i>
-                        Statistik Cepat
+                        <i class="fas fa-chart-line"></i>
+                        Library Stats
                     </div>
-                    <a href="{{ route('login') }}" class="card-action">Detail <i class="fas fa-arrow-right"></i></a>
+                    <a href="{{ route('login') }}" class="card-action">Details <i class="fas fa-arrow-right"></i></a>
                 </div>
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-card-value">36</div>
-                        <div class="stat-card-label">Alat Tersedia</div>
+                        <div class="stat-card-value">5,284</div>
+                        <div class="stat-card-label">Total Books</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-card-value">8</div>
-                        <div class="stat-card-label">Akan Kembali</div>
+                        <div class="stat-card-value">48</div>
+                        <div class="stat-card-label">Due Soon</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-card-value">12</div>
-                        <div class="stat-card-label">Sedang Dipinjam</div>
+                        <div class="stat-card-value">156</div>
+                        <div class="stat-card-label">Currently Borrowed</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-card-value">94%</div>
-                        <div class="stat-card-label">Tingkat Pengembalian</div>
+                        <div class="stat-card-label">Return Rate</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Alat Populer Card -->
             <div class="dashboard-card">
                 <div class="card-header">
                     <div class="card-title">
-                        <i class="fas fa-tools"></i>
-                        Alat Populer
+                        <i class="fas fa-star"></i>
+                        Popular Books
                     </div>
-                    <a href="{{ route('login') }}" class="card-action">Kelola <i class="fas fa-arrow-right"></i></a>
+                    <a href="{{ route('login') }}" class="card-action">Browse <i class="fas fa-arrow-right"></i></a>
                 </div>
-                <div class="tools-grid">
-                    <div class="tool-card">
-                        <div class="tool-icon"><i class="fas fa-drill"></i></div>
-                        <div class="tool-name">Bor Listrik</div>
-                        <div class="tool-status status-available">Tersedia</div>
+                <div class="books-grid">
+                    <div class="book-card">
+                        <div class="book-cover-mini"><i class="fas fa-book"></i></div>
+                        <div class="book-name">Atomic Habits</div>
+                        <div class="book-author">James Clear</div>
+                        <div class="book-status status-available">Available</div>
                     </div>
-                    <div class="tool-card">
-                        <div class="tool-icon"><i class="fas fa-angle-double-up"></i></div>
-                        <div class="tool-name">Gerinda Tangan</div>
-                        <div class="tool-status status-rented">Dipinjam</div>
+                    <div class="book-card">
+                        <div class="book-cover-mini"><i class="fas fa-book-open"></i></div>
+                        <div class="book-name">The Midnight Library</div>
+                        <div class="book-author">Matt Haig</div>
+                        <div class="book-status status-borrowed">Borrowed</div>
                     </div>
-                    <div class="tool-card">
-                        <div class="tool-icon"><i class="fas fa-gavel"></i></div>
-                        <div class="tool-name">Mesin Bor</div>
-                        <div class="tool-status status-available">Tersedia</div>
+                    <div class="book-card">
+                        <div class="book-cover-mini"><i class="fas fa-graduation-cap"></i></div>
+                        <div class="book-name">Deep Work</div>
+                        <div class="book-author">Cal Newport</div>
+                        <div class="book-status status-available">Available</div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Book Categories Section -->
+        <div class="categories-section">
+            <h2 class="section-title">Browse by Genre</h2>
+            <div class="categories-grid">
+                <div class="category-card">
+                    <div class="category-icon"><i class="fas fa-robot"></i></div>
+                    <div class="category-name">Fiction</div>
+                    <div class="category-count">1,284 books</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="category-name">Business</div>
+                    <div class="category-count">856 books</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon"><i class="fas fa-flask"></i></div>
+                    <div class="category-name">Science</div>
+                    <div class="category-count">723 books</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon"><i class="fas fa-heart"></i></div>
+                    <div class="category-name">Romance</div>
+                    <div class="category-count">592 books</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon"><i class="fas fa-brain"></i></div>
+                    <div class="category-name">Psychology</div>
+                    <div class="category-count">445 books</div>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon"><i class="fas fa-code"></i></div>
+                    <div class="category-name">Technology</div>
+                    <div class="category-count">634 books</div>
                 </div>
             </div>
         </div>
@@ -1093,29 +1237,29 @@
         <!-- Features Section -->
         <div class="features-section">
             <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
-                <h3 class="feature-title">Real-time Monitoring</h3>
-                <p class="feature-desc">Pantau status peminjaman dan ketersediaan alat secara langsung dengan dashboard interaktif.</p>
+                <div class="feature-icon"><i class="fas fa-infinity"></i></div>
+                <h3 class="feature-title">Unlimited Access</h3>
+                <p class="feature-desc">Access thousands of books anytime, anywhere. No physical library visits needed.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon"><i class="fas fa-bell"></i></div>
-                <h3 class="feature-title">Smart Notifikasi</h3>
-                <p class="feature-desc">Dapatkan notifikasi otomatis untuk pengembalian terlambat dan aktivitas penting lainnya.</p>
+                <h3 class="feature-title">Smart Reminders</h3>
+                <p class="feature-desc">Get automatic notifications for due dates and never miss returning a book.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon"><i class="fas fa-chart-simple"></i></div>
-                <h3 class="feature-title">Laporan Lengkap</h3>
-                <p class="feature-desc">Analisis data peminjaman, generate laporan, dan optimalkan manajemen inventaris Anda.</p>
+                <h3 class="feature-title">Reading Analytics</h3>
+                <p class="feature-desc">Track your reading habits, get personalized recommendations, and achieve your goals.</p>
             </div>
         </div>
     </main>
 
-    <!-- Footer -->
+    <!-- Footer - Enhanced for Dark Mode -->
     <footer class="footer">
         <div class="footer-content">
             <div class="logo">
-                <div class="logo-icon" style="background: white; color: var(--primary);">F</div>
-                <div style="font-weight: 700; font-size: 20px;">Forent</div>
+                <div class="logo-icon"><i class="fas fa-book-open"></i></div>
+                <div class="logo-text">LibSpace</div>
             </div>
             <div class="footer-links">
                 @if (Route::has('login'))
@@ -1126,23 +1270,23 @@
                 @endif
                 <a href="#">Privacy Policy</a>
                 <a href="#">Terms of Service</a>
-                <a href="#">Contact</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Help Center</a>
             </div>
         </div>
         <div class="copyright">
-            &copy; 2025 Forent - Smart Tool Rental Management Platform. All rights reserved.
+            &copy; 2025 LibSpace - Digital Library & Book Borrowing Platform. Read, Learn, Grow.
         </div>
     </footer>
 </div>
 
 <script>
-    // Dark Mode Toggle Functionality
+    // Dark Mode Toggle
     (function() {
         const themeToggle = document.getElementById('themeToggle');
         const icon = themeToggle.querySelector('i');
         
-        // Check for saved theme preference
-        const savedTheme = localStorage.getItem('forent-theme');
+        const savedTheme = localStorage.getItem('libspace-theme');
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         
         if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
@@ -1155,18 +1299,17 @@
             icon.classList.add('fa-moon');
         }
         
-        // Toggle theme on click
         themeToggle.addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             
             if (currentTheme === 'dark') {
                 document.documentElement.setAttribute('data-theme', 'light');
-                localStorage.setItem('forent-theme', 'light');
+                localStorage.setItem('libspace-theme', 'light');
                 icon.classList.remove('fa-sun');
                 icon.classList.add('fa-moon');
             } else {
                 document.documentElement.setAttribute('data-theme', 'dark');
-                localStorage.setItem('forent-theme', 'dark');
+                localStorage.setItem('libspace-theme', 'dark');
                 icon.classList.remove('fa-moon');
                 icon.classList.add('fa-sun');
             }
