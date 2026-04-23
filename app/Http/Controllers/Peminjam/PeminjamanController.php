@@ -31,62 +31,65 @@ class PeminjamanController extends Controller
     }
 
     // ===============================
-    // AJUKAN PINJAM
+    // AJUKAN PINJAM (MULTI ALAT 🔥)
     // ===============================
     public function pinjam(Request $request)
     {
         $request->validate([
-            'id_alat' => 'required|exists:alat,id_alat',
+            'id_alat' => 'required|array',
+            'id_alat.*' => 'exists:alat,id_alat',
             'tanggal_rencana_kembali' => 'required|date|after:today'
         ]);
 
         try {
             DB::beginTransaction();
 
-            $alat = Alat::findOrFail($request->id_alat);
+            // 🔥 ambil semua alat yang dipilih
+            $alatDipilih = Alat::whereIn('id_alat', $request->id_alat)->get();
 
-            // 🔥 cek stok
-            if ($alat->stok <= 0) {
-                return back()->withErrors('Stok alat habis!');
+            foreach ($alatDipilih as $alat) {
+
+                // 🔥 cek stok
+                if ($alat->stok <= 0) {
+                    throw new \Exception("Stok {$alat->nama_alat} habis!");
+                }
+
+                // ===============================
+                // SIMPAN PEMINJAMAN
+                // ===============================
+                $pinjam = Peminjaman::create([
+                    'id_user' => Auth::id(),
+                    'id_alat' => $alat->id_alat,
+                    'tanggal_pinjam' => now(),
+                    'tanggal_rencana_kembali' => $request->tanggal_rencana_kembali,
+                    'tanggal_kembali' => null,
+                    'denda' => 0,
+                    'status' => 'menunggu',
+                    'status_denda' => 'Belum'
+                ]);
+
+                // ===============================
+                // LOG AKTIVITAS
+                // ===============================
+                LogAktivitas::create([
+                    'id_user' => Auth::id(),
+                    'aktivitas' => 'Mengajukan peminjaman alat: ' . $alat->nama_alat,
+                    'waktu' => now()
+                ]);
             }
-
-            // ===============================
-            // SIMPAN PEMINJAMAN
-            // ===============================
-            $pinjam = Peminjaman::create([
-                'id_user' => Auth::id(),
-                'id_alat' => $request->id_alat,
-                'tanggal_pinjam' => now(),
-                'tanggal_rencana_kembali' => $request->tanggal_rencana_kembali,
-                'tanggal_kembali' => null,
-                'denda' => 0,
-                'status' => 'menunggu',
-                'status_denda' => 'Belum'
-            ]);
-
-            // ===============================
-            // LOG AKTIVITAS
-            // ===============================
-            LogAktivitas::create([
-                'id_user' => Auth::id(),
-                'aktivitas' => 'Mengajukan peminjaman alat ID ' . $pinjam->id_alat,
-                'waktu' => now()
-            ]);
 
             DB::commit();
 
             return back()->with(
                 'success',
-                'Permintaan peminjaman berhasil dikirim. Menunggu persetujuan petugas.'
+                '🔥 Berhasil mengajukan beberapa alat sekaligus!'
             );
 
         } catch (\Exception $e) {
 
             DB::rollBack();
 
-            return back()->withErrors(
-                'Terjadi kesalahan saat mengajukan peminjaman'
-            );
+            return back()->withErrors($e->getMessage());
         }
     }
 
@@ -100,7 +103,6 @@ class PeminjamanController extends Controller
 
             $pinjam = Peminjaman::findOrFail($id);
 
-            // 🔥 hanya bisa dikembalikan kalau sudah disetujui
             if ($pinjam->status !== 'disetujui') {
                 return back()->withErrors('Peminjaman belum disetujui!');
             }
@@ -110,19 +112,12 @@ class PeminjamanController extends Controller
 
             $denda = 0;
 
-            // ===============================
-            // HITUNG DENDA
-            // ===============================
             if ($tanggalKembali->greaterThan($tanggalRencana)) {
-
                 $telatHari = $tanggalKembali->diffInDays($tanggalRencana);
-
-                $denda = $telatHari * 1000; // 🔥 1000 per hari
+                $denda = $telatHari * 1000;
             }
 
-            // ===============================
-            // UPDATE DATA
-            // ===============================
+            // update peminjaman
             $pinjam->update([
                 'tanggal_kembali' => $tanggalKembali,
                 'denda' => $denda,
@@ -130,18 +125,14 @@ class PeminjamanController extends Controller
                 'status_denda' => $denda > 0 ? 'Belum' : 'Lunas'
             ]);
 
-            // ===============================
-            // BALIKIN STOK ALAT
-            // ===============================
+            // balikin stok
             $alat = Alat::find($pinjam->id_alat);
             $alat->increment('stok');
 
-            // ===============================
-            // LOG AKTIVITAS
-            // ===============================
+            // log
             LogAktivitas::create([
                 'id_user' => Auth::id(),
-                'aktivitas' => 'Mengembalikan alat ID ' . $pinjam->id_alat,
+                'aktivitas' => 'Mengembalikan alat: ' . $alat->nama_alat,
                 'waktu' => now()
             ]);
 

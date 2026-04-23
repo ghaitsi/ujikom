@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Forent - Edit Kategori</title>
+    <title>LibTrack - Edit Genre Buku</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800|playfair:400,500,600,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Animate CSS -->
@@ -18,21 +18,21 @@
     <style>
         /* ===== VARIABLES & RESET ===== */
         :root {
-            --primary: #4361ee;
-            --primary-dark: #3a56d4;
-            --primary-light: #4895ef;
-            --secondary: #7209b7;
-            --accent: #f72585;
-            --success: #4cc9f0;
-            --warning: #f8961e;
-            --danger: #f94144;
-            --dark: #1a1a2e;
-            --darker: #16213e;
-            --light: #f8f9fa;
-            --gray: #6c757d;
-            --gray-light: #e9ecef;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --sidebar-bg: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            --primary: #2c3e50;
+            --primary-dark: #1a252f;
+            --primary-light: #34495e;
+            --secondary: #8e44ad;
+            --accent: #e67e22;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --dark: #2c3e50;
+            --darker: #1a252f;
+            --light: #fdf6e3;
+            --gray: #7f8c8d;
+            --gray-light: #ecf0f1;
+            --card-bg: rgba(253, 246, 227, 0.95);
+            --sidebar-bg: linear-gradient(180deg, #2c3e50 0%, #1a252f 100%);
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
             --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.12);
             --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.15);
@@ -50,7 +50,7 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            background: linear-gradient(135deg, #f5e6ca 0%, #e8d5b7 100%);
             color: var(--dark);
             min-height: 100vh;
             overflow-x: hidden;
@@ -79,14 +79,14 @@
 
         /* ===== HEADER ===== */
         .header {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(253, 246, 227, 0.95);
             backdrop-filter: blur(20px);
             padding: 0 40px;
             height: 80px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 2px solid #d4a373;
             box-shadow: var(--shadow-sm);
             position: sticky;
             top: 0;
@@ -95,7 +95,8 @@
 
         .header-title {
             font-size: 28px;
-            font-weight: 700;
+            font-weight: 800;
+            font-family: 'Playfair', serif;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             background-clip: text;
@@ -105,15 +106,41 @@
         }
 
         .header-title::before {
-            content: '';
+            content: '📚';
             position: absolute;
-            left: 0;
+            left: -10px;
             top: 50%;
             transform: translateY(-50%);
-            width: 6px;
-            height: 30px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 3px;
+            font-size: 28px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        /* Back Button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--primary);
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: var(--transition);
+            border: 2px solid #d4a373;
+        }
+
+        .back-btn:hover {
+            background: white;
+            border-color: var(--secondary);
+            color: var(--secondary);
+            transform: translateX(-4px);
         }
 
         /* ===== CONTENT ===== */
@@ -128,11 +155,23 @@
             border-radius: var(--radius-lg);
             padding: 40px;
             box-shadow: var(--shadow-md);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid #d4a373;
             backdrop-filter: blur(10px);
-            max-width: 800px;
+            max-width: 700px;
             margin: 0 auto;
             animation: fadeIn 0.6s ease forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-card::before {
+            content: '📖';
+            position: absolute;
+            bottom: -20px;
+            right: -20px;
+            font-size: 100px;
+            opacity: 0.05;
+            pointer-events: none;
         }
 
         @keyframes fadeIn {
@@ -143,86 +182,58 @@
         .form-header {
             margin-bottom: 30px;
             padding-bottom: 20px;
-            border-bottom: 2px solid rgba(67, 97, 238, 0.1);
+            border-bottom: 2px solid rgba(142, 68, 173, 0.2);
+            text-align: center;
+        }
+
+        .form-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 20px rgba(142, 68, 173, 0.3);
+        }
+
+        .form-icon i {
+            font-size: 32px;
+            color: white;
         }
 
         .form-title {
-            font-size: 24px;
-            font-weight: 700;
+            font-size: 28px;
+            font-weight: 800;
+            font-family: 'Playfair', serif;
             color: var(--dark);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .form-title::before {
-            content: '';
-            width: 8px;
-            height: 24px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 4px;
-        }
-
-        /* ===== FORM STYLES ===== */
-        .form-group {
-            margin-bottom: 24px;
-        }
-
-        .form-label {
-            display: block;
             margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--dark);
-            font-size: 14px;
         }
 
-        .form-label span {
-            color: var(--danger);
-            margin-left: 4px;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid var(--gray-light);
-            border-radius: var(--radius-md);
-            font-size: 15px;
-            color: var(--dark);
-            background: white;
-            transition: var(--transition);
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
-        }
-
-        .form-input.error {
-            border-color: var(--danger);
-            box-shadow: 0 0 0 4px rgba(249, 65, 68, 0.1);
-        }
-
-        .form-text {
-            margin-top: 6px;
-            font-size: 13px;
+        .form-subtitle {
             color: var(--gray);
+            font-size: 14px;
         }
 
         /* ===== CATEGORY INFO ===== */
         .category-info {
-            background: rgba(67, 97, 238, 0.05);
+            background: linear-gradient(135deg, rgba(142, 68, 173, 0.08), rgba(44, 62, 80, 0.05));
             border-radius: var(--radius-md);
             padding: 20px;
-            margin-bottom: 24px;
-            border-left: 4px solid var(--primary);
+            margin-bottom: 28px;
+            border-left: 4px solid var(--secondary);
         }
 
         .info-row {
             display: flex;
             gap: 20px;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             flex-wrap: wrap;
+        }
+
+        .info-row:last-child {
+            margin-bottom: 0;
         }
 
         .info-label {
@@ -233,6 +244,111 @@
 
         .info-value {
             color: var(--dark);
+            font-weight: 500;
+        }
+
+        .info-badge {
+            background: var(--secondary);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-block;
+        }
+
+        /* ===== FORM STYLES ===== */
+        .form-group {
+            margin-bottom: 28px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 14px;
+        }
+
+        .form-label i {
+            color: var(--secondary);
+            margin-right: 8px;
+        }
+
+        .form-label span {
+            color: var(--danger);
+            margin-left: 4px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 18px;
+            border: 2px solid #d4a373;
+            border-radius: var(--radius-md);
+            font-size: 15px;
+            color: var(--dark);
+            background: white;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 4px rgba(142, 68, 173, 0.1);
+        }
+
+        .form-input.error {
+            border-color: var(--danger);
+            background: rgba(231, 76, 60, 0.05);
+        }
+
+        .form-text {
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-text i {
+            font-size: 12px;
+            color: var(--secondary);
+        }
+
+        /* Live Preview */
+        .genre-preview {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(142, 68, 173, 0.05);
+            border-radius: var(--radius-md);
+            text-align: center;
+            border: 1px dashed #d4a373;
+            transition: var(--transition);
+        }
+
+        .preview-label {
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .preview-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 10px 24px;
+            border-radius: 40px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(142, 68, 173, 0.3);
+        }
+
+        .preview-badge i {
+            font-size: 16px;
         }
 
         /* ===== BUTTONS ===== */
@@ -241,54 +357,64 @@
             gap: 16px;
             margin-top: 32px;
             padding-top: 24px;
-            border-top: 1px solid var(--gray-light);
+            border-top: 1px solid rgba(142, 68, 173, 0.2);
         }
 
         .btn {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 14px 28px;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 24px;
             border-radius: var(--radius-md);
             font-weight: 600;
-            font-size: 15px;
+            font-size: 14px;
             border: none;
             cursor: pointer;
             transition: var(--transition);
             text-decoration: none;
-            white-space: nowrap;
+            flex: 1;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--warning), #e67e22);
             color: white;
-        }
-
-        .btn-warning {
-            background: linear-gradient(135deg, var(--warning), #f97316);
-            color: white;
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
         }
 
         .btn-secondary {
-            background: var(--gray-light);
+            background: white;
             color: var(--dark);
+            border: 2px solid #d4a373;
         }
 
         .btn-danger {
-            background: linear-gradient(135deg, var(--danger), #dc2626);
+            background: linear-gradient(135deg, var(--danger), #c0392b);
             color: white;
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
         }
 
-        .btn-primary:hover,
-        .btn-warning:hover,
-        .btn-danger:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(243, 156, 18, 0.4);
+            gap: 14px;
         }
 
         .btn-secondary:hover {
+            background: var(--gray-light);
             transform: translateY(-2px);
-            box-shadow: var(--shadow-sm);
+            border-color: var(--secondary);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         /* ===== ALERTS ===== */
@@ -296,7 +422,7 @@
             padding: 16px 20px;
             border-radius: var(--radius-md);
             margin-bottom: 24px;
-            border: 2px solid transparent;
+            border-left: 4px solid;
             animation: slideIn 0.3s ease;
         }
 
@@ -306,14 +432,14 @@
         }
 
         .alert-danger {
-            background: rgba(249, 65, 68, 0.1);
-            border-color: rgba(249, 65, 68, 0.2);
+            background: rgba(231, 76, 60, 0.1);
+            border-left-color: var(--danger);
             color: var(--danger);
         }
 
         .alert-success {
-            background: rgba(76, 201, 240, 0.1);
-            border-color: rgba(76, 201, 240, 0.2);
+            background: rgba(39, 174, 96, 0.1);
+            border-left-color: var(--success);
             color: var(--success);
         }
 
@@ -324,6 +450,38 @@
 
         .alert li {
             margin-bottom: 4px;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 14px 24px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            box-shadow: var(--shadow-lg);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideInRight 0.3s ease;
+            color: white;
+        }
+
+        .toast-success { background: var(--success); }
+        .toast-error { background: var(--danger); }
+        .toast-warning { background: var(--warning); }
+        .toast-info { background: var(--primary); }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100%); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideOutRight {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(100%); }
         }
 
         /* ===== RESPONSIVE ===== */
@@ -345,7 +503,7 @@
             }
             
             .form-card {
-                padding: 30px;
+                padding: 30px 24px;
             }
             
             .form-actions {
@@ -354,12 +512,15 @@
             
             .btn {
                 width: 100%;
-                justify-content: center;
+            }
+            
+            .form-title {
+                font-size: 24px;
             }
             
             .info-row {
                 flex-direction: column;
-                gap: 4px;
+                gap: 6px;
             }
         }
 
@@ -369,11 +530,24 @@
             }
             
             .form-card {
-                padding: 20px;
+                padding: 24px 20px;
+            }
+            
+            .form-icon {
+                width: 55px;
+                height: 55px;
+            }
+            
+            .form-icon i {
+                font-size: 24px;
             }
             
             .form-title {
-                font-size: 20px;
+                font-size: 22px;
+            }
+            
+            .back-btn span {
+                display: none;
             }
         }
     </style>
@@ -384,10 +558,11 @@
 
         <main class="main-content" id="mainContent">
             <header class="header">
-                <h1 class="header-title animate__animated animate__fadeIn">Edit Kategori</h1>
+                <h1 class="header-title animate__animated animate__fadeIn">Edit Genre Buku</h1>
                 <div class="header-actions">
-                    <a href="{{ route('admin.kategori.index') }}" class="btn" style="background: var(--gray-light); color: var(--dark); padding: 10px 20px;">
-                        <i class="fas fa-arrow-left"></i> Kembali
+                    <a href="{{ route('admin.kategori.index') }}" class="back-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Kembali</span>
                     </a>
                 </div>
             </header>
@@ -421,27 +596,33 @@
                 <!-- Form Card -->
                 <div class="form-card">
                     <div class="form-header">
-                        <h2 class="form-title">
+                        <div class="form-icon">
                             <i class="fas fa-edit"></i>
-                            Form Edit Kategori
-                        </h2>
-                        <p style="color: var(--gray); margin-top: 8px; font-size: 14px;">
-                            Edit data kategori <strong>{{ $kategori->nama_kategori }}</strong>.
-                        </p>
+                        </div>
+                        <h2 class="form-title">Edit Genre Buku</h2>
+                        <p class="form-subtitle">Perbarui informasi genre buku di perpustakaan</p>
                     </div>
 
                     <!-- Category Information -->
                     <div class="category-info">
                         <div class="info-row">
-                            <span class="info-label">ID Kategori:</span>
-                            <span class="info-value"><strong>#{{ $kategori->id_kategori }}</strong></span>
+                            <span class="info-label">
+                                <i class="fas fa-hashtag"></i> ID Genre:
+                            </span>
+                            <span class="info-value">
+                                <span class="info-badge">#{{ $kategori->id_kategori }}</span>
+                            </span>
                         </div>
                         <div class="info-row">
-                            <span class="info-label">Dibuat:</span>
+                            <span class="info-label">
+                                <i class="fas fa-calendar-plus"></i> Dibuat:
+                            </span>
                             <span class="info-value">{{ $kategori->created_at->format('d M Y H:i') }}</span>
                         </div>
                         <div class="info-row">
-                            <span class="info-label">Diperbarui:</span>
+                            <span class="info-label">
+                                <i class="fas fa-calendar-alt"></i> Diperbarui:
+                            </span>
                             <span class="info-value">{{ $kategori->updated_at->format('d M Y H:i') }}</span>
                         </div>
                     </div>
@@ -452,7 +633,8 @@
                         
                         <div class="form-group">
                             <label for="nama_kategori" class="form-label">
-                                Nama Kategori <span>*</span>
+                                <i class="fas fa-bookmark"></i>
+                                Nama Genre <span>*</span>
                             </label>
                             <input 
                                 type="text" 
@@ -460,7 +642,7 @@
                                 name="nama_kategori" 
                                 id="nama_kategori" 
                                 value="{{ old('nama_kategori', $kategori->nama_kategori) }}" 
-                                placeholder="Masukkan nama kategori"
+                                placeholder="Contoh: Fiksi, Non-Fiksi, Sains, Sejarah..."
                                 required
                                 autofocus
                             >
@@ -470,19 +652,31 @@
                                 </div>
                             @enderror
                             <div class="form-text">
-                                Nama kategori harus unik dan deskriptif.
+                                <i class="fas fa-lightbulb"></i>
+                                Nama genre harus unik dan deskriptif untuk memudahkan pengelompokan buku.
+                            </div>
+                        </div>
+
+                        <!-- Live Preview -->
+                        <div class="genre-preview" id="genrePreview">
+                            <div class="preview-label">
+                                <i class="fas fa-eye"></i> Live Preview
+                            </div>
+                            <div class="preview-badge" id="previewBadge">
+                                <i class="fas fa-tag"></i>
+                                <span id="previewText">{{ $kategori->nama_kategori }}</span>
                             </div>
                         </div>
 
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-warning">
-                                <i class="fas fa-save"></i> Update Kategori
+                            <button type="submit" class="btn btn-primary" id="submitBtn">
+                                <i class="fas fa-save"></i> Update Genre
                             </button>
                             <a href="{{ route('admin.kategori.index') }}" class="btn btn-secondary">
                                 <i class="fas fa-times"></i> Batal
                             </a>
                             <button type="button" class="btn btn-danger" id="resetBtn">
-                                <i class="fas fa-redo"></i> Reset
+                                <i class="fas fa-undo-alt"></i> Reset
                             </button>
                         </div>
                     </form>
@@ -496,19 +690,61 @@
             const form = document.getElementById('kategoriForm');
             const namaInput = document.getElementById('nama_kategori');
             const resetBtn = document.getElementById('resetBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            const previewText = document.getElementById('previewText');
             const originalValue = "{{ old('nama_kategori', $kategori->nama_kategori) }}";
+            
+            let formChanged = false;
+            
+            // Update live preview
+            function updatePreview() {
+                const value = namaInput.value.trim();
+                if (value.length > 0) {
+                    previewText.textContent = value;
+                } else {
+                    previewText.textContent = 'Genre';
+                }
+            }
             
             // Reset button functionality
             if (resetBtn) {
                 resetBtn.addEventListener('click', function() {
                     if (confirm('Reset semua perubahan ke nilai semula?')) {
                         namaInput.value = originalValue;
+                        updatePreview();
                         clearError(namaInput);
                         namaInput.focus();
                         showToast('Form telah direset', 'info');
+                        formChanged = false;
                     }
                 });
             }
+            
+            // Live preview on input
+            namaInput.addEventListener('input', function() {
+                formChanged = true;
+                updatePreview();
+                
+                const value = this.value.trim();
+                
+                // Real-time validation
+                if (!value) {
+                    showError(this, 'Nama genre wajib diisi');
+                } else if (value.length < 2) {
+                    showError(this, 'Nama genre minimal 2 karakter');
+                } else if (value.length > 100) {
+                    showError(this, 'Nama genre maksimal 100 karakter');
+                } else {
+                    clearError(this);
+                }
+                
+                // Update page title indicator
+                if (value !== originalValue) {
+                    document.title = "✏️ " + document.title.replace("✏️ ", "");
+                } else {
+                    document.title = document.title.replace("✏️ ", "");
+                }
+            });
             
             // Form validation
             form.addEventListener('submit', function(e) {
@@ -516,19 +752,25 @@
                 
                 if (!namaValue) {
                     e.preventDefault();
-                    showError(namaInput, 'Nama kategori wajib diisi');
+                    showError(namaInput, 'Nama genre wajib diisi');
+                    namaInput.focus();
+                    showToast('Nama genre wajib diisi', 'error');
                     return false;
                 }
                 
                 if (namaValue.length < 2) {
                     e.preventDefault();
-                    showError(namaInput, 'Nama kategori minimal 2 karakter');
+                    showError(namaInput, 'Nama genre minimal 2 karakter');
+                    namaInput.focus();
+                    showToast('Nama genre minimal 2 karakter', 'error');
                     return false;
                 }
                 
-                if (namaValue.length > 255) {
+                if (namaValue.length > 100) {
                     e.preventDefault();
-                    showError(namaInput, 'Nama kategori maksimal 255 karakter');
+                    showError(namaInput, 'Nama genre maksimal 100 karakter');
+                    namaInput.focus();
+                    showToast('Nama genre maksimal 100 karakter', 'error');
                     return false;
                 }
                 
@@ -539,39 +781,18 @@
                         return false;
                     }
                 } else {
-                    if (!confirm('Update data kategori?')) {
+                    if (!confirm(`Update genre dari "${originalValue}" menjadi "${namaValue}"?`)) {
                         e.preventDefault();
                         return false;
                     }
                 }
                 
                 // Show loading state
-                const submitBtn = this.querySelector('button[type="submit"]');
                 const originalText = submitBtn.innerHTML;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memperbarui...';
                 submitBtn.disabled = true;
                 
                 return true;
-            });
-            
-            // Real-time validation
-            namaInput.addEventListener('input', function() {
-                const value = this.value.trim();
-                
-                if (!value) {
-                    showError(this, 'Nama kategori wajib diisi');
-                } else if (value.length < 2) {
-                    showError(this, 'Nama kategori minimal 2 karakter');
-                } else if (value.length > 255) {
-                    showError(this, 'Nama kategori maksimal 255 karakter');
-                } else {
-                    clearError(this);
-                }
-                
-                // Show save indicator if changed
-                if (value !== originalValue) {
-                    document.title = "* " + document.title.replace("* ", "");
-                }
             });
             
             // Helper functions
@@ -585,6 +806,9 @@
                     errorDiv.style.color = 'var(--danger)';
                     errorDiv.style.fontSize = '13px';
                     errorDiv.style.marginTop = '6px';
+                    errorDiv.style.display = 'flex';
+                    errorDiv.style.alignItems = 'center';
+                    errorDiv.style.gap = '6px';
                     input.parentElement.appendChild(errorDiv);
                 }
                 
@@ -602,9 +826,14 @@
             function showToast(message, type = 'info') {
                 const toast = document.createElement('div');
                 toast.className = `toast toast-${type}`;
-                toast.setAttribute('role', 'alert');
+                
+                let icon = 'fa-info-circle';
+                if (type === 'success') icon = 'fa-check-circle';
+                if (type === 'error') icon = 'fa-times-circle';
+                if (type === 'warning') icon = 'fa-exclamation-triangle';
+                
                 toast.innerHTML = `
-                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'times-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                    <i class="fas ${icon}"></i>
                     <span>${message}</span>
                 `;
                 
@@ -616,21 +845,18 @@
                 }, 3000);
             }
             
-            // Auto-focus on input
+            // Auto-focus and select text
             if (namaInput) {
                 namaInput.focus();
                 namaInput.select();
             }
             
+            // Initialize preview
+            updatePreview();
+            
             // Confirmation before leaving page if form has changes
-            let formChanged = false;
-            
-            namaInput.addEventListener('input', () => {
-                formChanged = true;
-            });
-            
             window.addEventListener('beforeunload', function(e) {
-                if (formChanged) {
+                if (formChanged && namaInput.value.trim() !== originalValue) {
                     e.preventDefault();
                     e.returnValue = '';
                 }
@@ -640,16 +866,26 @@
             const cancelBtn = document.querySelector('a[href*="kategori.index"]');
             if (cancelBtn) {
                 cancelBtn.addEventListener('click', function(e) {
-                    if (formChanged) {
+                    if (formChanged && namaInput.value.trim() !== originalValue) {
                         if (!confirm('Anda memiliki perubahan yang belum disimpan. Yakin ingin keluar?')) {
                             e.preventDefault();
                         }
                     }
                 });
             }
+            
+            // Enter key submit handling
+            namaInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && this.value.trim().length >= 2) {
+                    e.preventDefault();
+                    if (this.value.trim() !== originalValue || confirm('Tidak ada perubahan. Tetap lanjutkan?')) {
+                        submitBtn.click();
+                    }
+                }
+            });
         });
         
-        // Add styles for error messages and toast
+        // Add styles for error messages
         const style = document.createElement('style');
         style.textContent = `
             .error-message {
@@ -659,50 +895,6 @@
                 display: flex !important;
                 align-items: center !important;
                 gap: 6px !important;
-            }
-            
-            .toast {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 16px 24px;
-                border-radius: var(--radius-md);
-                font-weight: 600;
-                box-shadow: var(--shadow-lg);
-                z-index: 9999;
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                max-width: 400px;
-                animation: slideInRight 0.3s ease;
-                color: white;
-            }
-            
-            .toast-success { background: var(--success); }
-            .toast-error { background: var(--danger); }
-            .toast-warning { background: var(--warning); }
-            .toast-info { background: var(--primary); }
-            
-            @keyframes slideInRight {
-                from {
-                    opacity: 0;
-                    transform: translateX(100%);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateX(0);
-                }
-            }
-            
-            @keyframes slideOutRight {
-                from {
-                    opacity: 1;
-                    transform: translateX(0);
-                }
-                to {
-                    opacity: 0;
-                    transform: translateX(100%);
-                }
             }
         `;
         document.head.appendChild(style);

@@ -1455,164 +1455,165 @@
 
                     $dendaFinal = ($item->denda > 0) ? $item->denda : $calculatedDenda;
 
-                    $statusDenda = $item->status_denda ?? ($dendaFinal > 0 ? 'belum_bayar' : 'tidak_ada');
+                    $statusRaw = strtolower($item->status_denda);
 
-                    $dendaStatusClass = 'denda-tidak';
-                    $dendaStatusText = 'Tidak Ada';
-
-                    if ($dendaFinal > 0) {
-                        if ($statusDenda == 'lunas') {
+                        if ($statusRaw == 'lunas') {
+                            $statusDenda = 'lunas';
                             $dendaStatusClass = 'denda-lunas';
                             $dendaStatusText = 'Lunas';
-                        } else {
+                        } elseif ($item->denda > 0) {
+                            $statusDenda = 'belum';
                             $dendaStatusClass = 'denda-belum';
                             $dendaStatusText = 'Belum Bayar';
+                        } else {
+                            $statusDenda = 'tidak';
+                            $dendaStatusClass = 'denda-tidak';
+                            $dendaStatusText = 'Tidak Ada';
                         }
-                    }
-                @endphp
+                                    @endphp
 
-                <tr data-status="{{ $item->status }}" data-denda-status="{{ $statusDenda }}" data-id="{{ $item->id_peminjaman }}">
-                    <td>{{ $loop->iteration }}</td>
+                                    <tr data-status="{{ $item->status }}" data-denda-status="{{ $statusDenda }}" data-id="{{ $item->id_peminjaman }}">
+                                        <td>{{ $loop->iteration }}</td>
 
-                    <td>
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div class="user-avatar">
-                                {{ strtoupper(substr($item->user->name ?? 'U', 0, 2)) }}
-                            </div>
-                            <div>
-                                <div style="font-weight: 600;">{{ $item->user->name ?? '-' }}</div>
-                                <div style="font-size: 12px; color: var(--gray);">{{ $item->user->email ?? '-' }}</div>
-                            </div>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 12px;">
+                                                <div class="user-avatar">
+                                                    {{ strtoupper(substr($item->user->name ?? 'U', 0, 2)) }}
+                                                </div>
+                                                <div>
+                                                    <div style="font-weight: 600;">{{ $item->user->name ?? '-' }}</div>
+                                                    <div style="font-size: 12px; color: var(--gray);">{{ $item->user->email ?? '-' }}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td>{{ $item->alat->nama_alat ?? '-' }}</td>
+
+                                        <td>{{ $item->tanggal_pinjam ? \Carbon\Carbon::parse($item->tanggal_pinjam)->format('d M Y') : '-' }}</td>
+
+                                        <!-- RENCANA -->
+                                        <td>
+                                            {{ $item->tanggal_rencana_kembali ? \Carbon\Carbon::parse($item->tanggal_rencana_kembali)->format('d M Y') : '-' }}
+                                        </td>
+
+                                        <!-- KEMBALI -->
+                                        <td>
+                                            {{ $item->tanggal_kembali ? \Carbon\Carbon::parse($item->tanggal_kembali)->format('d M Y') : '-' }}
+
+                                            @if($item->status == 'dipinjam' && $rencanaKembali)
+                                                @php
+                                                    $daysLeft = $today->diffInDays($rencanaKembali, false);
+                                                @endphp
+                                                @if($daysLeft < 0)
+                                                    <div style="font-size: 11px; color: var(--danger); margin-top: 4px;">
+                                                        <i class="fas fa-exclamation-triangle"></i>
+                                                        Terlambat {{ abs($daysLeft) }} hari
+                                                    </div>
+                                                @elseif($daysLeft <= 2 && $daysLeft >= 0)
+                                                    <div style="font-size: 11px; color: var(--warning); margin-top: 4px;">
+                                                        <i class="fas fa-hourglass-half"></i>
+                                                        Tersisa {{ $daysLeft }} hari
+                                                    </div>
+                                                @endif
+                                            @endif
+                                        </td>
+
+                                        <td>
+                                            @if ($item->status == 'menunggu')
+                                                <span class="status-badge status-menunggu">
+                                                    <i class="fas fa-hourglass-half"></i> Menunggu
+                                                </span>
+                                            @elseif ($item->status == 'dipinjam')
+                                                <span class="status-badge status-dipinjam">
+                                                    <i class="fas fa-sync-alt"></i> Dipinjam
+                                                </span>
+                                            @elseif ($item->status == 'dikembalikan' || $item->status == 'selesai')
+                                                <span class="status-badge status-selesai">
+                                                    <i class="fas fa-check-circle"></i> Selesai
+                                                </span>
+                                            @elseif ($item->status == 'ditolak')
+                                                <span class="status-badge status-ditolak">
+                                                    <i class="fas fa-times-circle"></i> Ditolak
+                                                </span>
+                                            @endif
+                                        </td>
+
+                                        <td>
+                                            @if($dendaFinal > 0)
+                                                <div style="color: var(--danger); font-weight: 600;">
+                                                    Rp {{ number_format($dendaFinal, 0, ',', '.') }}
+                                                </div>
+                                                <div style="font-size: 11px; color: var(--gray);">
+                                                    {{ abs($daysLate) }} hari terlambat
+                                                </div>
+                                            @else
+                                                <span style="color: var(--success);">-</span>
+                                            @endif
+                                        </td>
+
+                                        <td>
+                                            <span class="denda-status-badge {{ $dendaStatusClass }}">
+                                                @if($dendaStatusClass == 'denda-lunas')
+                                                    <i class="fas fa-check-circle"></i>
+                                                @elseif($dendaStatusClass == 'denda-belum')
+                                                    <i class="fas fa-exclamation-circle"></i>
+                                                @else
+                                                    <i class="fas fa-minus-circle"></i>
+                                                @endif
+                                                {{ $dendaStatusText }}
+                                            </span>
+                                        </td>
+
+                                        <!-- ✅ AKSI BALIK LENGKAP -->
+                                        <td>
+                                            @if ($item->status == 'menunggu')
+                                                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                                    <form method="POST" action="{{ route('petugas.peminjaman.setujui', $item->id_peminjaman) }}">
+                                                        @csrf
+                                                        <button type="submit" class="btn-action approve" onclick="return confirm('Setujui peminjaman ini?')">
+                                                            <i class="fas fa-check"></i> Setujui
+                                                        </button>
+                                                    </form>
+
+                                                    <form method="POST" action="{{ route('petugas.peminjaman.tolak', $item->id_peminjaman) }}">
+                                                        @csrf
+                                                        <button type="submit" class="btn-action reject" onclick="return confirm('Tolak peminjaman ini?')">
+                                                            <i class="fas fa-times"></i> Tolak
+                                                        </button>
+                                                    </form>
+                                                </div>
+
+                                            @elseif ($item->status == 'dipinjam')
+                                                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                                    <form method="POST" action="{{ route('petugas.pengembalian.konfirmasi', $item->id_peminjaman) }}">
+                                                        @csrf
+                                                        <button type="submit" class="btn-action confirm" onclick="return confirm('Konfirmasi pengembalian alat ini?')">
+                                                            <i class="fas fa-check-circle"></i> Konfirmasi
+                                                        </button>
+                                                    </form>
+
+                                                    @if($dendaFinal > 0 && $statusDenda == 'belum_bayar')
+                                                    <form method="POST" action="{{ route('petugas.denda.konfirmasi', $item->id_peminjaman) }}">
+                                                        @csrf
+                                                        <button type="submit" class="btn-action approve" onclick="return confirm('Konfirmasi pembayaran denda Rp {{ number_format($dendaFinal, 0, ',', '.') }}?')">
+                                                            <i class="fas fa-money-bill"></i> Denda
+                                                        </button>
+                                                    </form>
+                                                    @endif
+                                                </div>
+
+                                            @else
+                                                <span style="font-size: 12px; color: var(--gray); font-style: italic;">Tidak ada aksi</span>
+                                            @endif
+                                        </td>
+
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            @endif
                         </div>
-                    </td>
-
-                    <td>{{ $item->alat->nama_alat ?? '-' }}</td>
-
-                    <td>{{ $item->tanggal_pinjam ? \Carbon\Carbon::parse($item->tanggal_pinjam)->format('d M Y') : '-' }}</td>
-
-                    <!-- RENCANA -->
-                    <td>
-                        {{ $item->tanggal_rencana_kembali ? \Carbon\Carbon::parse($item->tanggal_rencana_kembali)->format('d M Y') : '-' }}
-                    </td>
-
-                    <!-- KEMBALI -->
-                    <td>
-                        {{ $item->tanggal_kembali ? \Carbon\Carbon::parse($item->tanggal_kembali)->format('d M Y') : '-' }}
-
-                        @if($item->status == 'dipinjam' && $rencanaKembali)
-                            @php
-                                $daysLeft = $today->diffInDays($rencanaKembali, false);
-                            @endphp
-                            @if($daysLeft < 0)
-                                <div style="font-size: 11px; color: var(--danger); margin-top: 4px;">
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                    Terlambat {{ abs($daysLeft) }} hari
-                                </div>
-                            @elseif($daysLeft <= 2 && $daysLeft >= 0)
-                                <div style="font-size: 11px; color: var(--warning); margin-top: 4px;">
-                                    <i class="fas fa-hourglass-half"></i>
-                                    Tersisa {{ $daysLeft }} hari
-                                </div>
-                            @endif
-                        @endif
-                    </td>
-
-                    <td>
-                        @if ($item->status == 'menunggu')
-                            <span class="status-badge status-menunggu">
-                                <i class="fas fa-hourglass-half"></i> Menunggu
-                            </span>
-                        @elseif ($item->status == 'dipinjam')
-                            <span class="status-badge status-dipinjam">
-                                <i class="fas fa-sync-alt"></i> Dipinjam
-                            </span>
-                        @elseif ($item->status == 'dikembalikan' || $item->status == 'selesai')
-                            <span class="status-badge status-selesai">
-                                <i class="fas fa-check-circle"></i> Selesai
-                            </span>
-                        @elseif ($item->status == 'ditolak')
-                            <span class="status-badge status-ditolak">
-                                <i class="fas fa-times-circle"></i> Ditolak
-                            </span>
-                        @endif
-                    </td>
-
-                    <td>
-                        @if($dendaFinal > 0)
-                            <div style="color: var(--danger); font-weight: 600;">
-                                Rp {{ number_format($dendaFinal, 0, ',', '.') }}
-                            </div>
-                            <div style="font-size: 11px; color: var(--gray);">
-                                {{ abs($daysLate) }} hari terlambat
-                            </div>
-                        @else
-                            <span style="color: var(--success);">-</span>
-                        @endif
-                    </td>
-
-                    <td>
-                        <span class="denda-status-badge {{ $dendaStatusClass }}">
-                            @if($dendaStatusClass == 'denda-lunas')
-                                <i class="fas fa-check-circle"></i>
-                            @elseif($dendaStatusClass == 'denda-belum')
-                                <i class="fas fa-exclamation-circle"></i>
-                            @else
-                                <i class="fas fa-minus-circle"></i>
-                            @endif
-                            {{ $dendaStatusText }}
-                        </span>
-                    </td>
-
-                    <!-- ✅ AKSI BALIK LENGKAP -->
-                    <td>
-                        @if ($item->status == 'menunggu')
-                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                                <form method="POST" action="{{ route('petugas.peminjaman.setujui', $item->id_peminjaman) }}">
-                                    @csrf
-                                    <button type="submit" class="btn-action approve" onclick="return confirm('Setujui peminjaman ini?')">
-                                        <i class="fas fa-check"></i> Setujui
-                                    </button>
-                                </form>
-
-                                <form method="POST" action="{{ route('petugas.peminjaman.tolak', $item->id_peminjaman) }}">
-                                    @csrf
-                                    <button type="submit" class="btn-action reject" onclick="return confirm('Tolak peminjaman ini?')">
-                                        <i class="fas fa-times"></i> Tolak
-                                    </button>
-                                </form>
-                            </div>
-
-                        @elseif ($item->status == 'dipinjam')
-                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                                <form method="POST" action="{{ route('petugas.pengembalian.konfirmasi', $item->id_peminjaman) }}">
-                                    @csrf
-                                    <button type="submit" class="btn-action confirm" onclick="return confirm('Konfirmasi pengembalian alat ini?')">
-                                        <i class="fas fa-check-circle"></i> Konfirmasi
-                                    </button>
-                                </form>
-
-                                @if($dendaFinal > 0 && $statusDenda == 'belum_bayar')
-                                <form method="POST" action="{{ route('petugas.denda.konfirmasi', $item->id_peminjaman) }}">
-                                    @csrf
-                                    <button type="submit" class="btn-action approve" onclick="return confirm('Konfirmasi pembayaran denda Rp {{ number_format($dendaFinal, 0, ',', '.') }}?')">
-                                        <i class="fas fa-money-bill"></i> Denda
-                                    </button>
-                                </form>
-                                @endif
-                            </div>
-
-                        @else
-                            <span style="font-size: 12px; color: var(--gray); font-style: italic;">Tidak ada aksi</span>
-                        @endif
-                    </td>
-
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-        @endif
-    </div>
-</section>
+                    </section>
                 <!-- Quick Actions Section -->
                 <div class="stats-container">
                     <div class="stat-card" onclick="showPendingApprovals()" data-tooltip="Proses permintaan peminjaman">

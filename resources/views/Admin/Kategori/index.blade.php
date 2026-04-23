@@ -12,6 +12,9 @@
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800|playfair:400,500,600,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <!-- Animate CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
@@ -556,6 +559,40 @@
             border-color: var(--secondary);
         }
 
+        /* ===== LOADING OVERLAY ===== */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(4px);
+        }
+
+        .loading-spinner {
+            background: white;
+            padding: 30px 40px;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .loading-spinner i {
+            font-size: 48px;
+            color: var(--secondary);
+            margin-bottom: 16px;
+        }
+
+        .loading-spinner p {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1200px) {
             .main-content {
@@ -699,7 +736,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach($kategori as $k)
-                                    <tr class="animate__animated animate__fadeIn" style="animation-delay: {{ $loop->index * 0.05 }}s">
+                                    <tr class="animate__animated animate__fadeIn" style="animation-delay: {{ $loop->index * 0.05 }}s" data-genre-id="{{ $k->id_kategori }}" data-genre-name="{{ $k->nama_kategori }}">
                                         <td>
                                             <span class="kategori-id">#{{ $k->id_kategori }}</span>
                                         </td>
@@ -718,7 +755,8 @@
                                             <small style="font-size: 11px; color: var(--gray);">
                                                 {{ $k->created_at->format('H:i') }}
                                             </small>
-                                         </td>
+                                          </div>
+                                         </div>
                                         <td>
                                             <div style="font-weight: 600; color: var(--dark);">
                                                 {{ $k->updated_at->format('d M Y') }}
@@ -726,25 +764,26 @@
                                             <small style="font-size: 11px; color: var(--gray);">
                                                 {{ $k->updated_at->format('H:i') }}
                                             </small>
-                                         </td>
+                                          </div>
+                                         </div>
                                         <td>
                                             <div class="action-cell">
-                                                <a href="{{ route('admin.kategori.edit', $k->id_kategori) }}" class="btn-edit" aria-label="Edit genre {{ $k->nama_kategori }}">
+                                                <a href="{{ route('admin.kategori.edit', $k->id_kategori) }}" class="btn-edit edit-genre" aria-label="Edit genre {{ $k->nama_kategori }}" data-id="{{ $k->id_kategori }}" data-name="{{ $k->nama_kategori }}">
                                                     <i class="fas fa-edit"></i> Edit
                                                 </a>
-                                                <form action="{{ route('admin.kategori.destroy', $k->id_kategori) }}" method="POST" class="delete-form">
+                                                <form action="{{ route('admin.kategori.destroy', $k->id_kategori) }}" method="POST" class="delete-form" data-id="{{ $k->id_kategori }}" data-name="{{ $k->nama_kategori }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn-delete" aria-label="Hapus genre {{ $k->nama_kategori }}" onclick="return confirm('Apakah Anda yakin ingin menghapus genre ini?')">
+                                                    <button type="button" class="btn-delete delete-genre" aria-label="Hapus genre {{ $k->nama_kategori }}" data-id="{{ $k->id_kategori }}" data-name="{{ $k->nama_kategori }}">
                                                         <i class="fas fa-trash"></i> Hapus
                                                     </button>
                                                 </form>
                                             </div>
-                                         </td>
-                                    </tr>
+                                         </div>
+                                     </div>
                                     @endforeach
                                 </tbody>
-                            </table>
+                             </div>
                         @else
                             <div class="empty-state">
                                 <div class="empty-icon">
@@ -831,23 +870,149 @@
                 });
             }
             
-            // Delete confirmation with loading state
-            document.querySelectorAll('.delete-form').forEach(form => {
-                form.addEventListener('submit', function(e) {
-                    if (!confirm('Apakah Anda yakin ingin menghapus genre ini?\nBuku dengan genre ini akan kehilangan kategori.')) {
-                        e.preventDefault();
-                        return false;
-                    }
+            // ===== SWEETALERT FOR EDIT =====
+            document.querySelectorAll('.edit-genre').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const editUrl = this.getAttribute('href');
+                    const genreName = this.getAttribute('data-name');
                     
-                    const deleteBtn = this.querySelector('.btn-delete');
-                    if (deleteBtn) {
-                        deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menghapus...';
-                        deleteBtn.disabled = true;
-                    }
-                    
-                    return true;
+                    Swal.fire({
+                        title: 'Edit Genre',
+                        html: `
+                            <div style="text-align: left;">
+                                <p style="margin-bottom: 15px;">Anda akan mengedit genre:</p>
+                                <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 10px; border-radius: 10px; margin-bottom: 15px;">
+                                    <p style="color: white; font-weight: 600; margin: 0;">📚 ${genreName}</p>
+                                </div>
+                                <p style="color: var(--gray); font-size: 13px;">Klik "Lanjutkan" untuk mengedit genre ini.</p>
+                            </div>
+                        `,
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#f39c12',
+                        cancelButtonColor: '#7f8c8d',
+                        confirmButtonText: '<i class="fas fa-edit"></i> Lanjutkan Edit',
+                        cancelButtonText: '<i class="fas fa-times"></i> Batal',
+                        background: '#fdf6e3',
+                        customClass: {
+                            popup: 'swal2-popup-custom'
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = editUrl;
+                        }
+                    });
                 });
             });
+            
+            // ===== SWEETALERT FOR DELETE =====
+            document.querySelectorAll('.delete-genre').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const genreId = this.getAttribute('data-id');
+                    const genreName = this.getAttribute('data-name');
+                    const form = this.closest('.delete-form');
+                    
+                    Swal.fire({
+                        title: 'Hapus Genre?',
+                        html: `
+                            <div style="text-align: left;">
+                                <p style="margin-bottom: 15px;">Anda akan menghapus genre:</p>
+                                <div style="background: linear-gradient(135deg, var(--danger), #c0392b); padding: 10px; border-radius: 10px; margin-bottom: 15px;">
+                                    <p style="color: white; font-weight: 600; margin: 0;">📚 ${genreName}</p>
+                                </div>
+                                <p style="color: var(--danger); font-size: 13px; margin-bottom: 10px;">
+                                    <i class="fas fa-exclamation-triangle"></i> Peringatan:
+                                </p>
+                                <ul style="color: var(--gray); font-size: 13px; margin-left: 20px;">
+                                    <li>Genre ini akan dihapus secara permanen</li>
+                                    <li>Buku dengan genre ini akan kehilangan kategori</li>
+                                    <li>Tindakan ini tidak dapat dibatalkan</li>
+                                </ul>
+                            </div>
+                        `,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#e74c3c',
+                        cancelButtonColor: '#7f8c8d',
+                        confirmButtonText: '<i class="fas fa-trash"></i> Ya, Hapus!',
+                        cancelButtonText: '<i class="fas fa-times"></i> Batal',
+                        background: '#fdf6e3',
+                        customClass: {
+                            popup: 'swal2-popup-custom'
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Show loading overlay
+                            const loadingOverlay = document.createElement('div');
+                            loadingOverlay.className = 'loading-overlay';
+                            loadingOverlay.innerHTML = `
+                                <div class="loading-spinner">
+                                    <i class="fas fa-spinner fa-pulse"></i>
+                                    <p>Menghapus genre...</p>
+                                </div>
+                            `;
+                            document.body.appendChild(loadingOverlay);
+                            
+                            // Submit the form
+                            fetch(form.action, {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                                },
+                                body: new URLSearchParams({
+                                    '_method': 'DELETE',
+                                    '_token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                loadingOverlay.remove();
+                                
+                                if (data.success) {
+                                    Swal.fire({
+                                        title: 'Berhasil!',
+                                        text: data.message || `Genre "${genreName}" berhasil dihapus.`,
+                                        icon: 'success',
+                                        confirmButtonColor: '#27ae60',
+                                        confirmButtonText: '<i class="fas fa-check"></i> OK',
+                                        background: '#fdf6e3'
+                                    }).then(() => {
+                                        window.location.reload();
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: 'Gagal!',
+                                        text: data.message || 'Terjadi kesalahan saat menghapus genre.',
+                                        icon: 'error',
+                                        confirmButtonColor: '#e74c3c',
+                                        confirmButtonText: '<i class="fas fa-times"></i> Tutup',
+                                        background: '#fdf6e3'
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                loadingOverlay.remove();
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: 'Terjadi kesalahan jaringan. Silakan coba lagi.',
+                                    icon: 'error',
+                                    confirmButtonColor: '#e74c3c',
+                                    confirmButtonText: '<i class="fas fa-times"></i> Tutup',
+                                    background: '#fdf6e3'
+                                });
+                            });
+                        }
+                    });
+                });
+            });
+            
+            // ===== CONFIRMATION BEFORE LEAVING EDIT PAGE =====
+            // This will be triggered when clicking edit button that was prevented
+            // Already handled above
             
             // Keyboard shortcut for search (Ctrl+F)
             document.addEventListener('keydown', function(e) {
@@ -867,5 +1032,29 @@
             });
         });
     </script>
+    
+    <style>
+        /* Custom SweetAlert styling */
+        .swal2-popup-custom {
+            font-family: 'Inter', sans-serif;
+            border-radius: 16px;
+            border: 1px solid #d4a373;
+        }
+        
+        .swal2-title {
+            font-family: 'Playfair', serif;
+            color: #2c3e50;
+        }
+        
+        .swal2-html-container {
+            color: #2c3e50;
+        }
+        
+        .swal2-confirm, .swal2-cancel {
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 10px 20px;
+        }
+    </style>
 </body>
 </html>

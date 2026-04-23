@@ -351,7 +351,7 @@
             gap: 4px;
         }
 
-        /* Chart Section - FITUR BARU 1 */
+        /* Chart Section */
         .chart-section {
             background: white;
             border-radius: var(--radius-xl);
@@ -479,11 +479,6 @@
         .btn-outline:hover {
             background: #f1f5f9;
             transform: translateY(-2px);
-        }
-
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 12px;
         }
 
         /* Filter Section */
@@ -716,16 +711,35 @@
             font-size: 13px;
         }
 
-        /* Pagination */
+        /* ============================================================ */
+        /* PREMIUM PAGINATION STYLING */
+        /* ============================================================ */
         .pagination-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 24px;
-            padding-top: 20px;
-            border-top: 1px solid #f1f5f9;
+            margin-top: 28px;
+            padding-top: 24px;
+            border-top: 2px solid #f1f5f9;
             flex-wrap: wrap;
-            gap: 16px;
+            gap: 20px;
+        }
+
+        .pagination-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            background: #f8fafc;
+            border-radius: 40px;
+            color: var(--gray);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .pagination-info i {
+            color: var(--primary);
+            font-size: 14px;
         }
 
         .pagination {
@@ -733,35 +747,131 @@
             gap: 8px;
             list-style: none;
             flex-wrap: wrap;
+            margin: 0;
+            padding: 0;
         }
 
-        .pagination a, .pagination span {
+        .pagination li {
+            display: inline-flex;
+        }
+
+        .pagination a, 
+        .pagination span {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 36px;
-            height: 36px;
-            padding: 0 10px;
-            border-radius: var(--radius-sm);
+            min-width: 42px;
+            height: 42px;
+            padding: 0 14px;
+            border-radius: var(--radius-md);
             background: white;
             color: var(--dark);
             text-decoration: none;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 14px;
             border: 1px solid #e2e8f0;
             transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pagination a::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.15);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s, height 0.4s;
+        }
+
+        .pagination a:hover::before {
+            width: 200px;
+            height: 200px;
         }
 
         .pagination a:hover {
-            background: var(--primary);
-            color: white;
+            background: white;
+            color: var(--primary);
             border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
 
         .pagination .active span {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border-color: transparent;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+            transform: scale(1.05);
+            position: relative;
+        }
+
+        .pagination .active span::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: var(--radius-md);
+            z-index: -1;
+            opacity: 0.4;
+            filter: blur(4px);
+        }
+
+        .pagination .disabled span {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #f1f5f9;
+        }
+
+        .pagination .disabled span:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Pagination untuk mobile */
+        @media (max-width: 768px) {
+            .pagination-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .pagination-info {
+                order: 2;
+            }
+            
+            .pagination {
+                order: 1;
+            }
+            
+            .pagination a, 
+            .pagination span {
+                min-width: 38px;
+                height: 38px;
+                padding: 0 10px;
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .pagination {
+                gap: 5px;
+            }
+            
+            .pagination a, 
+            .pagination span {
+                min-width: 34px;
+                height: 34px;
+                padding: 0 8px;
+                font-size: 12px;
+            }
         }
 
         /* Empty State */
@@ -1017,10 +1127,6 @@
                 flex: 1;
                 justify-content: center;
             }
-            .pagination-container {
-                flex-direction: column;
-                align-items: center;
-            }
         }
 
         @media (max-width: 480px) {
@@ -1135,7 +1241,7 @@
                     </div>
                 </div>
 
-                <!-- FITUR BARU 1: Grafik Aktivitas -->
+                <!-- Chart Section -->
                 <div class="chart-section">
                     <div class="chart-header">
                         <div class="chart-title">
@@ -1400,13 +1506,14 @@
                         @endif
                     </div>
 
-                    <!-- Pagination -->
+                    <!-- PREMIUM PAGINATION -->
                     @if(isset($logs) && $logs->count() > 0)
                     <div class="pagination-container">
-                        <div style="color: var(--gray); font-size: 13px;">
-                            Menampilkan {{ $logs->firstItem() ?? 0 }} - {{ $logs->lastItem() ?? 0 }} dari {{ $logs->total() }} aktivitas
+                        <div class="pagination-info">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Menampilkan {{ $logs->firstItem() ?? 0 }} - {{ $logs->lastItem() ?? 0 }} dari {{ $logs->total() }} aktivitas</span>
                         </div>
-                        <div>
+                        <div class="pagination">
                             {{ $logs->appends(request()->query())->links() }}
                         </div>
                     </div>
@@ -1459,7 +1566,7 @@
     </div>
 
     <script>
-        // Initialize Chart - FITUR BARU 1
+        // Initialize Chart
         let activityChart = null;
         
         function initChart() {
@@ -1494,9 +1601,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            display: false
-                        },
+                        legend: { display: false },
                         tooltip: {
                             backgroundColor: '#1a1a2e',
                             titleColor: '#fff',
@@ -1514,9 +1619,7 @@
                             grid: { color: '#e2e8f0' },
                             ticks: { stepSize: 1 }
                         },
-                        x: {
-                            grid: { display: false }
-                        }
+                        x: { grid: { display: false } }
                     }
                 }
             });
@@ -1637,7 +1740,7 @@
             });
         }
 
-        // Export Modal - FITUR BARU 2
+        // Export Modal
         const exportBtn = document.getElementById('exportBtn');
         const exportModal = document.getElementById('exportModal');
         const closeModal = document.getElementById('closeModal');
@@ -1725,13 +1828,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             initChart();
             updateNotificationBadge();
-            
-            // Auto refresh every 30 seconds (optional)
-            setInterval(() => {
-                if (!document.hidden) {
-                    // Optional: refresh data silently
-                }
-            }, 30000);
         });
     </script>
 </body>

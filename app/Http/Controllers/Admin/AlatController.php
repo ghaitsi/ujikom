@@ -9,13 +9,14 @@ use App\Models\Kategori;
 
 class AlatController extends Controller
 {
-public function index()
-{
-    $alat = Alat::latest()->paginate(10);
-    $totalBuku = Alat::count(); // 🔥 TAMBAHIN INI
+    public function index()
+    {
+        $alat = Alat::latest()->paginate(10);
+        $totalBuku = Alat::count();
 
-    return view('admin.alat.index', compact('alat', 'totalBuku'));
-}
+        return view('admin.alat.index', compact('alat', 'totalBuku'));
+    }
+
     public function create()
     {
         $kategori = Kategori::all();
@@ -27,6 +28,7 @@ public function index()
         $request->validate([
             'nama_alat' => 'required|string|max:255',
             'penulis' => 'nullable|string|max:255',
+            'penerbit' => 'nullable|string|max:255', // 🔥 TAMBAHAN
             'tanggal_terbit' => 'nullable|date',
             'tempat_terbit' => 'nullable|string|max:255',
             'id_kategori' => 'required|exists:kategori,id_kategori',
@@ -40,6 +42,7 @@ public function index()
         $data = [
             'nama_alat' => $request->nama_alat,
             'penulis' => $request->penulis,
+            'penerbit' => $request->penerbit, // 🔥 TAMBAHAN
             'tanggal_terbit' => $request->tanggal_terbit,
             'tempat_terbit' => $request->tempat_terbit,
             'id_kategori' => $request->id_kategori,
@@ -79,8 +82,9 @@ public function index()
         $request->validate([
             'nama_alat' => 'required|string|max:255',
             'penulis' => 'nullable|string|max:255',
+            'penerbit' => 'nullable|string|max:255', // 🔥 TAMBAHAN
             'tanggal_terbit' => 'nullable|date',
-            'tempat_terbit' => 'nullable|string|max:255', // 🔥 FIX
+            'tempat_terbit' => 'nullable|string|max:255',
             'id_kategori' => 'required|exists:kategori,id_kategori',
             'stok' => 'required|integer',
             'status' => 'required|in:tersedia,dipinjam,perbaikan',
@@ -90,8 +94,9 @@ public function index()
         $data = [
             'nama_alat' => $request->nama_alat,
             'penulis' => $request->penulis,
+            'penerbit' => $request->penerbit, // 🔥 TAMBAHAN
             'tanggal_terbit' => $request->tanggal_terbit,
-            'tempat_terbit' => $request->tempat_terbit, // 🔥 FIX UTAMA
+            'tempat_terbit' => $request->tempat_terbit,
             'id_kategori' => $request->id_kategori,
             'stok' => $request->stok,
             'status' => $request->status,

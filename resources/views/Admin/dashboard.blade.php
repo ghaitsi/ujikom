@@ -988,7 +988,7 @@
                     <div class="welcome-content">
                         <h1 class="animate__animated animate__fadeInDown">
                             @auth
-                                Selamat Membaca, {{ Auth::user()->name }}! 📖
+                                Selamat datang, {{ Auth::user()->name }}! 📖
                             @else
                                 Selamat Datang di LibTrack! 📚
                             @endauth

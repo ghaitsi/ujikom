@@ -413,7 +413,7 @@
                     </a>
                     <a href="{{ route('admin.alat.index') }}" class="nav-item {{ request()->routeIs('alat.*') ? 'active' : '' }}">
                         <div class="nav-icon">
-                            <i class="fas fa-tools"></i>
+                            <i class="fas fa-book"></i>
                         </div>
                         <div class="nav-text">Daftar Buku</div>
                     </a>

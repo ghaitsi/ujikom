@@ -24,6 +24,7 @@ class Alat extends Model
         'penulis',
         'tanggal_terbit',
         'tempat_terbit',
+        'penerbit',
         'stok',
         'deskripsi',
         'gambar',

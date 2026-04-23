@@ -14,6 +14,24 @@ use Illuminate\Http\Request;
 class PengembalianController extends Controller
 {
     // ===============================
+    // HALAMAN INDEX (🔥 FIX ERROR DI SINI)
+    // ===============================
+    public function index()
+    {
+        $peminjaman = Peminjaman::with('alat')
+            ->where('id_user', Auth::id())
+            ->latest()
+            ->get()
+            ->map(function ($item) {
+                // 🔥 denda realtime (tidak disimpan di DB)
+                $item->denda_realtime = $this->hitungDenda($item->tanggal_rencana_kembali);
+                return $item;
+            });
+
+        return view('peminjam.pengembalian', compact('peminjaman'));
+    }
+
+    // ===============================
     // HITUNG DENDA REALTIME
     // ===============================
     private function hitungDenda($tanggalRencana)
@@ -69,7 +87,7 @@ class PengembalianController extends Controller
     }
 
     // ===============================
-    // BAYAR DENDA + KEMBALIKAN (AUTO LUNAS)
+    // BAYAR DENDA + KEMBALIKAN
     // ===============================
     public function bayarDendaDanKembalikan(Request $request, $id)
     {
@@ -89,7 +107,6 @@ class PengembalianController extends Controller
         DB::transaction(function () use ($pinjam, $totalDenda) {
             $alat = Alat::findOrFail($pinjam->id_alat);
 
-            // 🔥 FIX UTAMA: LANGSUNG LUNAS
             $pinjam->update([
                 'denda' => $totalDenda,
                 'status_denda' => 'lunas',

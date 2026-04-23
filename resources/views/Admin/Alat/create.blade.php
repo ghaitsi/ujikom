@@ -939,6 +939,29 @@
                                 </div>
                             </div>
 
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-building"></i>
+                                    Penerbit
+                                </label>
+                                <input type="text" 
+                                       name="penerbit" 
+                                       class="form-control @error('penerbit') error @enderror"
+                                       placeholder="Masukkan nama penerbit"
+                                       value="{{ old('penerbit') }}"
+                                       required>
+                                @error('penerbit')
+                                    <div class="error-message">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                                <div class="form-text">
+                                    <i class="fas fa-lightbulb"></i>
+                                    Nama perusahaan atau lembaga yang menerbitkan buku
+                                </div>
+                            </div>
+
                             <!-- Kategori -->
                             <div class="form-group">
                                 <label class="form-label">
